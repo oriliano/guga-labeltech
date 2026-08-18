@@ -114,15 +114,20 @@ const main = async () => {
 
   const email = process.env.SEED_ADMIN_EMAIL || 'info@gugalabeltech.com'
   const password = process.env.SEED_ADMIN_PASSWORD
-  if (!password) throw new Error('SEED_ADMIN_PASSWORD is required')
 
   const existingUsers = await payload.count({ collection: 'users' })
   if (existingUsers.totalDocs === 0) {
-    await payload.create({
-      collection: 'users',
-      data: { email, password, name: 'GUGA Yönetici', role: 'admin' },
-    })
-    console.log(`admin user created: ${email}`)
+    if (password) {
+      await payload.create({
+        collection: 'users',
+        data: { email, password, name: 'GUGA Yönetici', role: 'admin' },
+      })
+      console.log(`admin user created: ${email}`)
+    } else {
+      // Preferred path: let Payload's first-user screen at /admin take the password,
+      // so it never passes through a shell history or a CI log.
+      console.log('no SEED_ADMIN_PASSWORD set — create the first admin at /admin')
+    }
   }
 
   await payload.updateGlobal({

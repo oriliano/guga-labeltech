@@ -78,6 +78,10 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '',
     },
+    // Schema is synced from the config on boot instead of through migration files.
+    // Fine while this is a single-owner CMS; switch to `payload migrate` before any
+    // second environment starts sharing the database.
+    push: true,
   }),
   cors: [serverURL],
   csrf: [serverURL],
