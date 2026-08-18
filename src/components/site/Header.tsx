@@ -32,8 +32,13 @@ export const Header = ({
         {t('a11y.skipToContent', locale)}
       </a>
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href={locale === 'tr' ? '/' : '/en'} className="flex items-center" aria-label={brand}>
-          <Image src="/logo.png" alt={brand} width={475} height={200} priority className="h-9 w-auto" />
+        {/* The mark is gold, which needs the brand green behind it to hold up on a light header. */}
+        <Link
+          href={locale === 'tr' ? '/' : '/en'}
+          className="flex items-center rounded-md bg-ink-900 px-3 py-1.5"
+          aria-label={brand}
+        >
+          <Image src="/logo.png" alt={brand} width={475} height={200} priority className="h-8 w-auto" />
         </Link>
 
         <nav aria-label="primary" className="hidden lg:block">

@@ -345,7 +345,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
     ) : null}
 
     {solution.problem ? (
-      <Section>
+      <Section className={solution.outcomes?.length ? '' : 'pt-0'}>
         <div className="max-w-3xl">
           <RichText data={solution.problem} />
         </div>
