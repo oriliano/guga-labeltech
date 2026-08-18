@@ -24,7 +24,9 @@ Bitti:
 - GA4 etiketi (site ayarlarında ölçüm kimliği doluysa yüklenir)
 - Eski adreslerden 301 yönlendirmeleri
 - Teklif taleplerinde CSV dışa aktarma
-- 48 ürünün TR/EN metni (`src/seed/products.ts`, veritabanına henüz yazılmadı)
+- 48 ürünün TR/EN metni, veritabanına yazıldı
+- Marka paleti (koyu yeşil / altın), logo, favicon ve paylaşım görseli
+- WhatsApp butonu, Instagram ve LinkedIn bağlantıları
 
 Eksik olanlar aşağıda.
 
@@ -49,19 +51,6 @@ yürütülebilir, çünkü farklı dosyalara dokunuyorlar.
 
 ## Hat A — ürün içeriği
 
-### A1-son. Ürün metinlerini veritabanına yaz
-
-`src/seed/products.ts` hazır, 48 ürün iki dilde. Script henüz çalıştırılmadı;
-veritabanına erişim geçici Railway TCP proxy'si gerektiriyor (yordam README'de).
-
-```
-NODE_ENV=development npx tsx src/seed/products.ts
-```
-
-Çalıştırdıktan sonra panelde bir ürünü açıp TR teknik özellik satırlarının EN
-yazımından sonra da durduğunu doğrulayın. Sorun çıkarsa çözüm, `tr` güncellemesi
-sonrası satır kimliklerini okuyup `en` güncellemesine taşımak.
-
 ### A3. Ürün görsellerini taşı
 
 Eski sitenin görselleri hâlâ GoDaddy CDN'inde (`img1.wsimg.com`). Adresleri
@@ -74,11 +63,6 @@ her dağıtımda kaybolur.
 ---
 
 ## Hat B — site şablonları ve SEO
-
-### B5. Paylaşım görseli (OG image) üret
-
-Şu an sosyal medyada paylaşılınca görsel çıkmıyor. Marka renkleriyle statik bir
-OG görseli yeterli; dinamik üretim gerekmiyor.
 
 ### B6. Erişilebilirlik ve performans denetimi
 
@@ -176,17 +160,15 @@ Form kişisel veri topluyor. Aydınlatma metni ve gizlilik politikası sayfalar�
 eklenmeli, form altına onay bağlantısı konmalı. Analitik çerezsiz olduğu için
 çerez banner'ı gerekmiyor, ama form için aydınlatma gerekiyor.
 
-### E6. Yüksek çözünürlüklü logo
-
-Mevcut logo eski siteden gelen düşük kaliteli bir JPEG. Vektörel dosya varsa
-site ayarlarından yüklenmeli.
-
 ---
 
 ## Önerilen sıra
 
-Alan adı taşınmadan önce bitmesi gerekenler: A1-son, D1, D2, D5, C2, E5.
+Alan adı taşınmadan önce bitmesi gerekenler: D1, D2, D5, C2, E5.
 
-Taşındıktan sonra: D3, D6, B5, B6, A3, E1.
+Taşındıktan sonra: D3, D6, B6, A3, E1.
 
-İstenildiği zaman: C3, C4, E2, E3, E4, E6.
+İstenildiği zaman: C3, C4, E2, E3, E4.
+
+Sitede hâlâ tek bir ürün ya da saha fotoğrafı yok; görsel eksikliği en görünür
+tasarım sorunu. Sırası D1 (R2) sonrası A3.
