@@ -96,7 +96,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Eski siteden tasinan gorseller; R2 baglanana kadar depo icinde duruyorlar.
-        pathname: '/media/**',
+        pathname: '/img/**',
       },
     ],
   },
