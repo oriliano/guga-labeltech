@@ -78,8 +78,20 @@ export const HomePage = ({
             ))}
           </dl>
         </div>
-        <div className="hidden lg:block">
-          <Figure media={solutions[0]?.heroImage} priority />
+        <div className="hidden lg:flex lg:items-center lg:justify-center">
+          {mediaOf(solutions[0]?.heroImage) ? (
+            <Figure media={solutions[0]?.heroImage} priority />
+          ) : (
+            <Image
+              src="/logo.png"
+              alt=""
+              aria-hidden
+              width={475}
+              height={200}
+              priority
+              className="w-full max-w-md opacity-90"
+            />
+          )}
         </div>
       </div>
     </section>
@@ -302,7 +314,11 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
           { label: solution.title },
         ]}
       />
-      <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <div
+        className={`grid gap-12 lg:items-center ${
+          mediaOf(solution.heroImage) ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'max-w-3xl'
+        }`}
+      >
         <div>
           {solution.sector ? (
             <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">{solution.sector}</p>
@@ -313,7 +329,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
             <ButtonLink href={sectionPath('contact', locale)}>{t('cta.quote', locale)}</ButtonLink>
           </div>
         </div>
-        <Figure media={solution.heroImage} priority />
+        {mediaOf(solution.heroImage) ? <Figure media={solution.heroImage} priority /> : null}
       </div>
     </Section>
 

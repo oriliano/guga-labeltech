@@ -76,7 +76,7 @@ export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: 
       <button
         type="submit"
         disabled={state === 'sending'}
-        className="inline-flex items-center rounded-lg bg-signal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-signal-500 disabled:opacity-60"
+        className="inline-flex items-center rounded-lg bg-signal-500 px-6 py-3 text-sm font-semibold text-ink-950 hover:bg-signal-400 disabled:opacity-60"
       >
         {state === 'sending' ? t('form.sending', locale) : t('form.submit', locale)}
       </button>

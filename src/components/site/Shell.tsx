@@ -9,6 +9,7 @@ import { Footer } from './Footer'
 import { GoogleAnalytics } from './GoogleAnalytics'
 import { Header, type NavItem } from './Header'
 import { OrganizationJsonLd } from './StructuredData'
+import { WhatsAppButton } from './WhatsAppButton'
 
 /** Falls back to a generated menu when the Navigation global has not been filled in. */
 const defaultNav = (locale: Locale): NavItem[] => [
@@ -46,6 +47,8 @@ export const Shell = async ({
       }))
     : [{ title: t('nav.solutions', locale), links: defaultNav(locale).map(({ label, href }) => ({ label, href })) }]
 
+  const whatsappNumber = settings?.phones?.find((phone) => phone.whatsapp)?.number
+
   return (
     <>
       <Header
@@ -67,7 +70,9 @@ export const Shell = async ({
         offices={settings?.offices ?? []}
         phones={settings?.phones ?? []}
         columns={footerColumns}
+        social={settings?.social ?? []}
       />
+      {whatsappNumber ? <WhatsAppButton number={whatsappNumber} locale={locale} /> : null}
     </>
   )
 }

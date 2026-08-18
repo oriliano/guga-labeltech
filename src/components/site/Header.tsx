@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -26,13 +27,13 @@ export const Header = ({
     <header className="sticky top-0 z-50 border-b border-ink-100 bg-[var(--page-bg)]/90 backdrop-blur dark:border-ink-800">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:rounded focus:bg-signal-600 focus:px-3 focus:py-2 focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:rounded focus:bg-signal-500 focus:px-3 focus:py-2 focus:text-ink-950"
       >
         {t('a11y.skipToContent', locale)}
       </a>
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href={locale === 'tr' ? '/' : '/en'} className="text-base font-bold tracking-tight">
-          {brand}
+        <Link href={locale === 'tr' ? '/' : '/en'} className="flex items-center" aria-label={brand}>
+          <Image src="/logo.png" alt={brand} width={475} height={200} priority className="h-9 w-auto" />
         </Link>
 
         <nav aria-label="primary" className="hidden lg:block">
@@ -75,7 +76,7 @@ export const Header = ({
           </Link>
           <Link
             href={quoteHref}
-            className="hidden rounded-lg bg-signal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-signal-500 sm:inline-block"
+            className="hidden rounded-lg bg-signal-500 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-signal-400 sm:inline-block"
           >
             {t('cta.quote', locale)}
           </Link>

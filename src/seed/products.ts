@@ -2076,7 +2076,22 @@ const main = async () => {
         .id
 
     await payload.update({ collection: 'products', id, locale: 'tr', data: side(entry.tr) as never })
-    await payload.update({ collection: 'products', id, locale: 'en', data: side(entry.en) as never })
+
+    // Array rows sent without an id are treated as new rows: Payload drops the old
+    // ones and with them the Turkish text attached to those ids. Reading the row
+    // ids back and sending them along keeps both locales on the same rows.
+    const written: any = await payload.findByID({ collection: 'products', id, locale: 'tr', depth: 0 })
+    const english = side(entry.en) as any
+    english.specs = english.specs.map((spec: any, index: number) => ({
+      ...spec,
+      id: written.specs?.[index]?.id,
+    }))
+    english.highlights = english.highlights.map((item: any, index: number) => ({
+      ...item,
+      id: written.highlights?.[index]?.id,
+    }))
+
+    await payload.update({ collection: 'products', id, locale: 'en', data: english as never })
     console.log(`seeded tr+en: ${entry.slug}`)
     order += 10
   }

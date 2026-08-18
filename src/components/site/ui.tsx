@@ -61,7 +61,7 @@ export const ButtonLink = ({
   variant?: 'primary' | 'secondary' | 'ghost'
 }) => {
   const variants = {
-    primary: 'bg-signal-600 text-white hover:bg-signal-500',
+    primary: 'bg-signal-500 text-ink-950 hover:bg-signal-400',
     secondary: 'border border-ink-200 dark:border-ink-700 hover:border-signal-500 hover:text-signal-600',
     ghost: 'text-signal-600 hover:underline underline-offset-4 px-0 py-0',
   }

@@ -1,26 +1,26 @@
 @import 'tailwindcss';
 
 /*
- * Industrial-technical palette: deep navy ground, signal cyan for interactive
- * accents, amber reserved for a single primary CTA per view so it keeps meaning.
+ * Marka paleti logodan geliyor: koyu yesil zemin, altin vurgu. Altin yalnizca
+ * eylem ve vurgu icin; genis alanlarda yesil calisiyor.
  */
 @theme {
-  --color-ink-950: #060d18;
-  --color-ink-900: #0b1524;
-  --color-ink-800: #122036;
-  --color-ink-700: #1b2f4d;
-  --color-ink-600: #2a4368;
-  --color-ink-400: #6b7f9c;
-  --color-ink-200: #c3cedd;
-  --color-ink-100: #e3e9f1;
-  --color-ink-50: #f5f7fa;
+  --color-ink-950: #021a10;
+  --color-ink-900: #053624;
+  --color-ink-800: #0a4a31;
+  --color-ink-700: #12603f;
+  --color-ink-600: #237e56;
+  --color-ink-400: #6d9584;
+  --color-ink-200: #c6dbd0;
+  --color-ink-100: #e5efe9;
+  --color-ink-50: #f4f8f6;
 
-  --color-signal-600: #0b7d8a;
-  --color-signal-500: #12a3b4;
-  --color-signal-400: #2bc4d6;
-  --color-signal-100: #d7f3f7;
+  --color-signal-600: #8a6a17;
+  --color-signal-500: #c9a227;
+  --color-signal-400: #e3c96a;
+  --color-signal-100: #f7f0dc;
 
-  --color-amber-cta: #f0a500;
+  --color-amber-cta: #c9a227;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
@@ -45,7 +45,7 @@
     --page-fg: var(--color-ink-900);
     --card-bg: #ffffff;
     --card-border: var(--color-ink-100);
-    --muted-fg: #4a5b74;
+    --muted-fg: #40584c;
   }
 
   @media (prefers-color-scheme: dark) {
