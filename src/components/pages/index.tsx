@@ -193,7 +193,7 @@ export const ListingPage = ({
   bodyOf?: (item: any) => string | undefined
 }) => (
   <Section>
-    <SectionHeading title={title} lead={lead} />
+    <SectionHeading title={title} lead={lead} as="h1" />
     {items.length ? (
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (

@@ -55,7 +55,7 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
 
   if (isHome) {
     return {
-      title: `${settings?.brandName ?? 'GUGA LABELTECH'} — ${settings?.tagline ?? 'RFID, IoT ve izlenebilirlik'}`,
+      title: { absolute: `${settings?.brandName ?? 'GUGA LABELTECH'} — ${settings?.tagline ?? 'RFID, IoT ve izlenebilirlik'}` },
       description: settings?.tagline ?? undefined,
       alternates,
     }

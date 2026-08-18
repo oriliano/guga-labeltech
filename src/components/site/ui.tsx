@@ -29,11 +29,13 @@ export const SectionHeading = ({
   title,
   lead,
   align = 'left',
+  as: Tag = 'h2',
 }: {
   eyebrow?: string
   title: string
   lead?: string
   align?: 'left' | 'center'
+  as?: 'h1' | 'h2'
 }) => (
   <header className={`max-w-3xl ${align === 'center' ? 'mx-auto text-center' : ''}`}>
     {eyebrow ? (
@@ -41,7 +43,7 @@ export const SectionHeading = ({
         {eyebrow}
       </p>
     ) : null}
-    <h2 className="text-h1 font-semibold">{title}</h2>
+    <Tag className="text-h1 font-semibold">{title}</Tag>
     {lead ? <p className="mt-4 text-lead text-muted">{lead}</p> : null}
   </header>
 )

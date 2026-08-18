@@ -10,6 +10,7 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
       <SectionHeading
         eyebrow={t('nav.about', locale)}
         title={locale === 'tr' ? 'RFID ve IoT teknolojilerinde yerli üretim' : 'Turkish-made RFID and IoT technology'}
+        as="h1"
         lead={settings?.tagline ?? undefined}
       />
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
@@ -42,6 +43,7 @@ export const ExportPage = ({ locale, settings }: { locale: Locale; settings: any
       <SectionHeading
         eyebrow={t('nav.export', locale)}
         title={locale === 'tr' ? 'İhracat ve distribütörlük' : 'Export and distribution'}
+        as="h1"
         lead={
           settings?.exportIntro ??
           (locale === 'tr'
@@ -126,6 +128,7 @@ export const ContactPage = ({ locale, settings }: { locale: Locale; settings: an
         <SectionHeading
           eyebrow={t('nav.contact', locale)}
           title={locale === 'tr' ? 'Teklif alın' : 'Request a quote'}
+          as="h1"
           lead={
             locale === 'tr'
               ? 'Projenizi anlatın; ürün seçimi, adet ve teslim süresiyle birlikte fiyat çalışalım.'
