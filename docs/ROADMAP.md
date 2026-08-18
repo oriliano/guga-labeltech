@@ -18,6 +18,13 @@ Bitti:
 - Teklif formu, çerezsiz analitik, PDF indirme sayacı
 - Panelde gösterge tablosu (30 günlük özet)
 - sitemap.xml ve robots.txt
+- Yapılandırılmış veri: Organization, Product, Article, BreadcrumbList
+- Çözüm sayfasında entegrasyon listesi
+- İki dilli 404 sayfası
+- GA4 etiketi (site ayarlarında ölçüm kimliği doluysa yüklenir)
+- Eski adreslerden 301 yönlendirmeleri
+- Teklif taleplerinde CSV dışa aktarma
+- 48 ürünün TR/EN metni (`src/seed/products.ts`, veritabanına henüz yazılmadı)
 
 Eksik olanlar aşağıda.
 
@@ -42,29 +49,18 @@ yürütülebilir, çünkü farklı dosyalara dokunuyorlar.
 
 ## Hat A — ürün içeriği
 
-### A1. 40 ürünün Türkçesini düzelt, İngilizcesini yaz
+### A1-son. Ürün metinlerini veritabanına yaz
 
-Ürünler eski siteden otomatik çekildiği için metinler ham. Bazı ürünlerin
-açıklaması cümle ortasından başlıyor (virgülle açılan satırlar), bazıları taslak.
+`src/seed/products.ts` hazır, 48 ürün iki dilde. Script henüz çalıştırılmadı;
+veritabanına erişim geçici Railway TCP proxy'si gerektiriyor (yordam README'de).
 
-Yapılacak: `src/seed/solutions.ts` dosyasındaki yapıyı örnek alarak
-`src/seed/products.ts` yaz. Her ürün için başlık, model kodu, kısa açıklama,
-gövde metni, teknik özellik tablosu ve avantaj listesi, iki dilde.
+```
+NODE_ENV=development npx tsx src/seed/products.ts
+```
 
-Teknik özellikler için gerçek veri gerekiyor: frekans bandı, boyut, IP sınıfı,
-çalışma sıcaklığı, çip modeli. Bu bilgiler elinizde yoksa alanı boş bırakın,
-uydurmayın.
-
-Kabul ölçütü: `/urunler` ve `/en/products` altındaki her kayıt kendi dilinde,
-teknik tablosu dolu ya da bilinçli olarak boş.
-
-### A2. "Egen Barkod" metnini temizle
-
-Eski sitedeki endüstriyel etiket sayfalarında başka bir firmanın adı geçiyor
-("Egen Barkod olarak..."). Bu metin veritabanına da taşındı. A1 sırasında
-temizlenecek, ayrıca `src/seed/scraped.json` içinde de duruyor.
-
-Kontrol: `grep -ri "egen barkod" src/`
+Çalıştırdıktan sonra panelde bir ürünü açıp TR teknik özellik satırlarının EN
+yazımından sonra da durduğunu doğrulayın. Sorun çıkarsa çözüm, `tr` güncellemesi
+sonrası satır kimliklerini okuyup `en` güncellemesine taşımak.
 
 ### A3. Ürün görsellerini taşı
 
@@ -79,36 +75,6 @@ her dağıtımda kaybolur.
 
 ## Hat B — site şablonları ve SEO
 
-### B1. Yapılandırılmış veri (JSON-LD) ekle
-
-Şu an hiç yok. Eklenecekler: `Organization` (site geneli), `Product` (ürün
-sayfaları), `BreadcrumbList` (alt sayfalar), `Article` (blog).
-
-Dosya: `src/app/(frontend)/[[...segments]]/page.tsx` ve
-`src/components/site/Shell.tsx`.
-
-### B2. Çözüm sayfasında entegrasyonları göster
-
-`solutions` koleksiyonunda `integrations` alanı dolu (SAP, Logo, WMS gibi) ama
-`SolutionDetail` şablonu bunu ekrana basmıyor.
-
-Dosya: `src/components/pages/index.tsx`, `SolutionDetail` bileşeni.
-
-### B3. 404 sayfasını tasarla
-
-Şu an Next.js'in varsayılan sayfası çıkıyor, site tasarımıyla alakasız.
-İki dilde çalışmalı.
-
-Dosya: `src/app/(frontend)/not-found.tsx` (yeni).
-
-### B4. Google Analytics bağlantısını kur
-
-`site-settings` içinde `gaMeasurementId` alanı var ama hiçbir yerde
-kullanılmıyor. Alan doluysa GA4 etiketi basılmalı, boşsa hiçbir script
-yüklenmemeli.
-
-Dosya: `src/components/site/Shell.tsx`.
-
 ### B5. Paylaşım görseli (OG image) üret
 
 Şu an sosyal medyada paylaşılınca görsel çıkmıyor. Marka renkleriyle statik bir
@@ -122,16 +88,6 @@ kapat. Ürün ve çözüm görselleri eklendikten sonra yapılmalı (A3 sonrası
 ---
 
 ## Hat C — panel ve arka uç
-
-### C1. Teklif taleplerinde CSV dışa aktarma
-
-**Bu özellik panelde yazıyor ama yok.** `src/collections/Leads.ts` içindeki
-açıklama metni `/admin/leads/export` adresinden CSV alınabileceğini söylüyor,
-böyle bir uç nokta yazılmadı.
-
-İki seçenek: ya uç noktayı yaz, ya açıklamayı düzelt. Doğrusu yazmak.
-
-Dosya: `src/app/api/leads/export/route.ts` (yeni), yetki kontrolü şart.
 
 ### C2. Yeni teklif geldiğinde e-posta bildirimi
 
@@ -174,24 +130,6 @@ Kurulum sırasında CLI çıktısında göründü. Railway panelinden yeni bir d
 `gugalabeltech.com` Railway'e yönlendirildikten sonra
 `NEXT_PUBLIC_SERVER_URL` güncellenmeli. Canonical, hreflang ve sitemap bu
 değerden besleniyor, eski değerle kalırsa arama motorlarına yanlış adres gider.
-
-### D4. Eski adreslerden yönlendirme
-
-Eski site adresleri yeni yapıda karşılıksız. Alan adı taşındığı gün 301
-yönlendirmesi olmazsa mevcut arama sıraları kaybolur.
-
-Örnek eşleşmeler:
-
-```
-/rfid-depo-yönetimi        → /cozumler/rfid-depo-yonetimi
-/rfid-etiket-1             → /urunler (ya da ilgili ürün)
-/kurumsal                  → /kurumsal
-/i̇leti̇şi̇m                  → /iletisim
-/f/<blog-slug>             → /bilgi-merkezi/<yeni-slug>
-```
-
-Tam liste `src/seed/scraped.json` içindeki sayfa adreslerinden çıkarılabilir.
-Dosya: `next.config.ts`, `redirects()`.
 
 ### D5. GoDaddy'deki demo mağazayı kapat
 
@@ -247,8 +185,8 @@ site ayarlarından yüklenmeli.
 
 ## Önerilen sıra
 
-Alan adı taşınmadan önce bitmesi gerekenler: D1, D2, D4, D5, A1, A2, C1, C2, E5.
+Alan adı taşınmadan önce bitmesi gerekenler: A1-son, D1, D2, D5, C2, E5.
 
-Taşındıktan sonra: D3, D6, B1, B4, B5, B6, A3, E1.
+Taşındıktan sonra: D3, D6, B5, B6, A3, E1.
 
-İstenildiği zaman: B2, B3, C3, C4, E2, E3, E4, E6.
+İstenildiği zaman: C3, C4, E2, E3, E4, E6.

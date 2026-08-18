@@ -10,6 +10,7 @@ export const localePrefix = (locale: Locale) => (locale === DEFAULT_LOCALE ? '' 
 type Dictionary = Record<string, { tr: string; en: string }>
 
 const strings: Dictionary = {
+  'nav.home': { tr: 'Ana sayfa', en: 'Home' },
   'nav.products': { tr: 'Ürünler', en: 'Products' },
   'nav.solutions': { tr: 'Çözümler', en: 'Solutions' },
   'nav.references': { tr: 'Referanslar', en: 'References' },
@@ -66,6 +67,13 @@ const strings: Dictionary = {
     tr: 'GUGALABELTECH®, GUGA Bilişim Teknoloji Ltd. Şti.’nin tescilli markasıdır.',
     en: 'GUGALABELTECH® is a registered trademark of GUGA Bilişim Teknoloji Ltd. Şti.',
   },
+  'notFound.code': { tr: '404', en: '404' },
+  'notFound.title': { tr: 'Bu sayfa yok', en: 'This page does not exist' },
+  'notFound.body': {
+    tr: 'Adres yanlış yazılmış olabilir ya da sayfa taşınmış olabilir. Aşağıdaki bölümlerden devam edebilirsiniz.',
+    en: 'The address may be mistyped, or the page may have moved. You can continue from the sections below.',
+  },
+  'notFound.home': { tr: 'Ana sayfaya dön', en: 'Back to home' },
   'a11y.skipToContent': { tr: 'İçeriğe geç', en: 'Skip to content' },
   'a11y.languageSwitch': { tr: 'Dili değiştir', en: 'Switch language' },
 }

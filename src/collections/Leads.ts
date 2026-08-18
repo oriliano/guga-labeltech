@@ -14,7 +14,8 @@ export const Leads: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'company', 'country', 'status', 'createdAt'],
     listSearchableFields: ['name', 'company', 'email', 'message'],
-    description: 'Siteden gelen teklif ve iletişim talepleri. CSV dışa aktarma: /admin/leads/export',
+    description:
+      'Siteden gelen teklif ve iletişim talepleri. CSV dışa aktarma: /api/leads/export — tarih aralığı için ?from=2026-01-01&to=2026-01-31 ekleyin.',
   },
   access: {
     create: () => false,

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { HomePage, ListingPage, PostDetail, ProductDetail, ReferenceDetail, SolutionDetail } from '@/components/pages'
 import { AboutPage, ContactPage, ExportPage } from '@/components/pages/static'
 import { Shell } from '@/components/site/Shell'
+import { ArticleJsonLd, BreadcrumbJsonLd, ProductJsonLd } from '@/components/site/StructuredData'
 import {
   findBySlug,
   getSiteSettings,
@@ -121,7 +122,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         if (slug) {
           const product = await findBySlug('products', slug, locale)
           if (!product) notFound()
-          return <ProductDetail locale={locale} product={product} />
+          return (
+            <>
+              <BreadcrumbJsonLd locale={locale} section="products" title={product.title} />
+              <ProductJsonLd locale={locale} product={product} />
+              <ProductDetail locale={locale} product={product} />
+            </>
+          )
         }
         const products = await listProducts({ locale })
         return (
@@ -144,7 +151,12 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         if (slug) {
           const solution = await findBySlug('solutions', slug, locale)
           if (!solution) notFound()
-          return <SolutionDetail locale={locale} solution={solution} />
+          return (
+            <>
+              <BreadcrumbJsonLd locale={locale} section="solutions" title={solution.title} />
+              <SolutionDetail locale={locale} solution={solution} />
+            </>
+          )
         }
         const solutions = await listSolutions({ locale })
         return (
@@ -167,7 +179,12 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         if (slug) {
           const item = await findBySlug('references', slug, locale)
           if (!item) notFound()
-          return <ReferenceDetail locale={locale} item={item} />
+          return (
+            <>
+              <BreadcrumbJsonLd locale={locale} section="references" title={item.title} />
+              <ReferenceDetail locale={locale} item={item} />
+            </>
+          )
         }
         const items = await listReferences({ locale })
         return (
@@ -185,7 +202,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         if (slug) {
           const post = await findBySlug('posts', slug, locale)
           if (!post) notFound()
-          return <PostDetail locale={locale} post={post} />
+          return (
+            <>
+              <BreadcrumbJsonLd locale={locale} section="insights" title={post.title} />
+              <ArticleJsonLd locale={locale} post={post} />
+              <PostDetail locale={locale} post={post} />
+            </>
+          )
         }
         const posts = await listPosts({ locale })
         return (

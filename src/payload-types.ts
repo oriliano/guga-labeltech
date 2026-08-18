@@ -470,7 +470,7 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Siteden gelen teklif ve iletişim talepleri. CSV dışa aktarma: /admin/leads/export
+ * Siteden gelen teklif ve iletişim talepleri. CSV dışa aktarma: /api/leads/export — tarih aralığı için ?from=2026-01-01&to=2026-01-31 ekleyin.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads".

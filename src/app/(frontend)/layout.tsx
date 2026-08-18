@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
+import { localeFromRequest } from '@/lib/request'
+
 import './styles.css'
 
 export const metadata: Metadata = {
@@ -13,10 +15,14 @@ export const metadata: Metadata = {
     'RFID etiket, okuyucu ve el terminali üretimi, IoT ve RTLS yazılımları. Depo, perakende, tekstil, sağlık ve lojistik için uçtan uca izlenebilirlik.',
 }
 
-const RootLayout = ({ children }: { children: ReactNode }) => (
-  <html lang="tr" suppressHydrationWarning>
-    <body>{children}</body>
-  </html>
-)
+const RootLayout = async ({ children }: { children: ReactNode }) => {
+  const locale = await localeFromRequest()
+
+  return (
+    <html lang={locale} suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  )
+}
 
 export default RootLayout

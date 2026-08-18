@@ -6,7 +6,9 @@ import { sectionPath } from '@/lib/routes'
 
 import { Analytics } from './Analytics'
 import { Footer } from './Footer'
+import { GoogleAnalytics } from './GoogleAnalytics'
 import { Header, type NavItem } from './Header'
+import { OrganizationJsonLd } from './StructuredData'
 
 /** Falls back to a generated menu when the Navigation global has not been filled in. */
 const defaultNav = (locale: Locale): NavItem[] => [
@@ -54,7 +56,9 @@ export const Shell = async ({
         brand={settings?.brandName ?? 'GUGA LABELTECH'}
       />
       <main id="main">{children}</main>
+      <OrganizationJsonLd locale={locale} settings={settings} />
       <Analytics locale={locale} />
+      {settings?.gaMeasurementId ? <GoogleAnalytics measurementId={settings.gaMeasurementId} /> : null}
       <Footer
         locale={locale}
         brand={settings?.brandName ?? 'GUGA LABELTECH'}

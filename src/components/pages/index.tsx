@@ -350,6 +350,27 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
       </Section>
     ) : null}
 
+    {solution.integrations?.length ? (
+      <Section tone={solution.capabilities?.length ? 'tint' : 'default'}>
+        <h2 className="text-h2 font-semibold">{t('label.integrations', locale)}</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+          {locale === 'tr'
+            ? 'Kurulum mevcut sisteminizin yerine geçmez, veriyi ona aktarır.'
+            : 'The deployment does not replace your existing system; it feeds data into it.'}
+        </p>
+        <ul className="mt-6 flex flex-wrap gap-3">
+          {solution.integrations.map((item: any, index: number) => (
+            <li
+              key={index}
+              className="rounded-full border border-ink-900/10 px-4 py-2 text-sm font-medium dark:border-ink-100/15"
+            >
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ) : null}
+
     {solution.relatedProducts?.length ? (
       <Section>
         <h2 className="text-h2 font-semibold">{t('label.relatedProducts', locale)}</h2>
