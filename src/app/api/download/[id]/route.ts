@@ -26,7 +26,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
     data: {
       type: 'download',
       path: new URL(request.url).pathname,
-      documentRef: id,
+      documentRef: Number(id),
       country: request.headers.get('x-vercel-ip-country') ?? undefined,
       referrerHost: safeHost(request.headers.get('referer')),
     },
