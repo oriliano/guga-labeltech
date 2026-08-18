@@ -90,6 +90,10 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        // Marka varliklari public/ altinda duruyor, medya kutuphanesinde degil.
+        pathname: '/logo.png',
+      },
     ],
   },
   webpack: (webpackConfig) => {
