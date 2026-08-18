@@ -43,6 +43,7 @@ export const SiteSettings: GlobalConfig = {
               fields: [
                 { name: 'label', type: 'text', required: true, localized: true, label: 'Ofis adı' },
                 { name: 'street', type: 'text', required: true, label: 'Adres' },
+                { name: 'postalCode', type: 'text', label: 'Posta kodu' },
                 { name: 'district', type: 'text', label: 'İlçe' },
                 { name: 'city', type: 'text', required: true, label: 'Şehir' },
                 { name: 'country', type: 'text', required: true, defaultValue: 'Türkiye', label: 'Ülke' },

@@ -971,6 +971,7 @@ export interface SiteSetting {
     | {
         label: string;
         street: string;
+        postalCode?: string | null;
         district?: string | null;
         city: string;
         country: string;
@@ -1082,6 +1083,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         label?: T;
         street?: T;
+        postalCode?: T;
         district?: T;
         city?: T;
         country?: T;

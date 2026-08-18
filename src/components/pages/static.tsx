@@ -137,8 +137,9 @@ export const ContactPage = ({ locale, settings }: { locale: Locale; settings: an
             <div key={office.street}>
               <dt className="font-semibold">{office.label ?? office.city}</dt>
               <dd className="mt-1 text-muted">
-                {office.street}
-                {office.district ? `, ${office.district}` : ''} — {office.city} / {office.country}
+                {office.street}, {office.postalCode ? `${office.postalCode} ` : ''}
+                {office.district ? `${office.district}/` : ''}
+                {office.city}, {office.country}
               </dd>
             </div>
           ))}

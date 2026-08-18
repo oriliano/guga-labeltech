@@ -2,7 +2,14 @@ import Link from 'next/link'
 
 import { t, type Locale } from '@/lib/i18n'
 
-type Office = { label?: string | null; street: string; district?: string | null; city: string; country: string }
+type Office = {
+  label?: string | null
+  street: string
+  postalCode?: string | null
+  district?: string | null
+  city: string
+  country: string
+}
 type Phone = { label?: string | null; number: string; whatsapp?: boolean | null }
 type Column = { title: string; links?: { label: string; href: string }[] | null }
 
@@ -32,13 +39,13 @@ export const Footer = ({
           {offices.map((office) => (
             <div key={`${office.street}-${office.city}`}>
               {office.label ? <p className="font-medium text-ink-100">{office.label}</p> : null}
+              <p>{office.street}</p>
               <p>
-                {office.street}
-                {office.district ? `, ${office.district}` : ''}
+                {office.postalCode ? `${office.postalCode} ` : ''}
+                {office.district ? `${office.district}/` : ''}
+                {office.city}
               </p>
-              <p>
-                {office.city} / {office.country}
-              </p>
+              <p>{office.country}</p>
             </div>
           ))}
         </address>

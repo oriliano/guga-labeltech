@@ -137,20 +137,14 @@ const main = async () => {
       offices: [
         {
           label: 'Merkez',
-          street: 'Mehmet Akif Ersoy Mah. 292. Sok. No:4/30',
-          district: 'Yenimahalle',
-          city: 'Ankara',
-          country: 'Türkiye',
-        },
-        {
-          label: 'Ostim',
-          street: 'Ostim OSB, 100. Yıl Bulvarı 55A/20',
+          street: 'Mehmet Akif Ersoy Mah. 292. Sk. No: 4/30',
+          postalCode: '06170',
           district: 'Yenimahalle',
           city: 'Ankara',
           country: 'Türkiye',
         },
       ],
-      phones: [{ label: 'Satış', number: '+90 541 741 9090', whatsapp: true }],
+      phones: [{ label: 'Satış', number: '+90 541 741 90 90', whatsapp: true }],
     },
   })
   console.log('site settings written')
