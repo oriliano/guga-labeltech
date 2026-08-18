@@ -78,3 +78,20 @@ railway up
 
 `railway.json` derleme ve başlatma komutlarını içerir. `DATABASE_URI` değişkenini
 Postgres eklentisinin `DATABASE_URL` değerine bağlayın.
+
+### Şema değişikliği yapıldığında
+
+Payload şemayı yalnızca geliştirme modunda otomatik oluşturur; üretim konteyneri bunu
+yapmaz. Koleksiyon veya alan eklediğinizde şemayı dışarıdan senkronlayın:
+
+```bash
+railway tcp-proxy create --port 5432 --service Postgres
+```
+
+Proxy adresiyle bir bağlantı dizesi kurup `NODE_ENV=development npx tsx src/seed/run.ts`
+çalıştırın; Payload eksik tabloları oluşturur. **Bittiğinde proxy'yi silin** —
+`railway tcp-proxy delete --service Postgres <id>` — açık bırakmak veritabanını
+internete açar.
+
+Kalıcı çözüm ikinci bir ortam eklendiğinde: `payload migrate:create` ile göç
+dosyaları üretip başlatma komutuna `payload migrate` ekleyin.
