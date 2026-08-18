@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 
+import { ProductGlyph } from '@/components/site/ProductGlyph'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
@@ -145,6 +147,8 @@ export const HomePage = ({
             eyebrow={product.model ?? undefined}
             title={product.title}
             body={product.excerpt ?? undefined}
+            image={mediaOf(product.images?.[0])?.url ?? undefined}
+            visual={<ProductGlyph category={product.category} className="h-full w-full" />}
           />
         ))}
       </div>
@@ -204,6 +208,7 @@ export const ListingPage = ({
   eyebrowOf,
   bodyOf,
   imageOf,
+  visualOf,
 }: {
   title: string
   lead?: string
@@ -213,6 +218,7 @@ export const ListingPage = ({
   eyebrowOf?: (item: any) => string | undefined
   bodyOf?: (item: any) => string | undefined
   imageOf?: (item: any) => string | undefined
+  visualOf?: (item: any) => ReactNode
 }) => (
   <Section>
     <SectionHeading title={title} lead={lead} as="h1" />
@@ -226,6 +232,7 @@ export const ListingPage = ({
             title={item.title}
             body={bodyOf?.(item)}
             image={imageOf?.(item)}
+            visual={visualOf?.(item)}
           />
         ))}
       </div>
@@ -282,7 +289,11 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
         </div>
       </div>
       <div className="space-y-6">
-        <Figure media={product.images?.[0]} priority />
+        {mediaOf(product.images?.[0]) ? (
+          <Figure media={product.images?.[0]} priority />
+        ) : (
+          <ProductGlyph category={product.category} className="aspect-[16/9] w-full rounded-xl" />
+        )}
         <RichText data={product.body} />
       </div>
     </div>
@@ -307,6 +318,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
                 href={sectionPath('solutions', locale, solution.slug)}
                 title={solution.title}
                 body={solution.excerpt}
+                image={solutionImage(solution.slug)}
               />
             ) : null,
           )}
@@ -418,6 +430,8 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
                 eyebrow={product.model ?? undefined}
                 title={product.title}
                 body={product.excerpt}
+                image={mediaOf(product.images?.[0])?.url ?? undefined}
+                visual={<ProductGlyph category={product.category} className="h-full w-full" />}
               />
             ) : null,
           )}

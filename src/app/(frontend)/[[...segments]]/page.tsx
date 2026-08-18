@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { HomePage, ListingPage, PostDetail, ProductDetail, ReferenceDetail, SolutionDetail } from '@/components/pages'
 import { AboutPage, ContactPage, ExportPage } from '@/components/pages/static'
+import { ProductGlyph } from '@/components/site/ProductGlyph'
 import { Shell } from '@/components/site/Shell'
 import { ArticleJsonLd, BreadcrumbJsonLd, ProductJsonLd } from '@/components/site/StructuredData'
 import {
@@ -145,6 +146,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             hrefFor={(item) => sectionPath('products', locale, item.slug)}
             eyebrowOf={(item) => item.model ?? undefined}
             bodyOf={(item) => item.excerpt ?? undefined}
+            visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
           />
         )
       }

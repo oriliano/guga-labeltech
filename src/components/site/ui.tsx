@@ -80,6 +80,7 @@ export const Card = ({
   body,
   footer,
   image,
+  visual,
 }: {
   href: string
   eyebrow?: string
@@ -87,11 +88,13 @@ export const Card = ({
   body?: string
   footer?: ReactNode
   image?: string
+  visual?: ReactNode
 }) => (
   <Link
     href={href}
     className="card-surface group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg focus-visible:shadow-lg"
   >
+    {!image && visual ? <div className="aspect-[16/9] overflow-hidden">{visual}</div> : null}
     {image ? (
       <div className="relative aspect-[16/9] overflow-hidden bg-ink-100 dark:bg-ink-800">
         <Image
