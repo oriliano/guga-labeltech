@@ -14,6 +14,7 @@ import {
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
+import { postImage, solutionImage } from '@/lib/imagery'
 import { alternatePath, matchSection, sectionPath, type Section } from '@/lib/routes'
 
 // Railway's private network is unavailable during build, so pages render per request
@@ -172,6 +173,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             hrefFor={(item) => sectionPath('solutions', locale, item.slug)}
             eyebrowOf={(item) => item.sector ?? undefined}
             bodyOf={(item) => item.excerpt ?? undefined}
+            imageOf={(item) => solutionImage(item.slug)}
           />
         )
       }
@@ -218,6 +220,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             emptyText={t('empty.posts', locale)}
             hrefFor={(item) => sectionPath('insights', locale, item.slug)}
             bodyOf={(item) => item.excerpt}
+            imageOf={(item) => postImage(item.slug)}
           />
         )
       }

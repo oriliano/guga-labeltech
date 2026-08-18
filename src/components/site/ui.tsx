@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -78,25 +79,40 @@ export const Card = ({
   title,
   body,
   footer,
+  image,
 }: {
   href: string
   eyebrow?: string
   title: string
   body?: string
   footer?: ReactNode
+  image?: string
 }) => (
   <Link
     href={href}
-    className="card-surface group flex h-full flex-col p-6 transition-shadow hover:shadow-lg focus-visible:shadow-lg"
+    className="card-surface group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg focus-visible:shadow-lg"
   >
-    {eyebrow ? (
-      <span className="mb-2 text-xs font-semibold uppercase tracking-wider text-signal-600 dark:text-signal-400">
-        {eyebrow}
-      </span>
+    {image ? (
+      <div className="relative aspect-[16/9] overflow-hidden bg-ink-100 dark:bg-ink-800">
+        <Image
+          src={image}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 24rem, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+        />
+      </div>
     ) : null}
-    <h3 className="text-h3 font-semibold group-hover:text-signal-600">{title}</h3>
-    {body ? <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{body}</p> : null}
-    {footer ? <div className="mt-4 text-sm font-medium text-signal-600">{footer}</div> : null}
+    <div className="flex flex-1 flex-col p-6">
+      {eyebrow ? (
+        <span className="mb-2 text-xs font-semibold uppercase tracking-wider text-signal-600 dark:text-signal-400">
+          {eyebrow}
+        </span>
+      ) : null}
+      <h3 className="text-h3 font-semibold group-hover:text-signal-600">{title}</h3>
+      {body ? <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{body}</p> : null}
+      {footer ? <div className="mt-4 text-sm font-medium text-signal-600">{footer}</div> : null}
+    </div>
   </Link>
 )
 

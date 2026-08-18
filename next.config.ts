@@ -94,6 +94,10 @@ const nextConfig: NextConfig = {
         // Marka varliklari public/ altinda duruyor, medya kutuphanesinde degil.
         pathname: '/logo.png',
       },
+      {
+        // Eski siteden tasinan gorseller; R2 baglanana kadar depo icinde duruyorlar.
+        pathname: '/media/**',
+      },
     ],
   },
   webpack: (webpackConfig) => {

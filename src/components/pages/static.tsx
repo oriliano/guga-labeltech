@@ -1,12 +1,22 @@
+import Image from 'next/image'
 import { RichText } from '@/components/site/RichText'
 import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
+import { ABOUT_IMAGE } from '@/lib/imagery'
 
 import { QuoteForm } from './QuoteForm'
 
 export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any }) => (
   <>
     <Section>
+      <Image
+        src={ABOUT_IMAGE}
+        alt=""
+        width={1400}
+        height={620}
+        priority
+        className="mb-10 aspect-[21/9] w-full rounded-xl object-cover"
+      />
       <SectionHeading
         eyebrow={t('nav.about', locale)}
         title={locale === 'tr' ? 'RFID ve IoT teknolojilerinde yerli üretim' : 'Turkish-made RFID and IoT technology'}

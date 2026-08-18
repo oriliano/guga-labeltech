@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
+import { HOME_HERO, postImage, solutionImage } from '@/lib/imagery'
 import { sectionPath } from '@/lib/routes'
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
@@ -44,7 +45,12 @@ export const HomePage = ({
   posts: any[]
 }) => (
   <>
-    <section className="border-b border-ink-100 bg-ink-900 text-ink-100 dark:border-ink-800">
+    <section className="relative isolate border-b border-ink-100 bg-ink-900 text-ink-100 dark:border-ink-800">
+      <Image src={HOME_HERO} alt="" fill priority sizes="100vw" className="-z-10 object-cover opacity-25" />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-900/70"
+      />
       <div className="container-page grid gap-12 py-20 md:py-28 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div>
           <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-signal-400">
@@ -115,6 +121,7 @@ export const HomePage = ({
             title={solution.title}
             body={solution.excerpt ?? undefined}
             footer={t('cta.readMore', locale)}
+            image={mediaOf(solution.heroImage)?.url ?? solutionImage(solution.slug)}
           />
         ))}
       </div>
@@ -177,6 +184,7 @@ export const HomePage = ({
               title={post.title}
               body={post.excerpt}
               footer={t('cta.readMore', locale)}
+              image={mediaOf(post.coverImage)?.url ?? postImage(post.slug)}
             />
           ))}
         </div>
@@ -195,6 +203,7 @@ export const ListingPage = ({
   hrefFor,
   eyebrowOf,
   bodyOf,
+  imageOf,
 }: {
   title: string
   lead?: string
@@ -203,6 +212,7 @@ export const ListingPage = ({
   hrefFor: (item: any) => string
   eyebrowOf?: (item: any) => string | undefined
   bodyOf?: (item: any) => string | undefined
+  imageOf?: (item: any) => string | undefined
 }) => (
   <Section>
     <SectionHeading title={title} lead={lead} as="h1" />
@@ -215,6 +225,7 @@ export const ListingPage = ({
             eyebrow={eyebrowOf?.(item)}
             title={item.title}
             body={bodyOf?.(item)}
+            image={imageOf?.(item)}
           />
         ))}
       </div>
@@ -305,7 +316,10 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
   </Section>
 )
 
-export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution: any }) => (
+export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution: any }) => {
+  const heroSrc = mediaOf(solution.heroImage)?.url ?? solutionImage(solution.slug)
+
+  return (
   <>
     <Section>
       <Breadcrumbs
@@ -314,11 +328,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
           { label: solution.title },
         ]}
       />
-      <div
-        className={`grid gap-12 lg:items-center ${
-          mediaOf(solution.heroImage) ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'max-w-3xl'
-        }`}
-      >
+      <div className={`grid gap-12 lg:items-center ${heroSrc ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'max-w-3xl'}`}>
         <div>
           {solution.sector ? (
             <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">{solution.sector}</p>
@@ -329,7 +339,16 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
             <ButtonLink href={sectionPath('contact', locale)}>{t('cta.quote', locale)}</ButtonLink>
           </div>
         </div>
-        {mediaOf(solution.heroImage) ? <Figure media={solution.heroImage} priority /> : null}
+        {heroSrc ? (
+          <Image
+            src={heroSrc}
+            alt=""
+            width={1400}
+            height={900}
+            priority
+            className="h-full w-full rounded-xl object-cover"
+          />
+        ) : null}
       </div>
     </Section>
 
@@ -406,14 +425,28 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
       </Section>
     ) : null}
   </>
-)
+  )
+}
 
-export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => (
+export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => {
+  const cover = mediaOf(post.coverImage)?.url ?? postImage(post.slug)
+
+  return (
   <Section>
     <article className="mx-auto max-w-3xl">
       <Breadcrumbs
         items={[{ label: t('nav.insights', locale), href: sectionPath('insights', locale) }, { label: post.title }]}
       />
+      {cover ? (
+        <Image
+          src={cover}
+          alt=""
+          width={1200}
+          height={675}
+          priority
+          className="mb-8 aspect-[16/9] w-full rounded-xl object-cover"
+        />
+      ) : null}
       <h1 className="text-h1 font-semibold">{post.title}</h1>
       {post.publishedAt ? (
         <p className="mt-3 text-sm text-muted">
@@ -428,14 +461,12 @@ export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => (
       ) : null}
       <p className="mt-6 text-lead text-muted">{post.excerpt}</p>
       <div className="mt-8">
-        <Figure media={post.coverImage} />
-      </div>
-      <div className="mt-8">
         <RichText data={post.body} />
       </div>
     </article>
   </Section>
-)
+  )
+}
 
 export const ReferenceDetail = ({ locale, item }: { locale: Locale; item: any }) => (
   <Section>
