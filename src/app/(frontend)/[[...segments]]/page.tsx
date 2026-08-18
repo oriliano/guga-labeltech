@@ -15,7 +15,9 @@ import {
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { alternatePath, matchSection, sectionPath, type Section } from '@/lib/routes'
 
-export const revalidate = 300
+// Railway's private network is unavailable during build, so pages render per request
+// instead of being prerendered against the database.
+export const dynamic = 'force-dynamic'
 
 type Params = { segments?: string[] }
 

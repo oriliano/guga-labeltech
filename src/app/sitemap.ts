@@ -1,5 +1,8 @@
 import type { MetadataRoute } from 'next'
 
+// Queries the database, so it must not be prerendered at build time.
+export const dynamic = 'force-dynamic'
+
 import { listPosts, listProducts, listReferences, listSolutions } from '@/lib/data'
 import { LOCALES, type Locale } from '@/lib/i18n'
 import { absoluteUrl, sectionPath, type Section } from '@/lib/routes'
