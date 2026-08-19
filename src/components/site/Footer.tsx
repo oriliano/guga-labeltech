@@ -44,7 +44,7 @@ export const Footer = ({
   columns: Column[]
   social: Social[]
 }) => (
-  <footer className="border-t border-ink-100 bg-ink-900 text-ink-100 dark:border-ink-800">
+  <footer className="border-t border-[var(--card-border)] bg-ink-950 text-ink-100">
     <div className="container-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
       <div>
         <Image src="/logo.png" alt={brand} width={475} height={200} className="h-10 w-auto" />

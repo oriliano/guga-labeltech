@@ -56,7 +56,7 @@ const block = (node: LexicalNode, key: number): ReactNode => {
         </blockquote>
       )
     case 'horizontalrule':
-      return <hr key={key} className="border-ink-100 dark:border-ink-800" />
+      return <hr key={key} className="border-[var(--card-border)]" />
     case 'paragraph':
     default:
       if (!node.children?.length) return null

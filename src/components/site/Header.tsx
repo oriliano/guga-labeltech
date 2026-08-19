@@ -28,7 +28,7 @@ export const Header = ({
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-ink-100 bg-[var(--page-bg)]/90 backdrop-blur dark:border-ink-800">
+    <header className="sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--page-bg)]/85 backdrop-blur">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:rounded focus:bg-signal-500 focus:px-3 focus:py-2 focus:text-ink-950"
@@ -39,10 +39,10 @@ export const Header = ({
         {/* The mark is gold, which needs the brand green behind it to hold up on a light header. */}
         <Link
           href={locale === 'tr' ? '/' : '/en'}
-          className="flex items-center rounded-md bg-ink-900 px-3 py-1.5"
+          className="flex items-center"
           aria-label={brand}
         >
-          <Image src="/logo.png" alt={brand} width={475} height={200} priority className="h-8 w-auto" />
+          <Image src="/logo.png" alt={brand} width={475} height={200} priority className="h-9 w-auto" />
         </Link>
 
         <nav aria-label="primary" className="hidden lg:block">
@@ -51,7 +51,7 @@ export const Header = ({
               <li key={item.href} className="group relative">
                 <Link
                   href={item.href}
-                  className="relative inline-block px-3 py-2 text-sm font-medium after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-signal-500 after:transition-all after:duration-300 hover:text-signal-600 group-hover:after:w-[calc(100%-1.5rem)]"
+                  className="relative inline-block px-3 py-2 text-sm font-medium after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-signal-500 after:transition-all after:duration-300 hover:text-signal-400 group-hover:after:w-[calc(100%-1.5rem)]"
                 >
                   {item.label}
                 </Link>
@@ -97,7 +97,7 @@ export const Header = ({
             href={alternateHref}
             hrefLang={locale === 'tr' ? 'en' : 'tr'}
             aria-label={t('a11y.languageSwitch', locale)}
-            className="rounded px-2 py-2 text-sm font-semibold uppercase hover:text-signal-600"
+            className="rounded px-2 py-2 text-sm font-semibold uppercase hover:text-signal-400"
           >
             {locale === 'tr' ? 'EN' : 'TR'}
           </Link>
@@ -112,7 +112,7 @@ export const Header = ({
             aria-expanded={open}
             aria-controls="mobile-nav"
             onClick={() => setOpen((value) => !value)}
-            className="rounded border border-ink-200 p-2 lg:hidden dark:border-ink-700"
+            className="rounded border border-[var(--card-border)] p-2 lg:hidden"
           >
             <span className="sr-only">Menu</span>
             <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden fill="none" stroke="currentColor" strokeWidth="2">
@@ -123,10 +123,10 @@ export const Header = ({
       </div>
 
       {open ? (
-        <nav id="mobile-nav" aria-label="mobile" className="border-t border-ink-100 lg:hidden dark:border-ink-800">
+        <nav id="mobile-nav" aria-label="mobile" className="border-t border-[var(--card-border)] lg:hidden">
           <ul className="container-page py-4">
             {items.map((item) => (
-              <li key={item.href} className="border-b border-ink-100 py-1 last:border-0 dark:border-ink-800">
+              <li key={item.href} className="border-b border-[var(--card-border)] py-1 last:border-0">
                 <Link href={item.href} className="block py-2 font-medium" onClick={() => setOpen(false)}>
                   {item.label}
                 </Link>

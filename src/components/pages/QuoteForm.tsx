@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { t, type Locale } from '@/lib/i18n'
 
 const field =
-  'w-full rounded-lg border border-ink-200 bg-[var(--card-bg)] px-4 py-3 text-sm outline-none focus:border-signal-500 dark:border-ink-700'
+  'w-full rounded-lg border border-[var(--card-border)] bg-ink-950/50 px-4 py-3 text-sm outline-none focus:border-signal-500'
 
 export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: string }) => {
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')

@@ -197,7 +197,7 @@ export const ListingPage = ({
   <Section>
     <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />
     {filters ? (
-      <nav aria-label={filters.label} className="mt-10 border-y border-ink-100 py-4 dark:border-ink-800">
+      <nav aria-label={filters.label} className="mt-10 border-y border-[var(--card-border)] py-4">
         <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
           {[{ label: filters.allLabel, href: filters.allHref, active: filters.items.every((item) => !item.active) }]
             .concat(filters.items)
@@ -208,8 +208,8 @@ export const ListingPage = ({
                   aria-current={item.active ? 'page' : undefined}
                   className={`inline-block rounded-full px-4 py-2 text-sm transition ${
                     item.active
-                      ? 'bg-ink-900 font-semibold text-ink-100'
-                      : 'text-muted hover:bg-signal-100/70 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100'
+                      ? 'bg-signal-500 font-semibold text-ink-950'
+                      : 'text-muted hover:bg-ink-800 hover:text-ink-100'
                   }`}
                 >
                   {item.label}
@@ -253,7 +253,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
     <div className="grid gap-12 lg:grid-cols-[1fr_1fr]">
       <div>
         {product.model ? (
-          <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">{product.model}</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-signal-400">{product.model}</p>
         ) : null}
         <h1 className="mt-2 text-h1 font-semibold">{product.title}</h1>
         {product.excerpt ? <p className="mt-4 text-lead text-muted">{product.excerpt}</p> : null}
@@ -262,7 +262,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
           <ul className="mt-8 space-y-2">
             {product.highlights.map((item: any, index: number) => (
               <li key={index} className="flex gap-3 text-sm">
-                <span aria-hidden className="mt-1 text-signal-600">
+                <span aria-hidden className="mt-1 text-signal-400">
                   ▸
                 </span>
                 <span>{item.text}</span>
@@ -278,7 +278,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
               <a
                 key={doc.id}
                 href={`/api/download/${doc.id}`}
-                className="inline-flex items-center gap-2 rounded-lg border border-ink-200 px-5 py-3 text-sm font-semibold hover:border-signal-500 hover:text-signal-600 dark:border-ink-700"
+                className="inline-flex items-center gap-2 rounded-lg border border-[var(--card-border)] px-5 py-3 text-sm font-semibold hover:border-signal-500 hover:text-signal-400"
               >
                 {t('cta.datasheet', locale)}
               </a>
@@ -341,7 +341,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
       <div className={`grid gap-12 lg:items-center ${heroSrc ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'max-w-3xl'}`}>
         <div>
           {solution.sector ? (
-            <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">{solution.sector}</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-signal-400">{solution.sector}</p>
           ) : null}
           <h1 className="mt-2 text-h1 font-semibold">{solution.title}</h1>
           <p className="mt-4 text-lead text-muted">{solution.excerpt}</p>
@@ -407,7 +407,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
           {solution.integrations.map((item: any, index: number) => (
             <li
               key={index}
-              className="rounded-full border border-ink-900/10 px-4 py-2 text-sm font-medium dark:border-ink-100/15"
+              className="rounded-full border border-[var(--card-border)] px-4 py-2 text-sm font-medium"
             >
               {item.name}
             </li>
@@ -486,7 +486,7 @@ export const ReferenceDetail = ({ locale, item }: { locale: Locale; item: any })
       <Breadcrumbs
         items={[{ label: t('nav.references', locale), href: sectionPath('references', locale) }, { label: item.title }]}
       />
-      <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">{item.sector}</p>
+      <p className="text-sm font-semibold uppercase tracking-widest text-signal-400">{item.sector}</p>
       <h1 className="mt-2 text-h1 font-semibold">{item.title}</h1>
       {item.client ? <p className="mt-3 text-muted">{item.client}</p> : null}
 

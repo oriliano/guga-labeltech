@@ -67,7 +67,7 @@ export const OfficeMap = ({
           href={directions}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm font-medium text-signal-600 hover:underline"
+          className="text-sm font-medium text-signal-400 hover:underline"
         >
           {locale === 'tr' ? 'Yol tarifi' : 'Directions'} →
         </a>

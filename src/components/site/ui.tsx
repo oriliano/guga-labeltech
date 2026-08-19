@@ -15,8 +15,8 @@ export const Section = ({
 }) => {
   const tones = {
     default: '',
-    dark: 'bg-ink-900 text-ink-100',
-    tint: 'bg-signal-100/50 dark:bg-ink-800/40',
+    dark: 'bg-ink-950 text-ink-100',
+    tint: 'bg-ink-900/60',
   }
   return (
     <section id={id} className={`py-16 md:py-24 ${tones[tone]} ${className}`}>
@@ -62,8 +62,8 @@ export const ButtonLink = ({
     primary:
       'bg-signal-500 text-ink-950 shadow-[0_12px_28px_-16px_rgba(201,162,39,0.95)] hover:-translate-y-px hover:bg-signal-400',
     secondary:
-      'border border-ink-200 hover:-translate-y-px hover:border-signal-500 hover:text-signal-600 dark:border-ink-700',
-    ghost: 'text-signal-600 hover:underline underline-offset-4 px-0 py-0',
+      'border border-[var(--card-border)] hover:-translate-y-px hover:border-signal-500 hover:text-signal-400',
+    ghost: 'text-signal-400 hover:underline underline-offset-4 px-0 py-0',
   }
   return (
     <Link href={href} className={`${buttonBase} ${variants[variant]}`}>
@@ -95,7 +95,7 @@ export const Card = ({
   >
     {!image && visual ? <div className="aspect-[16/9] overflow-hidden">{visual}</div> : null}
     {image ? (
-      <div className="relative aspect-[16/9] overflow-hidden bg-ink-100 dark:bg-ink-800">
+      <div className="relative aspect-[16/9] overflow-hidden bg-ink-900">
         <Image
           src={image}
           alt=""
@@ -107,12 +107,12 @@ export const Card = ({
     ) : null}
     <div className="flex flex-1 flex-col p-7">
       {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
-      <h3 className={`${eyebrow ? 'mt-2' : ''} text-h3 font-semibold transition-colors group-hover:text-signal-600`}>
+      <h3 className={`${eyebrow ? 'mt-2' : ''} text-h3 font-semibold transition-colors group-hover:text-signal-500`}>
         {title}
       </h3>
       {body ? <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{body}</p> : null}
       {footer ? (
-        <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-signal-600">
+        <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-signal-400">
           {footer}
           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
             →
@@ -126,7 +126,7 @@ export const Card = ({
 /** Numeric proof point. Used on solution pages and case studies. */
 export const StatTile = ({ metric, label }: { metric: string; label: string }) => (
   <div className="card-surface p-6">
-    <p className="text-h1 font-semibold tabular-nums text-signal-600 dark:text-signal-400">{metric}</p>
+    <p className="text-h1 font-semibold tabular-nums text-signal-400">{metric}</p>
     <p className="mt-2 text-sm text-muted">{label}</p>
   </div>
 )
@@ -137,7 +137,7 @@ export const SpecTable = ({ rows, caption }: { rows: { label: string; value: str
       <caption className="sr-only">{caption}</caption>
       <tbody>
         {rows.map((row, index) => (
-          <tr key={`${row.label}-${index}`} className="border-b border-ink-100 dark:border-ink-800">
+          <tr key={`${row.label}-${index}`} className="border-b border-[var(--card-border)]">
             <th scope="row" className="w-2/5 py-3 pr-4 text-left align-top font-medium">
               {row.label}
             </th>
@@ -155,7 +155,7 @@ export const Breadcrumbs = ({ items }: { items: { label: string; href?: string }
       {items.map((item, index) => (
         <li key={item.label} className="flex items-center gap-2">
           {item.href ? (
-            <Link href={item.href} className="hover:text-signal-600">
+            <Link href={item.href} className="hover:text-signal-400">
               {item.label}
             </Link>
           ) : (

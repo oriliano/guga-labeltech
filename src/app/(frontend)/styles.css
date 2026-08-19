@@ -44,22 +44,19 @@
 }
 
 @layer base {
+  /*
+   * Site tek temada calisiyor: koyu yesil zemin, acik metin, altin vurgu.
+   * Isik/koyu ayrimi kaldirildi; tarayici tercihine gore zemin degistirmek
+   * markanin görünüşünü ikiye böluyordu.
+   */
   :root {
-    --page-bg: var(--color-ink-50);
-    --page-fg: var(--color-ink-900);
-    --card-bg: #ffffff;
-    --card-border: var(--color-ink-100);
-    --muted-fg: #40584c;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --page-bg: var(--color-ink-950);
-      --page-fg: var(--color-ink-100);
-      --card-bg: var(--color-ink-900);
-      --card-border: var(--color-ink-800);
-      --muted-fg: var(--color-ink-400);
-    }
+    color-scheme: dark;
+    --page-bg: #04231a;
+    --page-fg: #e9f1ec;
+    --card-bg: #0a3325;
+    --card-border: rgba(227, 201, 106, 0.16);
+    --muted-fg: #a9c4b7;
+    --heading-fg: var(--color-signal-400);
   }
 
   html {
@@ -85,6 +82,17 @@
   h2 {
     font-family: var(--font-display);
     font-weight: 600;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--heading-fg);
+  }
+
+  /* Koyu zeminde ince metin soluk kaliyor. */
+  body {
+    font-weight: 400;
   }
 
   :focus-visible {
@@ -127,7 +135,7 @@
   letter-spacing: var(--text-eyebrow--letter-spacing);
   text-transform: uppercase;
   font-weight: 600;
-  color: var(--color-signal-600);
+  color: var(--color-signal-400);
 }
 
 /* Ince altin ayrac; bolum basliklarinin altinda kullaniliyor. */
@@ -221,7 +229,7 @@
   padding-left: 1.25rem;
 }
 .prose-guga a {
-  color: var(--color-signal-600);
+  color: var(--color-signal-400);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

@@ -22,7 +22,7 @@ const NotFound = async () => {
     <Shell locale={locale} alternateHref={alternatePath(locale, null)}>
       <Section>
         <div className="mx-auto max-w-2xl py-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-signal-600">
+          <p className="text-sm font-semibold uppercase tracking-widest text-signal-400">
             {t('notFound.code', locale)}
           </p>
           <h1 className="mt-3 text-h1 font-semibold">{t('notFound.title', locale)}</h1>
@@ -37,7 +37,7 @@ const NotFound = async () => {
               <a
                 key={section}
                 href={sectionPath(section, locale)}
-                className="text-muted underline underline-offset-4 hover:text-signal-600"
+                className="text-muted underline underline-offset-4 hover:text-signal-400"
               >
                 {t(`nav.${section}`, locale)}
               </a>
