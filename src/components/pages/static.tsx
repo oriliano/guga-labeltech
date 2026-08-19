@@ -2,8 +2,9 @@ import Image from 'next/image'
 import { RichText } from '@/components/site/RichText'
 import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
-import { OfficeMap, officeAddress } from '@/components/site/OfficeMap'
+import { OfficeMap } from '@/components/site/OfficeMap'
 import { ABOUT_IMAGE } from '@/lib/imagery'
+import { directionsUrl, officeAddress } from '@/lib/office'
 
 import { QuoteForm } from './QuoteForm'
 
@@ -265,7 +266,7 @@ export const ContactPage = ({ locale, settings }: { locale: Locale; settings: an
             locale={locale}
             label={office.label ?? office.city}
             address={officeAddress(office)}
-            mapUrl={office.mapUrl ?? undefined}
+            mapUrl={directionsUrl(office)}
           />
         ))}
       </div>

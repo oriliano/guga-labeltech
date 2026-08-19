@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { t, type Locale } from '@/lib/i18n'
+import { type Locale } from '@/lib/i18n'
 
 /**
  * Ofis haritası. Google'ın çerçevesi sayfa açılır açılmaz yüklenmiyor: gömülü
@@ -75,22 +75,3 @@ export const OfficeMap = ({
     </div>
   )
 }
-
-/** Panelde girilen ofis kaydını tek satırlık adrese çevirir. */
-export const officeAddress = (office: {
-  street: string
-  postalCode?: string | null
-  district?: string | null
-  city: string
-  country: string
-}) =>
-  [
-    office.street,
-    [office.postalCode, office.district].filter(Boolean).join(' '),
-    office.city,
-    office.country,
-  ]
-    .filter(Boolean)
-    .join(', ')
-
-export const mapLabel = (locale: Locale) => t('nav.contact', locale)

@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { t, type Locale } from '@/lib/i18n'
+import { directionsUrl } from '@/lib/office'
 
 type Office = {
   label?: string | null
@@ -60,12 +61,7 @@ export const Footer = ({
               </p>
               <p>{office.country}</p>
               <a
-                href={
-                  office.mapUrl ||
-                  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                    [office.street, office.district, office.city, office.country].filter(Boolean).join(', '),
-                  )}`
-                }
+                href={directionsUrl(office)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-1 inline-block text-ink-200 underline underline-offset-4 hover:text-signal-400"
