@@ -40,6 +40,13 @@ export const HeroVisual = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (!playable) return
+    // Oge hidrasyondan sonra eklendigi icin autoplay niteligi tetiklenmiyor;
+    // sessiz oynatmayi elle baslatiyoruz. Tarayici reddederse fotograf kaliyor.
+    void video.current?.play().catch(() => {})
+  }, [playable])
+
   return (
     <div className="relative overflow-hidden rounded-2xl border border-signal-500/15 shadow-[0_30px_80px_-40px_rgba(2,26,16,0.9)]">
       <Image src={poster} alt={alt} width={1400} height={866} priority sizes="(min-width: 1024px) 46vw, 100vw" className="w-full" />
@@ -49,13 +56,11 @@ export const HeroVisual = ({
           muted
           loop
           playsInline
-          preload="none"
+          preload="auto"
           aria-hidden
           ref={video}
           onCanPlay={() => {
             setVisible(true)
-            // Oge hidrasyondan sonra eklendigi icin autoplay niteligi her zaman
-            // tetiklenmiyor; sessiz oynatmayi burada baslatiyoruz.
             void video.current?.play().catch(() => {})
           }}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
