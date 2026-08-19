@@ -96,7 +96,9 @@ export const Header = ({
           <Link
             href={alternateHref}
             hrefLang={locale === 'tr' ? 'en' : 'tr'}
-            aria-label={t('a11y.languageSwitch', locale)}
+            // Görünen metin "EN"; erişilebilir ad da onunla başlamalı, yoksa sesle
+            // kontrol kullananlar düğmeyi adıyla çağıramıyor.
+            aria-label={`${locale === 'tr' ? 'EN' : 'TR'} — ${t('a11y.languageSwitch', locale)}`}
             className="rounded px-2 py-2 text-sm font-semibold uppercase hover:text-signal-400"
           >
             {locale === 'tr' ? 'EN' : 'TR'}

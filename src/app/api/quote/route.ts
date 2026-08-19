@@ -7,7 +7,14 @@ import { payloadClient } from '@/lib/data'
  * creation, so writes go through Payload's local API with `overrideAccess`.
  */
 export const POST = async (request: Request) => {
-  const form = await request.formData()
+  // Form dışı bir gövde geldiğinde formData() hata fırlatıyor ve uç 500 dönüyordu;
+  // hatalı istek sunucu hatası değil.
+  let form: FormData
+  try {
+    form = await request.formData()
+  } catch {
+    return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 })
+  }
 
   // Honeypot — a filled hidden field means a bot; answer 200 so it stops retrying.
   if (form.get('website')) return NextResponse.json({ ok: true })
