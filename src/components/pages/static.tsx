@@ -3,6 +3,7 @@ import { RichText } from '@/components/site/RichText'
 import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
 import { OfficeMap } from '@/components/site/OfficeMap'
+import { CERTIFICATES, CERTIFIER, formatDate } from '@/lib/certificates'
 import { ABOUT_IMAGE, DISTRIBUTORSHIP_CERTIFICATE } from '@/lib/imagery'
 import { directionsUrl, officeAddress } from '@/lib/office'
 
@@ -95,6 +96,57 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
             ))}
           </ul>
         </div>
+      </div>
+    </Section>
+
+    {/* Belgeler BELCERT tarafından düzenlendi; bilgiler belgelerin üzerinden okundu. */}
+    <Section>
+      <SectionHeading
+        eyebrow={locale === 'tr' ? 'Belgeler' : 'Certification'}
+        title={locale === 'tr' ? 'Yönetim sistemi sertifikaları' : 'Management system certificates'}
+        lead={
+          locale === 'tr'
+            ? `${CERTIFIER.name} tarafından düzenlendi, ${CERTIFIER.accreditation} akreditasyonu ile. Geçerlilik durumu belgelendirme kuruluşunun sitesinden doğrulanabilir.`
+            : `Issued by ${CERTIFIER.name} under accreditation ${CERTIFIER.accreditation}. Validity can be verified on the certification body's website.`
+        }
+      />
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {CERTIFICATES.map((certificate) => (
+          <a
+            key={certificate.number}
+            href={certificate.image}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card-surface lift group flex flex-col overflow-hidden hover:border-signal-500/40 hover:lift-hover"
+          >
+            <div className="bg-ink-50 p-4 dark:bg-ink-900">
+              <Image
+                src={certificate.image}
+                alt={`${certificate.standard} — ${certificate.title[locale]}`}
+                width={1100}
+                height={1556}
+                className="w-full rounded-md border border-[var(--card-border)]"
+              />
+            </div>
+            <div className="flex flex-1 flex-col p-6">
+              <p className="eyebrow">{certificate.standard}</p>
+              <h3 className="mt-2 text-base font-semibold leading-snug">{certificate.title[locale]}</h3>
+              <dl className="mt-4 space-y-1 text-xs text-muted">
+                <div className="flex gap-2">
+                  <dt>{locale === 'tr' ? 'Belge no' : 'Certificate no'}</dt>
+                  <dd className="font-medium">{certificate.number}</dd>
+                </div>
+                <div className="flex gap-2">
+                  <dt>{locale === 'tr' ? 'Geçerlilik' : 'Valid until'}</dt>
+                  <dd className="font-medium">{formatDate(certificate.validUntil, locale)}</dd>
+                </div>
+              </dl>
+              <span className="mt-4 text-xs font-medium text-signal-600">
+                {locale === 'tr' ? 'Belgeyi büyüt' : 'Open the certificate'} →
+              </span>
+            </div>
+          </a>
+        ))}
       </div>
     </Section>
 
