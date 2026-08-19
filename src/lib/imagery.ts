@@ -8,6 +8,7 @@
  */
 
 export const HOME_HERO = '/img/hero-iot.jpg'
+export const HERO_READER = '/img/hero-reader.jpg'
 export const ABOUT_IMAGE = '/img/about.jpg'
 
 export const SOLUTION_IMAGES: Record<string, string> = {

@@ -138,6 +138,26 @@
   background: linear-gradient(90deg, var(--color-signal-500), transparent);
 }
 
+/* Kahraman bolumu acilista yumusakca yerine oturuyor. */
+@utility fade-up {
+  animation: guga-fade-up 0.7s ease-out both;
+}
+
+@utility fade-up-slow {
+  animation: guga-fade-up 0.9s ease-out 0.12s both;
+}
+
+@keyframes guga-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @utility lift {
   transition:
     transform 0.25s ease,
