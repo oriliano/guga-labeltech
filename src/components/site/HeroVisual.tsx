@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * Masaüstünde kısa bir döngü videosu, mobilde yalnızca fotoğraf.
@@ -24,6 +24,7 @@ export const HeroVisual = ({
 }) => {
   const [playable, setPlayable] = useState(false)
   const [visible, setVisible] = useState(false)
+  const video = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const wide = window.matchMedia('(min-width: 1024px)')
@@ -50,7 +51,13 @@ export const HeroVisual = ({
           playsInline
           preload="none"
           aria-hidden
-          onCanPlay={() => setVisible(true)}
+          ref={video}
+          onCanPlay={() => {
+            setVisible(true)
+            // Oge hidrasyondan sonra eklendigi icin autoplay niteligi her zaman
+            // tetiklenmiyor; sessiz oynatmayi burada baslatiyoruz.
+            void video.current?.play().catch(() => {})
+          }}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             visible ? 'opacity-100' : 'opacity-0'
           }`}
