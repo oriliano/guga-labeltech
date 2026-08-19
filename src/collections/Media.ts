@@ -13,6 +13,9 @@ export const Media: CollectionConfig = {
     update: authenticated,
   },
   upload: {
+    // Yuklenen dosyalar konteyner diskine yaziliyor; uretimde bu yol kalici bir
+    // Railway diskine bagli, yoksa her dagitimda silinirdi.
+    staticDir: process.env.MEDIA_DIR || undefined,
     mimeTypes: ['image/*'],
     focalPoint: true,
     imageSizes: [

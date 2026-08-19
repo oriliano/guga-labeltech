@@ -6,7 +6,8 @@ import { ProductGlyph } from '@/components/site/ProductGlyph'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
-import { HERO_READER, HOME_HERO, postImage, solutionImage } from '@/lib/imagery'
+import { HeroVisual } from '@/components/site/HeroVisual'
+import { HERO_READER, HERO_READER_MP4, HERO_READER_WEBM, HOME_HERO, postImage, solutionImage } from '@/lib/imagery'
 import { sectionPath } from '@/lib/routes'
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
@@ -93,18 +94,15 @@ export const HomePage = ({
             aria-hidden
             className="absolute -inset-6 -z-10 rounded-full bg-signal-500/10 blur-3xl"
           />
-          <Image
-            src={HERO_READER}
+          <HeroVisual
+            poster={HERO_READER}
+            mp4={HERO_READER_MP4}
+            webm={HERO_READER_WEBM}
             alt={
               locale === 'tr'
                 ? 'RFID el terminali, etiketleri tek geçişte okurken'
                 : 'An RFID handheld reading several tags in one pass'
             }
-            width={1400}
-            height={866}
-            priority
-            sizes="(min-width: 1024px) 46vw, 100vw"
-            className="w-full rounded-2xl border border-signal-500/15 shadow-[0_30px_80px_-40px_rgba(2,26,16,0.9)]"
           />
         </div>
       </div>
