@@ -12,6 +12,7 @@ export const HERO_READER = '/img/hero-reader.jpg'
 export const HERO_READER_MP4 = '/img/hero-reader.mp4'
 export const HERO_READER_WEBM = '/img/hero-reader.webm'
 export const ABOUT_IMAGE = '/img/about.jpg'
+export const DISTRIBUTORSHIP_CERTIFICATE = '/img/tenhanyun-sertifika.jpg'
 
 export const SOLUTION_IMAGES: Record<string, string> = {
   'rfid-depo-yonetimi': '/img/solution-rfid-depo-yonetimi.jpg',

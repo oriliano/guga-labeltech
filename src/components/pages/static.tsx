@@ -3,7 +3,7 @@ import { RichText } from '@/components/site/RichText'
 import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
 import { OfficeMap } from '@/components/site/OfficeMap'
-import { ABOUT_IMAGE } from '@/lib/imagery'
+import { ABOUT_IMAGE, DISTRIBUTORSHIP_CERTIFICATE } from '@/lib/imagery'
 import { directionsUrl, officeAddress } from '@/lib/office'
 
 import { QuoteForm } from './QuoteForm'
@@ -110,14 +110,37 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
               : 'GUGALABELTECH® is a trademark of GUGA Bilişim Teknoloji, registered with the Turkish Patent and Trademark Office. RFID labels, automatic identification systems, IoT devices and RTLS software are developed under it.'}
           </p>
         </div>
-        <div className="card-surface p-7">
-          <p className="eyebrow">{locale === 'tr' ? 'Distribütörlük' : 'Distributorship'}</p>
-          <h3 className="mt-3 text-h3 font-semibold">TENHANYUN</h3>
-          <p className="mt-3 text-sm leading-relaxed text-muted">
-            {locale === 'tr'
-              ? 'RFID okuyucu, anten, el terminali ve endüstriyel IoT donanımında TENHANYUN ile resmi distribütörlük ve stratejik iş ortaklığı yürütüyoruz. Projelerde donanım seçimi bu portföyden yapılır, gerektiğinde projeye özel üretim devreye girer.'
-              : 'We hold an official distributorship and strategic partnership with TENHANYUN for RFID readers, antennas, handheld terminals and industrial IoT hardware. Project hardware is selected from that portfolio, with project-specific production where needed.'}
-          </p>
+        <div className="card-surface overflow-hidden">
+          <div className="p-7">
+            <p className="eyebrow">{locale === 'tr' ? 'Distribütörlük' : 'Distributorship'}</p>
+            <h3 className="mt-3 text-h3 font-semibold">TENHANYUN</h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
+              {locale === 'tr'
+                ? 'Guangzhou Tenhanyun Technology Co. Ltd. tarafından Türkiye yetkili distribütörü olarak atandık. Yetki UHF pasif RFID sabit okuyucu, entegre okuyucu, el terminali ve endüstriyel donanımı kapsıyor; satış, pazarlama ve satış sonrası desteği içeriyor. Belge 16 Ocak 2026 tarihinden itibaren süresiz geçerli.'
+                : 'Guangzhou Tenhanyun Technology Co. Ltd. appointed us as its authorised distributor in Turkey. The appointment covers UHF passive RFID fixed and integrated readers, handheld terminals and industrial-grade hardware, including sales, marketing and after-sales support. The certificate is effective 16 January 2026 for an unlimited period.'}
+            </p>
+          </div>
+          <a
+            href={DISTRIBUTORSHIP_CERTIFICATE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block border-t border-[var(--card-border)] bg-ink-50 p-5 dark:bg-ink-900"
+          >
+            <Image
+              src={DISTRIBUTORSHIP_CERTIFICATE}
+              alt={
+                locale === 'tr'
+                  ? 'TENHANYUN distribütörlük belgesi'
+                  : 'TENHANYUN distributorship certificate'
+              }
+              width={1200}
+              height={849}
+              className="w-full rounded-lg border border-[var(--card-border)] transition group-hover:brightness-[1.03]"
+            />
+            <span className="mt-3 block text-xs font-medium text-signal-600">
+              {locale === 'tr' ? 'Belgeyi büyüt' : 'Open the certificate'} →
+            </span>
+          </a>
         </div>
       </div>
     </Section>
