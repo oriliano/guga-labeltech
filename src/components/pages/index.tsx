@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { ProductGlyph } from '@/components/site/ProductGlyph'
+import { Reveal, TextReveal } from '@/components/site/Reveal'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
@@ -12,8 +13,22 @@ import { sectionPath } from '@/lib/routes'
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
 
-const mediaOf = (value: unknown): Media | null =>
-  value && typeof value === 'object' && 'url' in (value as Media) ? (value as Media) : null
+/**
+ * Payload gorsel adresini tam adres olarak veriyor; next/image tam adresleri
+ * remotePatterns olmadan reddediyor ve gorsel kirik cikiyor. Kendi alan
+ * adimizdaki adresi goreli yola cevirmek alan adi degistiginde de calisir.
+ */
+const mediaOf = (value: unknown): Media | null => {
+  if (!value || typeof value !== 'object' || !('url' in (value as Media))) return null
+  const media = value as Media
+  if (!media.url?.startsWith('http')) return media
+  try {
+    const parsed = new URL(media.url)
+    return { ...media, url: `${parsed.pathname}${parsed.search}` }
+  } catch {
+    return media
+  }
+}
 
 const Figure = ({ media, priority = false }: { media: unknown; priority?: boolean }) => {
   const image = mediaOf(media)
@@ -59,9 +74,13 @@ export const HomePage = ({
         <div className="fade-up">
           <p className="eyebrow text-signal-400">RFID · RTLS · IoT</p>
           <h1 className="mt-4 text-[2rem] font-semibold leading-[1.1] sm:text-[2.75rem] lg:text-display">
-            {locale === 'tr'
-              ? 'Etiketten yazılıma, tek elden izlenebilirlik'
-              : 'End-to-end traceability, from the tag to the software'}
+            <TextReveal
+              text={
+                locale === 'tr'
+                  ? 'Etiketten yazılıma, tek elden izlenebilirlik'
+                  : 'End-to-end traceability, from the tag to the software'
+              }
+            />
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-200 sm:mt-6 sm:text-lead">{tagline}</p>
 
@@ -119,7 +138,8 @@ export const HomePage = ({
         }
       />
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {solutions.slice(0, 6).map((solution) => (
+        {solutions.slice(0, 6).map((solution, index) => (
+          <Reveal key={solution.id} delay={index * 70} className="h-full">
           <Card
             key={solution.id}
             href={sectionPath('solutions', locale, solution.slug)}
@@ -129,6 +149,7 @@ export const HomePage = ({
             footer={t('cta.readMore', locale)}
             image={mediaOf(solution.heroImage)?.url ?? solutionImage(solution.slug)}
           />
+          </Reveal>
         ))}
       </div>
       <div className="mt-8">
@@ -144,7 +165,8 @@ export const HomePage = ({
         title={locale === 'tr' ? 'Öne çıkan ürünler' : 'Featured products'}
       />
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.slice(0, 8).map((product) => (
+        {products.slice(0, 8).map((product, index) => (
+          <Reveal key={product.id} delay={index * 60} className="h-full">
           <Card
             key={product.id}
             href={sectionPath('products', locale, product.slug)}
@@ -154,6 +176,7 @@ export const HomePage = ({
             image={mediaOf(product.images?.[0])?.url ?? undefined}
             visual={<ProductGlyph category={product.category} className="h-full w-full" />}
           />
+          </Reveal>
         ))}
       </div>
       <div className="mt-8">
@@ -260,9 +283,9 @@ export const ListingPage = ({
     ) : null}
     {items.length ? (
       <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
+          <Reveal key={item.id} delay={Math.min(index, 8) * 60} className="h-full">
           <Card
-            key={item.id}
             href={hrefFor(item)}
             eyebrow={eyebrowOf?.(item)}
             title={item.title}
@@ -270,6 +293,7 @@ export const ListingPage = ({
             image={imageOf?.(item)}
             visual={visualOf?.(item)}
           />
+          </Reveal>
         ))}
       </div>
     ) : (

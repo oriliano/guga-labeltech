@@ -158,6 +158,26 @@
   }
 }
 
+/* Kelime kelime yukselen baslik; TextReveal bilesenine esik. */
+.word-rise {
+  animation: guga-word-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes guga-word-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-rise {
+    animation: none;
+  }
+}
+
 @utility lift {
   transition:
     transform 0.25s ease,

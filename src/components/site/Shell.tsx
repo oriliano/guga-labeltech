@@ -9,6 +9,7 @@ import { Analytics } from './Analytics'
 import { Footer } from './Footer'
 import { GoogleAnalytics } from './GoogleAnalytics'
 import { Header, type NavItem } from './Header'
+import { SmoothScroll } from './SmoothScroll'
 import { OrganizationJsonLd } from './StructuredData'
 import { WhatsAppButton } from './WhatsAppButton'
 
@@ -60,6 +61,7 @@ export const Shell = async ({
 
   return (
     <>
+      <SmoothScroll />
       <Header
         locale={locale}
         items={headerItems}
