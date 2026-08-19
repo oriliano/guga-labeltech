@@ -10,6 +10,7 @@ type Office = {
   district?: string | null
   city: string
   country: string
+  mapUrl?: string | null
 }
 type Phone = { label?: string | null; number: string; whatsapp?: boolean | null }
 type Social = { platform: string; url: string }
@@ -58,6 +59,19 @@ export const Footer = ({
                 {office.city}
               </p>
               <p>{office.country}</p>
+              <a
+                href={
+                  office.mapUrl ||
+                  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                    [office.street, office.district, office.city, office.country].filter(Boolean).join(', '),
+                  )}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-ink-200 underline underline-offset-4 hover:text-signal-400"
+              >
+                {locale === 'tr' ? 'Yol tarifi' : 'Directions'}
+              </a>
             </div>
           ))}
         </address>

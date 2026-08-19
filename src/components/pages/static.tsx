@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { RichText } from '@/components/site/RichText'
 import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
+import { OfficeMap, officeAddress } from '@/components/site/OfficeMap'
 import { ABOUT_IMAGE } from '@/lib/imagery'
 
 import { QuoteForm } from './QuoteForm'
@@ -255,6 +256,20 @@ export const ContactPage = ({ locale, settings }: { locale: Locale; settings: an
         <QuoteForm locale={locale} sourcePath="contact" />
       </div>
     </div>
+
+    {settings?.offices?.length ? (
+      <div className="mt-16 grid gap-8 lg:grid-cols-2">
+        {settings.offices.map((office: any) => (
+          <OfficeMap
+            key={office.street}
+            locale={locale}
+            label={office.label ?? office.city}
+            address={officeAddress(office)}
+            mapUrl={office.mapUrl ?? undefined}
+          />
+        ))}
+      </div>
+    ) : null}
   </Section>
 )
 
