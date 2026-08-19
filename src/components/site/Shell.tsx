@@ -20,6 +20,7 @@ const defaultNav = (locale: Locale): NavItem[] => [
     children: CATEGORIES.map((category) => ({
       label: category.label[locale],
       href: categoryPath(category, locale),
+      description: category.lead[locale],
     })),
   },
   { label: t('nav.solutions', locale), href: sectionPath('solutions', locale) },

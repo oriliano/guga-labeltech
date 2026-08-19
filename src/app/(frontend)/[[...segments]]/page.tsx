@@ -151,6 +151,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             <>
               <BreadcrumbJsonLd locale={locale} section="products" title={category.label[locale]} />
               <ListingPage
+                eyebrow={t('nav.products', locale)}
                 title={category.label[locale]}
                 lead={category.lead[locale]}
                 items={products}

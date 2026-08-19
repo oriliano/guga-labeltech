@@ -200,6 +200,7 @@ export const HomePage = ({
 /* ------------------------------------------------------------ listings ---- */
 
 export const ListingPage = ({
+  eyebrow,
   title,
   lead,
   items,
@@ -211,6 +212,7 @@ export const ListingPage = ({
   visualOf,
   filters,
 }: {
+  eyebrow?: string
   title: string
   lead?: string
   items: any[]
@@ -228,38 +230,32 @@ export const ListingPage = ({
   }
 }) => (
   <Section>
-    <SectionHeading title={title} lead={lead} as="h1" />
+    <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />
     {filters ? (
-      <nav aria-label={filters.label} className="mt-8 flex flex-wrap gap-2">
-        <Link
-          href={filters.allHref}
-          aria-current={filters.items.every((item) => !item.active) ? 'page' : undefined}
-          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-            filters.items.every((item) => !item.active)
-              ? 'border-ink-900 bg-ink-900 text-ink-100'
-              : 'border-ink-200 hover:border-signal-500 hover:text-signal-600 dark:border-ink-700'
-          }`}
-        >
-          {filters.allLabel}
-        </Link>
-        {filters.items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={item.active ? 'page' : undefined}
-            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-              item.active
-                ? 'border-ink-900 bg-ink-900 text-ink-100'
-                : 'border-ink-200 hover:border-signal-500 hover:text-signal-600 dark:border-ink-700'
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
+      <nav aria-label={filters.label} className="mt-10 border-y border-ink-100 py-4 dark:border-ink-800">
+        <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
+          {[{ label: filters.allLabel, href: filters.allHref, active: filters.items.every((item) => !item.active) }]
+            .concat(filters.items)
+            .map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={item.active ? 'page' : undefined}
+                  className={`inline-block rounded-full px-4 py-2 text-sm transition ${
+                    item.active
+                      ? 'bg-ink-900 font-semibold text-ink-100'
+                      : 'text-muted hover:bg-signal-100/70 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+        </ul>
       </nav>
     ) : null}
     {items.length ? (
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <Card
             key={item.id}

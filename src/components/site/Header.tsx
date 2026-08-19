@@ -6,7 +6,11 @@ import { useState } from 'react'
 
 import { t, type Locale } from '@/lib/i18n'
 
-export type NavItem = { label: string; href: string; children?: { label: string; href: string }[] }
+export type NavItem = {
+  label: string
+  href: string
+  children?: { label: string; href: string; description?: string }[]
+}
 
 export const Header = ({
   locale,
@@ -31,7 +35,7 @@ export const Header = ({
       >
         {t('a11y.skipToContent', locale)}
       </a>
-      <div className="container-page flex h-16 items-center justify-between gap-4">
+      <div className="container-page flex h-20 items-center justify-between gap-4">
         {/* The mark is gold, which needs the brand green behind it to hold up on a light header. */}
         <Link
           href={locale === 'tr' ? '/' : '/en'}
@@ -47,23 +51,41 @@ export const Header = ({
               <li key={item.href} className="group relative">
                 <Link
                   href={item.href}
-                  className="inline-block rounded px-3 py-2 text-sm font-medium hover:text-signal-600"
+                  className="relative inline-block px-3 py-2 text-sm font-medium after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-signal-500 after:transition-all after:duration-300 hover:text-signal-600 group-hover:after:w-[calc(100%-1.5rem)]"
                 >
                   {item.label}
                 </Link>
                 {item.children?.length ? (
-                  <ul className="invisible absolute left-0 top-full w-64 rounded-lg border border-ink-100 bg-[var(--card-bg)] p-2 opacity-0 shadow-xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 dark:border-ink-800">
-                    {item.children.map((child) => (
-                      <li key={child.href}>
-                        <Link
-                          href={child.href}
-                          className="block rounded px-3 py-2 text-sm hover:bg-signal-100 hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-ink-100"
-                        >
-                          {child.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="invisible absolute left-1/2 top-full z-50 w-[42rem] -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                    <div className="overflow-hidden rounded-2xl border border-signal-500/20 bg-ink-900 shadow-[0_28px_60px_-28px_rgba(2,26,16,0.85)]">
+                      <ul className="grid grid-cols-2 gap-1 p-3">
+                        {item.children.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              className="group/item block rounded-xl px-4 py-3 transition hover:bg-ink-800"
+                            >
+                              <span className="block text-sm font-medium text-ink-100 group-hover/item:text-signal-400">
+                                {child.label}
+                              </span>
+                              {child.description ? (
+                                <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-ink-400">
+                                  {child.description}
+                                </span>
+                              ) : null}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link
+                        href={item.href}
+                        className="flex items-center justify-between border-t border-ink-800 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-signal-400 transition hover:bg-ink-800"
+                      >
+                        {item.label}
+                        <span aria-hidden>→</span>
+                      </Link>
+                    </div>
+                  </div>
                 ) : null}
               </li>
             ))}
@@ -81,7 +103,7 @@ export const Header = ({
           </Link>
           <Link
             href={quoteHref}
-            className="hidden rounded-lg bg-signal-500 px-4 py-2 text-sm font-semibold text-ink-950 hover:bg-signal-400 sm:inline-block"
+            className="hidden rounded-xl bg-signal-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow-[0_10px_24px_-14px_rgba(201,162,39,0.9)] transition hover:-translate-y-px hover:bg-signal-400 sm:inline-block"
           >
             {t('cta.quote', locale)}
           </Link>
