@@ -75,7 +75,9 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
     }
   }, [])
 
-  const line = locale === 'tr' ? ['Etiketten yazılıma', 'tek elden'] : ['From the tag', 'to the software']
+  // CSS uppercase Türkçe noktalı İ'yi bozuyor; satırlar doğrudan büyük harfle
+  // yazılıyor ve dönüşüm kapalı.
+  const line = locale === 'tr' ? ['ETİKETTEN YAZILIMA', 'TEK ELDEN'] : ['FROM THE TAG', 'TO THE SOFTWARE']
   const accent = locale === 'tr' ? 'izlenebilirlik' : 'traceability'
 
   return (
@@ -84,7 +86,7 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
       className="relative flex min-h-[100svh] flex-col overflow-hidden border-b border-ink-800 bg-ink-950 text-ink-100"
     >
       <div className="pointer-events-none absolute inset-0 z-0">
-        <Image src={HERO_READER} alt="" fill priority sizes="100vw" className="object-cover opacity-[0.18]" />
+        <Image src={HERO_READER} alt="" fill priority sizes="100vw" className="object-cover opacity-[0.14]" />
         {motion ? (
           <video
             autoPlay
@@ -96,7 +98,7 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
             ref={(node) => {
               void node?.play().catch(() => {})
             }}
-            className="absolute inset-0 h-full w-full object-cover opacity-[0.22]"
+            className="absolute inset-0 h-full w-full object-cover opacity-[0.18]"
           >
             <source src={HERO_READER_WEBM} type="video/webm" />
             <source src={HERO_READER_MP4} type="video/mp4" />
@@ -104,6 +106,10 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
         ) : null}
       </div>
 
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-ink-950/70 via-ink-950/45 to-ink-950/85"
+      />
       <div className="pointer-events-none absolute inset-0 z-0 bg-stage-spot" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-stage-glow" />
       <div className="grain-dark" aria-hidden />
@@ -131,7 +137,7 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
       >
         <p className="eyebrow text-signal-400">RFID · RTLS · IoT</p>
 
-        <h1 className="mt-6 font-sans text-[clamp(2.2rem,min(7vw,12svh),5.5rem)] font-extrabold uppercase leading-[0.95] tracking-[-0.03em]">
+        <h1 className="mt-6 font-sans text-[clamp(2.2rem,min(7vw,12svh),5.5rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
           <Words text={line[0]} delay={80} />
           <Words text={line[1]} delay={260} />
           <Words text={accent} delay={440} className="font-display text-shimmer lowercase italic tracking-normal" />
