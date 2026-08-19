@@ -1,7 +1,15 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-import { HomePage, ListingPage, PostDetail, ProductDetail, ReferenceDetail, SolutionDetail } from '@/components/pages'
+import {
+  GroupedProducts,
+  HomePage,
+  ListingPage,
+  PostDetail,
+  ProductDetail,
+  ReferenceDetail,
+  SolutionDetail,
+} from '@/components/pages'
 import { AboutPage } from '@/components/pages/about'
 import { ContactPage, ExportPage } from '@/components/pages/static'
 import { ProductGlyph } from '@/components/site/ProductGlyph'
@@ -17,7 +25,7 @@ import {
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
-import { postImage, solutionImage } from '@/lib/imagery'
+import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { alternatePath, matchSection, sectionPath, type Section } from '@/lib/routes'
 
 // Railway's private network is unavailable during build, so pages render per request
@@ -160,6 +168,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 hrefFor={(item) => sectionPath('products', locale, item.slug)}
                 eyebrowOf={(item) => item.model ?? undefined}
                 bodyOf={(item) => item.excerpt ?? undefined}
+                imageOf={(item) => productPhoto(item.slug)}
                 visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
                 filters={{
                   label: t('label.category', locale),
@@ -187,31 +196,49 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
           )
         }
         const products = await listProducts({ locale })
+        // Liste kategori kategori gruplanıyor; tek uzun ızgara 48 üründe
+        // gezilmesi zor bir yığın oluyordu.
+        const groups = CATEGORIES.map((category) => ({
+          key: category.value,
+          label: category.label[locale],
+          lead: category.lead[locale],
+          href: categoryPath(category, locale),
+          items: products
+            .filter((item: any) => item.category === category.value)
+            .map((item: any) => ({
+              id: item.id,
+              title: item.title,
+              model: item.model,
+              excerpt: item.excerpt,
+              href: sectionPath('products', locale, item.slug),
+              image: productPhoto(item.slug),
+            })),
+        })).filter((group) => group.items.length)
+
         return (
-          <ListingPage
-            title={t('nav.products', locale)}
-            lead={
-              locale === 'tr'
-                ? 'RFID etiket, endüstriyel tag, okuyucu, kart, ribon ve yaka ipi ürünlerimiz.'
-                : 'RFID tags, industrial tags, readers, cards, ribbons and lanyards.'
-            }
-            items={products}
-            emptyText={t('empty.products', locale)}
-            hrefFor={(item) => sectionPath('products', locale, item.slug)}
-            eyebrowOf={(item) => item.model ?? undefined}
-            bodyOf={(item) => item.excerpt ?? undefined}
-            visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
-            filters={{
-              label: t('label.category', locale),
-              items: CATEGORIES.map((entry) => ({
-                label: entry.label[locale],
-                href: categoryPath(entry, locale),
-                active: false,
-              })),
-              allHref: sectionPath('products', locale),
-              allLabel: t('cta.allProducts', locale),
-            }}
-          />
+          <>
+            <BreadcrumbJsonLd locale={locale} section="products" />
+            <GroupedProducts
+              eyebrow={t('nav.products', locale)}
+              title={t('nav.products', locale)}
+              lead={
+                locale === 'tr'
+                  ? 'RFID etiket, endüstriyel tag, okuyucu, kart, ribon ve yaka ipi ürünlerimiz.'
+                  : 'RFID tags, industrial tags, readers, cards, ribbons and lanyards.'
+              }
+              groups={groups}
+              filters={{
+                label: t('label.category', locale),
+                items: CATEGORIES.map((entry) => ({
+                  label: entry.label[locale],
+                  href: categoryPath(entry, locale),
+                  active: false,
+                })),
+                allHref: sectionPath('products', locale),
+                allLabel: t('cta.allProducts', locale),
+              }}
+            />
+          </>
         )
       }
       case 'solutions': {

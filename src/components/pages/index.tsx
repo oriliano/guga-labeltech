@@ -8,7 +8,7 @@ import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
 import { Hero } from '@/components/site/Hero'
-import { postImage, solutionImage } from '@/lib/imagery'
+import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { sectionPath } from '@/lib/routes'
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
@@ -111,7 +111,7 @@ export const HomePage = ({
             eyebrow={product.model ?? undefined}
             title={product.title}
             body={product.excerpt ?? undefined}
-            image={mediaOf(product.images?.[0])?.url ?? undefined}
+            image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
             visual={<ProductGlyph category={product.category} className="h-full w-full" />}
           />
           </Reveal>
@@ -240,6 +240,83 @@ export const ListingPage = ({
   </Section>
 )
 
+/** Kategori kategori gruplanmış ürün listesi. Her grup kendi başlığıyla açılır. */
+export const GroupedProducts = ({
+  eyebrow,
+  title,
+  lead,
+  groups,
+  filters,
+}: {
+  eyebrow?: string
+  title: string
+  lead?: string
+  groups: { key: string; label: string; lead?: string; href: string; items: any[] }[]
+  filters?: {
+    label: string
+    items: { label: string; href: string; active: boolean }[]
+    allHref: string
+    allLabel: string
+  }
+}) => (
+  <Section>
+    <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />
+    {filters ? (
+      <nav aria-label={filters.label} className="mt-10 border-y border-[var(--card-border)] py-4">
+        <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
+          {[{ label: filters.allLabel, href: filters.allHref, active: filters.items.every((i) => !i.active) }]
+            .concat(filters.items)
+            .map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={item.active ? 'page' : undefined}
+                  className={`inline-block rounded-full px-4 py-2 text-sm transition ${
+                    item.active
+                      ? 'bg-signal-500 font-semibold text-ink-950'
+                      : 'text-muted hover:bg-ink-800 hover:text-ink-100'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+        </ul>
+      </nav>
+    ) : null}
+
+    <div className="mt-14 space-y-16">
+      {groups.map((group) => (
+        <section key={group.key} id={group.key} className="scroll-mt-28">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--card-border)] pb-4">
+            <div>
+              <h2 className="text-h2 font-semibold">{group.label}</h2>
+              {group.lead ? <p className="mt-2 max-w-2xl text-sm text-muted">{group.lead}</p> : null}
+            </div>
+            <Link href={group.href} className="text-sm font-medium text-signal-400 hover:underline">
+              {group.items.length} ürün →
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {group.items.map((item, index) => (
+              <Reveal key={item.id} delay={Math.min(index, 6) * 60} className="h-full">
+                <Card
+                  href={item.href}
+                  eyebrow={item.model ?? undefined}
+                  title={item.title}
+                  body={item.excerpt ?? undefined}
+                  image={item.image}
+                  visual={<ProductGlyph category={group.key} className="h-full w-full" />}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </Section>
+)
+
 /* -------------------------------------------------------------- details ---- */
 
 export const ProductDetail = ({ locale, product }: { locale: Locale; product: any }) => (
@@ -289,6 +366,15 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
       <div className="space-y-6">
         {mediaOf(product.images?.[0]) ? (
           <Figure media={product.images?.[0]} priority />
+        ) : productPhoto(product.slug) ? (
+          <Image
+            src={productPhoto(product.slug) as string}
+            alt={product.title}
+            width={900}
+            height={700}
+            priority
+            className="w-full rounded-xl border border-[var(--card-border)] object-cover"
+          />
         ) : (
           <ProductGlyph category={product.category} className="aspect-[16/9] w-full rounded-xl" />
         )}
@@ -428,7 +514,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
                 eyebrow={product.model ?? undefined}
                 title={product.title}
                 body={product.excerpt}
-                image={mediaOf(product.images?.[0])?.url ?? undefined}
+                image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
                 visual={<ProductGlyph category={product.category} className="h-full w-full" />}
               />
             ) : null,

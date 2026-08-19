@@ -41,9 +41,60 @@ export const POST_IMAGES: Record<string, string> = {
   'rfid-nedir-hangi-isi-gercekten-cozer': '/img/post-rfid-nedir.jpg',
 }
 
-/** Product photography is still missing, so products fall back per category. */
-export const CATEGORY_IMAGES: Record<string, string> = {}
+/** Eski siteden taşınan ürün fotoğrafları; dosya adı ürün slug'ı.  */
+export const PRODUCT_PHOTOS = new Set<string>([
+  'a5-pvc-yaka-karti',
+  'cift-kancali-yaka-ipi',
+  'dosya-toplama-ve-dagitma-arabasi',
+  'endustriyel-dayanikli-kart',
+  'guclu-yapiskanli-endustriyel-etiket',
+  'guga-th320n-uhf-anten',
+  'guga-ty624-4-port-sabit-uhf-okuyucu',
+  'guga-ty628-8-port-sabit-uhf-okuyucu',
+  'guga-ty850-rfid-el-terminali',
+  'guga050405-metal-uzeri-rfid-tag',
+  'guga060302-ultra-kucuk-rfid-tag',
+  'guga060304-anti-metal-rfid-tag',
+  'guga1001-rfid-tekstil-etiketi',
+  'guga100402-metal-alet-tag',
+  'guga1010-rfid-lojistik-etiketi',
+  'guga1257-rfid-kutuphane-etiketi',
+  'guga20250001-wax-ribon',
+  'guga20250002-wax-resin-ribon',
+  'guga20250003-resin-ribon',
+  'guga20250004-renkli-ribon',
+  'guga361303-varlik-takip-tag',
+  'guga4318-rfid-demirbas-ve-depo-etiketi',
+  'guga5434-rfid-tekstil-ve-hazir-giyim-etiketi',
+  'guga660403-ince-anti-metal-rfid-tag',
+  'guga6826-rfid-kuyum-etiketi',
+  'guga702003-atex-sertifikali-rfid-tag',
+  'guga7320-rfid-demirbas-etiketi',
+  'guga902003-uzun-menzilli-rfid-tag',
+  'guga9654-rfid-arac-cam-etiketi',
+  'hf-rfid-kart',
+  'hibrit-ve-kombi-kart',
+  'kart-kilifi-yoyo-aparat-ve-klips',
+  'kitap-toplama-ve-dagitma-arabasi',
+  'kitap-ve-dosya-destegi',
+  'lf-rfid-kart',
+  'ozel-amacli-kartlar',
+  'ozel-tasarim-ve-kesim-kart',
+  'pvc-kart-cipsiz',
+  'pvc-yaka-karti-85x54mm',
+  'rfid-entegreli-konveyor-sistemi',
+  'rfid-kapi-gecis-ve-alarm-sistemi',
+  'rfid-kasa-okuyucu',
+  'rfid-perakende-uhf-etiketi',
+  'rfid-self-check-kasa-sistemi',
+  'tek-kancali-yaka-ipi',
+  'uhf-rfid-kart',
+  'yapiskanli-yuksek-sicaklik-etiketi',
+  'yapiskansiz-yuksek-sicaklik-etiketi',
+])
+
+export const productPhoto = (slug?: string | null) =>
+  slug && PRODUCT_PHOTOS.has(slug) ? `/img/urun/${slug}.jpg` : undefined
 
 export const solutionImage = (slug?: string | null) => (slug ? SOLUTION_IMAGES[slug] : undefined)
 export const postImage = (slug?: string | null) => (slug ? POST_IMAGES[slug] : undefined)
-export const productImage = (category?: string | null) => (category ? CATEGORY_IMAGES[category] : undefined)
