@@ -7,8 +7,8 @@ import { Reveal, TextReveal } from '@/components/site/Reveal'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
 import { t, type Locale } from '@/lib/i18n'
-import { HeroVisual } from '@/components/site/HeroVisual'
-import { HERO_READER, HERO_READER_MP4, HERO_READER_WEBM, HOME_HERO, postImage, solutionImage } from '@/lib/imagery'
+import { Hero } from '@/components/site/Hero'
+import { postImage, solutionImage } from '@/lib/imagery'
 import { sectionPath } from '@/lib/routes'
 
 type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
@@ -63,69 +63,7 @@ export const HomePage = ({
   posts: any[]
 }) => (
   <>
-    <section className="relative isolate overflow-hidden border-b border-ink-100 bg-ink-900 text-ink-100 dark:border-ink-800">
-      <Image src={HOME_HERO} alt="" fill priority sizes="100vw" className="-z-10 object-cover opacity-20" />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-ink-950/85 via-ink-900/92 to-ink-900 lg:bg-gradient-to-r lg:from-ink-950 lg:via-ink-900/92 lg:to-ink-900/55"
-      />
-
-      <div className="container-page grid gap-10 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:py-28">
-        <div className="fade-up">
-          <p className="eyebrow text-signal-400">RFID · RTLS · IoT</p>
-          <h1 className="mt-4 text-[2rem] font-semibold leading-[1.1] sm:text-[2.75rem] lg:text-display">
-            <TextReveal
-              text={
-                locale === 'tr'
-                  ? 'Etiketten yazılıma, tek elden izlenebilirlik'
-                  : 'End-to-end traceability, from the tag to the software'
-              }
-            />
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-200 sm:mt-6 sm:text-lead">{tagline}</p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <ButtonLink href={sectionPath('contact', locale)}>{t('cta.quote', locale)}</ButtonLink>
-            <Link
-              href={sectionPath('products', locale)}
-              className="inline-flex items-center justify-center rounded-xl border border-ink-600 px-6 py-3 text-sm font-semibold transition duration-200 hover:-translate-y-px hover:border-signal-400 hover:text-signal-400"
-            >
-              {t('cta.explore', locale)}
-            </Link>
-          </div>
-
-          <dl className="mt-10 grid grid-cols-1 gap-5 border-t border-ink-800 pt-8 sm:grid-cols-3 sm:gap-6">
-            {[
-              { k: locale === 'tr' ? 'Üretim' : 'Manufacturing', v: locale === 'tr' ? 'Kendi etiketimiz' : 'Own tags' },
-              { k: locale === 'tr' ? 'Donanım' : 'Hardware', v: locale === 'tr' ? 'Projeye özel' : 'Project-specific' },
-              { k: locale === 'tr' ? 'Yazılım' : 'Software', v: locale === 'tr' ? 'ERP/WMS entegre' : 'ERP/WMS integrated' },
-            ].map((item) => (
-              <div key={item.k} className="flex items-baseline gap-3 sm:block">
-                <dt className="text-xs uppercase tracking-[0.14em] text-ink-400">{item.k}</dt>
-                <dd className="text-sm font-medium sm:mt-1">{item.v}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <div className="fade-up-slow relative order-first lg:order-none">
-          <div
-            aria-hidden
-            className="absolute -inset-6 -z-10 rounded-full bg-signal-500/10 blur-3xl"
-          />
-          <HeroVisual
-            poster={HERO_READER}
-            mp4={HERO_READER_MP4}
-            webm={HERO_READER_WEBM}
-            alt={
-              locale === 'tr'
-                ? 'RFID el terminali, etiketleri tek geçişte okurken'
-                : 'An RFID handheld reading several tags in one pass'
-            }
-          />
-        </div>
-      </div>
-    </section>
+    <Hero locale={locale} tagline={tagline} />
 
     <Section>
       <SectionHeading

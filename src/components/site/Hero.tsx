@@ -1,0 +1,173 @@
+'use client'
+
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+
+import { t, type Locale } from '@/lib/i18n'
+import { HERO_READER, HERO_READER_MP4, HERO_READER_WEBM } from '@/lib/imagery'
+import { sectionPath } from '@/lib/routes'
+
+const TICKER: Record<Locale, string[]> = {
+  tr: ['RFID', 'RTLS', 'IoT', 'Depo', 'Perakende', 'Tekstil', 'Sağlık', 'Lojistik', 'Kuyum', 'İhracat'],
+  en: ['RFID', 'RTLS', 'IoT', 'Warehouse', 'Retail', 'Textile', 'Healthcare', 'Logistics', 'Jewellery', 'Export'],
+}
+
+const MOTES = [
+  { x: '16%', y: '26%', s: 4, d: 0 },
+  { x: '30%', y: '68%', s: 3, d: 1.4 },
+  { x: '70%', y: '30%', s: 4, d: 2.2 },
+  { x: '84%', y: '60%', s: 3, d: 0.7 },
+  { x: '56%', y: '78%', s: 3, d: 2.7 },
+]
+
+/** Maskeli kelime kayışı: her kelime kendi kutusunda aşağıdan yukarı geliyor. */
+const Words = ({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) => (
+  <span className="block">
+    {text.split(' ').map((word, index) => (
+      <span
+        key={`${word}-${index}`}
+        className="inline-block overflow-hidden pb-[0.08em] align-top [&:not(:last-child)]:mr-[0.22em]"
+      >
+        <span className={`word-rise inline-block ${className}`} style={{ animationDelay: `${delay + index * 60}ms` }}>
+          {word}
+        </span>
+      </span>
+    ))}
+  </span>
+)
+
+export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) => {
+  const section = useRef<HTMLElement>(null)
+  const [drift, setDrift] = useState(0)
+  const [motion, setMotion] = useState(false)
+
+  useEffect(() => {
+    const wide = window.matchMedia('(min-width: 1024px)')
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setMotion(wide.matches && !calm.matches)
+    update()
+    wide.addEventListener('change', update)
+    calm.addEventListener('change', update)
+
+    // Bölüm görünümden çıkarken içerik yukarı süzülüp soluyor. Yalnız transform
+    // ve opaklık değişiyor, kaydırma sırasında yeniden yerleşim olmuyor.
+    if (calm.matches) return () => {
+      wide.removeEventListener('change', update)
+      calm.removeEventListener('change', update)
+    }
+
+    let frame = 0
+    const onScroll = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const height = section.current?.offsetHeight ?? 1
+        setDrift(Math.min(1, Math.max(0, window.scrollY / height)))
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(frame)
+      wide.removeEventListener('change', update)
+      calm.removeEventListener('change', update)
+    }
+  }, [])
+
+  const line = locale === 'tr' ? ['Etiketten yazılıma', 'tek elden'] : ['From the tag', 'to the software']
+  const accent = locale === 'tr' ? 'izlenebilirlik' : 'traceability'
+
+  return (
+    <section
+      ref={section}
+      className="relative flex min-h-[100svh] flex-col overflow-hidden border-b border-ink-800 bg-ink-950 text-ink-100"
+    >
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <Image src={HERO_READER} alt="" fill priority sizes="100vw" className="object-cover opacity-[0.18]" />
+        {motion ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+            ref={(node) => {
+              void node?.play().catch(() => {})
+            }}
+            className="absolute inset-0 h-full w-full object-cover opacity-[0.22]"
+          >
+            <source src={HERO_READER_WEBM} type="video/webm" />
+            <source src={HERO_READER_MP4} type="video/mp4" />
+          </video>
+        ) : null}
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 z-0 bg-stage-spot" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-stage-glow" />
+      <div className="grain-dark" aria-hidden />
+
+      <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block" aria-hidden>
+        {MOTES.map((mote) => (
+          <span
+            key={`${mote.x}-${mote.y}`}
+            className="animate-floaty absolute rounded-full bg-signal-400/40 blur-[1px]"
+            style={{
+              left: mote.x,
+              top: mote.y,
+              height: mote.s,
+              width: mote.s,
+              animationDelay: `${mote.d}s`,
+              animationDuration: `${6 + mote.s}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div
+        style={{ transform: `translateY(${-drift * 90}px)`, opacity: Math.max(0, 1 - drift / 0.65) }}
+        className="container-page relative z-20 flex flex-1 flex-col items-center justify-center pt-28 pb-10 text-center"
+      >
+        <p className="eyebrow text-signal-400">RFID · RTLS · IoT</p>
+
+        <h1 className="mt-6 font-sans text-[clamp(2.2rem,min(7vw,12svh),5.5rem)] font-extrabold uppercase leading-[0.95] tracking-[-0.03em]">
+          <Words text={line[0]} delay={80} />
+          <Words text={line[1]} delay={260} />
+          <Words text={accent} delay={440} className="font-display text-shimmer lowercase italic tracking-normal" />
+        </h1>
+
+        <p className="fade-up-slow mt-7 max-w-xl text-base leading-relaxed text-ink-200 sm:text-lg">{tagline}</p>
+
+        <div className="fade-up-slow mt-9 flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
+          <Link href={sectionPath('contact', locale)} className="btn-pill btn-pill-brand hover:brightness-110">
+            {t('cta.quote', locale)}
+          </Link>
+          <Link
+            href={sectionPath('products', locale)}
+            className="btn-pill btn-pill-ghost hover:border-signal-400 hover:text-signal-400"
+          >
+            {t('cta.explore', locale)}
+          </Link>
+        </div>
+      </div>
+
+      <div className="marquee-pause relative z-20 overflow-hidden border-t border-ink-800/80 py-4">
+        <div className="animate-marquee flex w-max">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center" aria-hidden={copy === 1}>
+              {TICKER[locale].map((word) => (
+                <span
+                  key={`${copy}-${word}`}
+                  className="mx-7 font-display text-lg font-semibold uppercase tracking-tight text-ink-100/25 sm:text-xl"
+                >
+                  {word} <span className="text-signal-500/50">✦</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
