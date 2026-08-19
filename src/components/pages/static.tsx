@@ -44,6 +44,81 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
         </div>
       </div>
     </Section>
+
+    {/* Vizyon ve misyon metni firmanın kendi kurumsal sayfasından geliyor. */}
+    <Section tone="tint">
+      <div className="grid gap-12 lg:grid-cols-2">
+        <div>
+          <p className="eyebrow">{locale === 'tr' ? 'Vizyon' : 'Vision'}</p>
+          <h2 className="mt-3 text-h2 font-semibold">
+            {locale === 'tr'
+              ? 'Yerli üretim gücüyle küresel ölçekte rekabet'
+              : 'Competing globally on Turkish-made production'}
+          </h2>
+          <span aria-hidden className="rule-gold mt-5" />
+          <p className="mt-5 leading-relaxed text-muted">
+            {locale === 'tr'
+              ? 'RFID ve IoT teknolojilerinde yerli üretim gücüyle küresel ölçekte rekabet eden bir teknoloji markası olmak. Depo, üretim ve lojistik sektörlerinde tam izlenebilirlik sağlayan çözümler geliştirerek işletmelerin dijital dönüşümüne yön vermek.'
+              : 'To be a technology brand that competes globally on Turkish-made production in RFID and IoT. To shape the digital transformation of businesses with solutions that deliver full traceability across warehousing, manufacturing and logistics.'}
+          </p>
+        </div>
+
+        <div>
+          <p className="eyebrow">{locale === 'tr' ? 'Misyon' : 'Mission'}</p>
+          <h2 className="mt-3 text-h2 font-semibold">
+            {locale === 'tr' ? 'Veriye dayalı görünürlük ve kontrol' : 'Visibility and control, built on data'}
+          </h2>
+          <span aria-hidden className="rule-gold mt-5" />
+          <ul className="mt-5 space-y-3 text-sm leading-relaxed text-muted">
+            {(locale === 'tr'
+              ? [
+                  'Sürecin her adımında veri temelli görünürlük, verimlilik ve kontrol sağlayan akıllı sistemler sunmak.',
+                  'Endüstriyel dayanıklılığı yüksek, yerli mühendislikle geliştirilen RFID donanım ve yazılım çözümleriyle rekabet gücünü artırmak.',
+                  'Teknolojide dışa bağımlılığı azaltarak Türkiye’nin dijital endüstri altyapısına katma değer sağlamak.',
+                  'Ar-Ge çalışmalarıyla Endüstri 4.0 ve IoT ekosisteminde öncü çözümler üretmek.',
+                ]
+              : [
+                  'Deliver systems that give data-driven visibility, efficiency and control at every step of a process.',
+                  'Raise competitiveness with industrially durable RFID hardware and software developed by Turkish engineering.',
+                  'Reduce dependence on imported technology and add value to Turkey’s digital industrial base.',
+                  'Produce leading solutions in the Industry 4.0 and IoT ecosystem through R&D.',
+                ]
+            ).map((item) => (
+              <li key={item} className="flex gap-3">
+                <span aria-hidden className="mt-1 text-signal-600">
+                  ▸
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Section>
+
+    {/* Marka ve iş ortaklığı: tescil ve distribütörlük firmanın kendi beyanı. */}
+    <Section>
+      <div className="grid gap-10 md:grid-cols-2">
+        <div className="card-surface p-7">
+          <p className="eyebrow">{locale === 'tr' ? 'Tescilli marka' : 'Registered trademark'}</p>
+          <h3 className="mt-3 text-h3 font-semibold">GUGALABELTECH®</h3>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            {locale === 'tr'
+              ? 'GUGALABELTECH®, GUGA Bilişim Teknoloji’nin Türk Patent ve Marka Kurumu tarafından tescillenmiş markasıdır. RFID etiket, otomatik tanıma sistemleri, IoT cihazları ve RTLS yazılımları bu marka altında geliştirilir.'
+              : 'GUGALABELTECH® is a trademark of GUGA Bilişim Teknoloji, registered with the Turkish Patent and Trademark Office. RFID labels, automatic identification systems, IoT devices and RTLS software are developed under it.'}
+          </p>
+        </div>
+        <div className="card-surface p-7">
+          <p className="eyebrow">{locale === 'tr' ? 'Distribütörlük' : 'Distributorship'}</p>
+          <h3 className="mt-3 text-h3 font-semibold">TENHANYUN</h3>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            {locale === 'tr'
+              ? 'RFID okuyucu, anten, el terminali ve endüstriyel IoT donanımında TENHANYUN ile resmi distribütörlük ve stratejik iş ortaklığı yürütüyoruz. Projelerde donanım seçimi bu portföyden yapılır, gerektiğinde projeye özel üretim devreye girer.'
+              : 'We hold an official distributorship and strategic partnership with TENHANYUN for RFID readers, antennas, handheld terminals and industrial IoT hardware. Project hardware is selected from that portfolio, with project-specific production where needed.'}
+          </p>
+        </div>
+      </div>
+    </Section>
   </>
 )
 
