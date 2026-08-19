@@ -1033,14 +1033,14 @@ export interface Navigation {
     | {
         label: string;
         /**
-         * Site içi bağlantılar dil ön ekiyle yazılmaz: /urunler, /cozumler/rfid-depo-yonetimi
+         * Türkçe için /urunler, İngilizce için /en/products biçiminde yazın.
          */
         href: string;
         children?:
           | {
               label: string;
               /**
-               * Site içi bağlantılar dil ön ekiyle yazılmaz: /urunler, /cozumler/rfid-depo-yonetimi
+               * Türkçe için /urunler, İngilizce için /en/products biçiminde yazın.
                */
               href: string;
               id?: string | null;
@@ -1056,7 +1056,7 @@ export interface Navigation {
           | {
               label: string;
               /**
-               * Site içi bağlantılar dil ön ekiyle yazılmaz: /urunler, /cozumler/rfid-depo-yonetimi
+               * Türkçe için /urunler, İngilizce için /en/products biçiminde yazın.
                */
               href: string;
               id?: string | null;

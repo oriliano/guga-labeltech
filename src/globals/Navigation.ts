@@ -8,8 +8,12 @@ const linkFields = [
     name: 'href',
     type: 'text' as const,
     required: true,
+    // Adres de dile bağlı: bölüm adresleri iki dilde farklı (/urunler ve
+    // /en/products). Ortak tek alan olduğunda ikinci dilin adresi birincisini
+    // eziyor ve Türkçe menü İngilizce sayfalara gidiyordu.
+    localized: true,
     label: 'Adres',
-    admin: { description: 'Site içi bağlantılar dil ön ekiyle yazılmaz: /urunler, /cozumler/rfid-depo-yonetimi' },
+    admin: { description: 'Türkçe için /urunler, İngilizce için /en/products biçiminde yazın.' },
   },
 ]
 
