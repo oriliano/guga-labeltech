@@ -15,6 +15,7 @@ import {
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
+import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
 import { postImage, solutionImage } from '@/lib/imagery'
 import { alternatePath, matchSection, sectionPath, type Section } from '@/lib/routes'
 
@@ -45,7 +46,7 @@ const titleFor = (section: Section, locale: Locale) =>
   })[section]
 
 export const generateMetadata = async ({ params }: { params: Promise<Params> }): Promise<Metadata> => {
-  const { locale, section, slug, isHome } = resolve((await params).segments)
+  const { locale, section, slug, extra, isHome } = resolve((await params).segments)
   const settings = await getSiteSettings(locale)
 
   const alternates = {
@@ -61,6 +62,20 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
       title: { absolute: `${settings?.brandName ?? 'GUGA LABELTECH'} — ${settings?.tagline ?? 'RFID, IoT ve izlenebilirlik'}` },
       description: settings?.tagline ?? undefined,
       alternates,
+    }
+  }
+
+  if (section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra[0]) {
+    const category = categoryBySlug(locale, extra[0])
+    if (category) {
+      return {
+        title: category.label[locale],
+        description: category.lead[locale],
+        alternates: {
+          canonical: categoryPath(category, locale),
+          languages: { tr: categoryPath(category, 'tr'), en: categoryPath(category, 'en') },
+        },
+      }
     }
   }
 
@@ -86,9 +101,16 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
 
 const Page = async ({ params }: { params: Promise<Params> }) => {
   const { locale, section, slug, extra, isHome } = resolve((await params).segments)
-  if (extra.length) notFound()
+  const isCategory = section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra.length === 1
+  if (extra.length && !isCategory) notFound()
 
-  const alternateHref = alternatePath(locale, section, slug)
+  // A category page has its own localized segments, so the language switch has to
+  // be built from the category rather than from the section alone.
+  const otherLocale: Locale = locale === 'tr' ? 'en' : 'tr'
+  const categoryOnPage = isCategory ? categoryBySlug(locale, extra[0]) : undefined
+  const alternateHref = categoryOnPage
+    ? categoryPath(categoryOnPage, otherLocale)
+    : alternatePath(locale, section, slug)
 
   const content = await (async () => {
     if (isHome) {
@@ -121,6 +143,36 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
 
     switch (section) {
       case 'products': {
+        if (slug === CATEGORY_SEGMENT[locale] && extra[0]) {
+          const category = categoryBySlug(locale, extra[0])
+          if (!category) notFound()
+          const products = await listProducts({ locale, where: { category: { equals: category.value } } })
+          return (
+            <>
+              <BreadcrumbJsonLd locale={locale} section="products" title={category.label[locale]} />
+              <ListingPage
+                title={category.label[locale]}
+                lead={category.lead[locale]}
+                items={products}
+                emptyText={t('empty.products', locale)}
+                hrefFor={(item) => sectionPath('products', locale, item.slug)}
+                eyebrowOf={(item) => item.model ?? undefined}
+                bodyOf={(item) => item.excerpt ?? undefined}
+                visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
+                filters={{
+                  label: t('label.category', locale),
+                  items: CATEGORIES.map((entry) => ({
+                    label: entry.label[locale],
+                    href: categoryPath(entry, locale),
+                    active: entry.value === category.value,
+                  })),
+                  allHref: sectionPath('products', locale),
+                  allLabel: t('cta.allProducts', locale),
+                }}
+              />
+            </>
+          )
+        }
         if (slug) {
           const product = await findBySlug('products', slug, locale)
           if (!product) notFound()
@@ -147,6 +199,16 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             eyebrowOf={(item) => item.model ?? undefined}
             bodyOf={(item) => item.excerpt ?? undefined}
             visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
+            filters={{
+              label: t('label.category', locale),
+              items: CATEGORIES.map((entry) => ({
+                label: entry.label[locale],
+                href: categoryPath(entry, locale),
+                active: false,
+              })),
+              allHref: sectionPath('products', locale),
+              allLabel: t('cta.allProducts', locale),
+            }}
           />
         )
       }

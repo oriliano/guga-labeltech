@@ -12,9 +12,9 @@ const dirname = path.dirname(__filename)
  * Anahtar: legacy slug (src/seed/scraped.json içindeki pages[].slug ile birebir).
  * Değer: yeni yol (src/lib/routes.ts SECTION_SLUGS.tr karşılıkları).
  *
- * Eski ürün sayfaları kategori listeleriydi; yeni sitede ürünler tek liste
- * altında toplandığı için hepsi /urunler'e gider. Bire bir karşılığı olan
- * çözüm ve blog yazıları kendi detay sayfalarına gider.
+ * Eski ürün sayfaları kategori listeleriydi ve yeni sitede karşılıkları var, bu
+ * yüzden her biri kendi kategori sayfasına gider. Çözüm ve blog yazıları kendi
+ * detay sayfalarına gider.
  */
 const LEGACY_ROUTES: Record<string, string> = {
   // Ana sayfa
@@ -24,15 +24,15 @@ const LEGACY_ROUTES: Record<string, string> = {
   'i̇leti̇şi̇m': '/iletisim',
 
   // Ürün kategorileri → tek ürün listesi
-  'rfid-donanım': '/urunler',
-  'rfid-etiket-1': '/urunler',
-  'rfid-endüstriyel-tag': '/urunler',
-  'endüstriyel-etiketler': '/urunler',
-  'kart-ürünlerimiz': '/urunler',
-  ribon: '/urunler',
-  'yaka-i̇pleri': '/urunler',
-  'kütüphane-ürünlerimiz': '/urunler',
-  'perakende-ürünlerimiz': '/urunler',
+  'rfid-donanım': '/urunler/kategori/rfid-donanim',
+  'rfid-etiket-1': '/urunler/kategori/rfid-etiket',
+  'rfid-endüstriyel-tag': '/urunler/kategori/rfid-endustriyel-tag',
+  'endüstriyel-etiketler': '/urunler/kategori/endustriyel-etiketler',
+  'kart-ürünlerimiz': '/urunler/kategori/kart-urunleri',
+  ribon: '/urunler/kategori/ribon',
+  'yaka-i̇pleri': '/urunler/kategori/yaka-ipleri',
+  'kütüphane-ürünlerimiz': '/urunler/kategori/kutuphane-urunleri',
+  'perakende-ürünlerimiz': '/urunler/kategori/perakende-urunleri',
 
   // Çözümler (yeni slug'lar src/seed/solutions.ts'ten)
   'rfid-depo-yönetimi': '/cozumler/rfid-depo-yonetimi',

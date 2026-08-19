@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { getNavigation, getSiteSettings } from '@/lib/data'
+import { CATEGORIES, categoryPath } from '@/lib/categories'
 import { t, type Locale } from '@/lib/i18n'
 import { sectionPath } from '@/lib/routes'
 
@@ -13,7 +14,14 @@ import { WhatsAppButton } from './WhatsAppButton'
 
 /** Falls back to a generated menu when the Navigation global has not been filled in. */
 const defaultNav = (locale: Locale): NavItem[] => [
-  { label: t('nav.products', locale), href: sectionPath('products', locale) },
+  {
+    label: t('nav.products', locale),
+    href: sectionPath('products', locale),
+    children: CATEGORIES.map((category) => ({
+      label: category.label[locale],
+      href: categoryPath(category, locale),
+    })),
+  },
   { label: t('nav.solutions', locale), href: sectionPath('solutions', locale) },
   { label: t('nav.references', locale), href: sectionPath('references', locale) },
   { label: t('nav.export', locale), href: sectionPath('export', locale) },

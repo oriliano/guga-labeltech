@@ -4,6 +4,7 @@ import type { MetadataRoute } from 'next'
 export const dynamic = 'force-dynamic'
 
 import { listPosts, listProducts, listReferences, listSolutions } from '@/lib/data'
+import { CATEGORIES, categoryPath } from '@/lib/categories'
 import { LOCALES, type Locale } from '@/lib/i18n'
 import { absoluteUrl, sectionPath, type Section } from '@/lib/routes'
 
@@ -21,6 +22,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   for (const locale of LOCALES as readonly Locale[]) {
     entries.push(entry(locale === 'tr' ? '/' : '/en', 1))
     for (const section of STATIC_SECTIONS) entries.push(entry(sectionPath(section, locale), 0.8))
+    for (const category of CATEGORIES) entries.push(entry(categoryPath(category, locale), 0.75))
 
     const [products, solutions, references, posts] = await Promise.all([
       listProducts({ locale, limit: 500 }),
