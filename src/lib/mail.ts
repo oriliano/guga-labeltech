@@ -184,6 +184,7 @@ export const sendLeadMail = async (lead: LeadMail) => {
     try {
       await sendWithResend({
         to: lead.email,
+        replyTo: to[0] || 'info@gugalabeltech.com',
         subject: lead.locale === 'tr' ? 'Talebiniz bize ulaştı' : 'We received your request',
         text: tesekkurMetni,
         html: tesekkur,
@@ -224,6 +225,7 @@ export const sendLeadMail = async (lead: LeadMail) => {
     await mailer.sendMail({
       from,
       to: lead.email,
+      replyTo: to[0] || 'info@gugalabeltech.com',
       subject: lead.locale === 'tr' ? 'Talebiniz bize ulaştı' : 'We received your request',
       text: tesekkurMetni,
       html: tesekkur,
