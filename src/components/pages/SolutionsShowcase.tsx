@@ -16,7 +16,15 @@ type Item = {
   image?: string
 }
 
-export const SolutionsShowcase = ({ locale, items }: { locale: Locale; items: Item[] }) => {
+export const SolutionsShowcase = ({
+  locale,
+  items,
+  headingLevel = 'h1',
+}: {
+  locale: Locale
+  items: Item[]
+  headingLevel?: 'h1' | 'h2'
+}) => {
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
@@ -75,6 +83,7 @@ export const SolutionsShowcase = ({ locale, items }: { locale: Locale; items: It
   }, [items.length])
 
   const href = (slug: string) => sectionPath('solutions', locale, slug)
+  const Heading = headingLevel
 
   return (
     <section
@@ -86,9 +95,9 @@ export const SolutionsShowcase = ({ locale, items }: { locale: Locale; items: It
         <div ref={trackRef} className="flex flex-col gap-16 py-24 will-change-transform lg:h-full lg:w-max lg:flex-row lg:items-center lg:gap-0 lg:py-0 motion-reduce:lg:h-auto motion-reduce:lg:w-auto motion-reduce:lg:flex-col motion-reduce:lg:gap-16 motion-reduce:lg:py-24">
           <div className="container-page flex shrink-0 flex-col justify-center lg:mx-0 lg:h-full lg:w-[42vw] lg:min-w-[32rem] lg:pl-12 lg:pr-10">
             <span className="eyebrow text-signal-400">{locale === 'tr' ? 'Çözümler' : 'Solutions'}</span>
-            <h1 className="mt-4 max-w-xl text-h1 font-semibold leading-[0.95]">
+            <Heading className="mt-4 max-w-xl text-h1 font-semibold leading-[0.95]">
               {locale === 'tr' ? 'Sektörünüze göre çözümler' : 'Solutions built for your sector'}
-            </h1>
+            </Heading>
             <p className="mt-6 max-w-md text-base leading-relaxed text-ink-300">
               {locale === 'tr'
                 ? 'Aynı teknoloji, sektöre göre farklı kurgu. Çözümleri keşfetmek için kaydırın.'

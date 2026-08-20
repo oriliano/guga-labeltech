@@ -11,7 +11,6 @@ import {
 } from '@/components/pages'
 import { AboutPage } from '@/components/pages/about'
 import { KvkkPage, PrivacyPage } from '@/components/pages/legal'
-import { SolutionsShowcase } from '@/components/pages/SolutionsShowcase'
 import { ContactPage, ExportPage } from '@/components/pages/static'
 import { ProductGlyph } from '@/components/site/ProductGlyph'
 import { Shell } from '@/components/site/Shell'
@@ -146,9 +145,9 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
     if (legal) return legal === 'kvkk' ? <KvkkPage locale={locale} /> : <PrivacyPage locale={locale} />
 
     if (isHome) {
-      const [settings, posts] = await Promise.all([
+      const [settings, solutions] = await Promise.all([
         getSiteSettings(locale),
-        listPosts({ locale, limit: 3 }),
+        listSolutions({ locale }),
       ])
       return (
         <HomePage
@@ -159,7 +158,14 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               ? 'RFID etiket ve donanım üretimi, IoT ve RTLS yazılımlarıyla depodan perakendeye tam izlenebilirlik.'
               : 'RFID tag and hardware manufacturing with IoT and RTLS software for full traceability.')
           }
-          posts={posts}
+          solutions={solutions.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            slug: item.slug,
+            sector: item.sector ?? undefined,
+            excerpt: item.excerpt ?? undefined,
+            image: imageUrl(item.heroImage, solutionImage(item.slug)),
+          }))}
         />
       )
     }
@@ -285,16 +291,19 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         }
         const solutions = await listSolutions({ locale })
         return (
-          <SolutionsShowcase
-            locale={locale}
-            items={solutions.map((item: any) => ({
-              id: item.id,
-              title: item.title,
-              slug: item.slug,
-              sector: item.sector ?? undefined,
-              excerpt: item.excerpt ?? undefined,
-              image: imageUrl(item.heroImage, solutionImage(item.slug)),
-            }))}
+          <ListingPage
+            title={t('nav.solutions', locale)}
+            lead={
+              locale === 'tr'
+                ? 'Sektöre özel RFID, RTLS ve IoT kurguları.'
+                : 'Sector-specific RFID, RTLS and IoT deployments.'
+            }
+            items={solutions}
+            emptyText={t('empty.products', locale)}
+            hrefFor={(item) => sectionPath('solutions', locale, item.slug)}
+            eyebrowOf={(item) => item.sector ?? undefined}
+            bodyOf={(item) => item.excerpt ?? undefined}
+            imageOf={(item) => imageUrl(item.heroImage, solutionImage(item.slug))}
           />
         )
       }

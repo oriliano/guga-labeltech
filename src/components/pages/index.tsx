@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { ProductGlyph } from '@/components/site/ProductGlyph'
+import { SolutionsShowcase } from '@/components/pages/SolutionsShowcase'
 import { Reveal, TextReveal } from '@/components/site/Reveal'
 import { RichText } from '@/components/site/RichText'
 import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, StatTile } from '@/components/site/ui'
@@ -32,32 +33,22 @@ const Figure = ({ media, priority = false }: { media: unknown; priority?: boolea
 export const HomePage = ({
   locale,
   tagline,
-  posts,
+  solutions,
 }: {
   locale: Locale
   tagline: string
-  posts: any[]
+  solutions: {
+    id: string | number
+    title: string
+    slug: string
+    sector?: string
+    excerpt?: string
+    image?: string
+  }[]
 }) => (
   <>
     <Hero locale={locale} tagline={tagline} />
-
-    {posts.length ? (
-      <Section tone="tint">
-        <SectionHeading eyebrow={t('nav.insights', locale)} title={locale === 'tr' ? 'Bilgi Merkezi' : 'Insights'} />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {posts.slice(0, 3).map((post) => (
-            <Card
-              key={post.id}
-              href={sectionPath('insights', locale, post.slug)}
-              title={post.title}
-              body={post.excerpt}
-              footer={t('cta.readMore', locale)}
-              image={mediaOf(post.coverImage)?.url ?? postImage(post.slug)}
-            />
-          ))}
-        </div>
-      </Section>
-    ) : null}
+    <SolutionsShowcase locale={locale} items={solutions} headingLevel="h2" />
   </>
 )
 
