@@ -16,6 +16,7 @@ import { Products } from './collections/Products'
 import { Solutions } from './collections/Solutions'
 import { Users } from './collections/Users'
 import { Navigation } from './globals/Navigation'
+import { migrations } from './migrations'
 import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -78,10 +79,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || process.env.DATABASE_URL || '',
     },
-    // Schema is synced from the config on boot instead of through migration files.
-    // Fine while this is a single-owner CMS; switch to `payload migrate` before any
-    // second environment starts sharing the database.
+    // Gelistirmede sema config'ten dogrudan esitleniyor. Uretimde Payload bunu
+    // yapmiyor (NODE_ENV production ise pushDevSchema atlaniyor), o yuzden orada
+    // bekleyen gocler acilista uygulaniyor.
     push: true,
+    prodMigrations: migrations,
   }),
   cors: [serverURL],
   csrf: [serverURL],
