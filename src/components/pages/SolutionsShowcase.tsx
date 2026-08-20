@@ -130,7 +130,7 @@ export const SolutionsShowcase = ({
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 46vw, 100vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="object-cover saturate-[0.68] brightness-[1.02] contrast-[1.04] transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   ) : null}
                   <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/65 to-transparent" />
