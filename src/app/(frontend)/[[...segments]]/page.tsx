@@ -230,10 +230,12 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             lead: category.lead[locale],
             href: categoryPath(category, locale),
             total: inCategory.length,
+            // Etiket oldugu gibi kullaniliyor; Turkce kucultme "RFID"yi "rfıd"
+            // yapip marka adini bozuyordu.
             moreLabel:
               locale === 'tr'
-                ? `Tüm ${category.label[locale].toLocaleLowerCase('tr')} (${inCategory.length})`
-                : `All ${category.label[locale].toLowerCase()} (${inCategory.length})`,
+                ? `Tüm ${category.label[locale]} (${inCategory.length})`
+                : `All ${category.label[locale]} (${inCategory.length})`,
             items: inCategory.slice(0, PREVIEW).map((item: any) => ({
               id: item.id,
               title: item.title,
