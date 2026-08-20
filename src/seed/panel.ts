@@ -20,7 +20,7 @@ import type { Locale } from '../lib/i18n'
 const NAV_LABELS = {
   products: { tr: 'Ürünler', en: 'Products' },
   solutions: { tr: 'Çözümler', en: 'Solutions' },
-  export: { tr: 'İhracat', en: 'Export' },
+  export: { tr: 'Projeler', en: 'Projects' },
   insights: { tr: 'Bilgi Merkezi', en: 'Insights' },
   about: { tr: 'Kurumsal', en: 'Company' },
   contact: { tr: 'İletişim', en: 'Contact' },

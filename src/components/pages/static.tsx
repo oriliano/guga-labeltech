@@ -12,13 +12,13 @@ export const ExportPage = ({ locale, settings }: { locale: Locale; settings: any
     <Section>
       <SectionHeading
         eyebrow={t('nav.export', locale)}
-        title={locale === 'tr' ? 'İhracat ve distribütörlük' : 'Export and distribution'}
+        title={locale === 'tr' ? 'Projeler ve distribütörlük' : 'Projects and distribution'}
         as="h1"
         lead={
           settings?.exportIntro ??
           (locale === 'tr'
-            ? 'Projeye özel üretim, OEM etiketleme ve distribütörlük iş birlikleri için doğrudan ihracat ekibimizle çalışın.'
-            : 'Work directly with our export team for project-specific production, OEM labelling and distribution partnerships.')
+            ? 'Projeye özel üretim, OEM etiketleme ve distribütörlük iş birlikleri için doğrudan proje ekibimizle çalışın.'
+            : 'Work directly with our project team for project-specific production, OEM labelling and distribution partnerships.')
         }
       />
       <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -71,7 +71,7 @@ export const ExportPage = ({ locale, settings }: { locale: Locale; settings: any
           {settings?.shippedCountries?.length ? (
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
-                {locale === 'tr' ? 'İhracat yapılan ülkeler' : 'Countries served'}
+                {locale === 'tr' ? 'Hizmet verilen ülkeler' : 'Countries served'}
               </h3>
               <p className="mt-2 text-sm">{settings.shippedCountries.map((c: any) => c.country).join(' · ')}</p>
             </div>
@@ -82,7 +82,7 @@ export const ExportPage = ({ locale, settings }: { locale: Locale; settings: any
 
     <Section tone="tint">
       <div className="mx-auto max-w-2xl">
-        <SectionHeading title={locale === 'tr' ? 'İhracat talebi' : 'Export enquiry'} align="center" />
+        <SectionHeading title={locale === 'tr' ? 'Proje talebi' : 'Project enquiry'} align="center" />
         <div className="mt-8">
           <QuoteForm locale={locale} sourcePath="export" />
         </div>

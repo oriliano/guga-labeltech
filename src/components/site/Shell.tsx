@@ -43,7 +43,7 @@ export const Shell = async ({
 
   const headerItems: NavItem[] = navigation?.header?.length
     ? navigation.header.map((item) => ({
-        label: item.label,
+        label: item.href === sectionPath('export', locale) ? t('nav.export', locale) : item.label,
         href: item.href,
         children: item.children?.map((child) => ({ label: child.label, href: child.href })),
       }))
@@ -52,7 +52,10 @@ export const Shell = async ({
   const footerColumns = navigation?.footerColumns?.length
     ? navigation.footerColumns.map((column) => ({
         title: column.title,
-        links: column.links?.map((link) => ({ label: link.label, href: link.href })),
+        links: column.links?.map((link) => ({
+          label: link.href === sectionPath('export', locale) ? t('nav.export', locale) : link.label,
+          href: link.href,
+        })),
       }))
     : [{ title: t('nav.solutions', locale), links: defaultNav(locale).map(({ label, href }) => ({ label, href })) }]
 

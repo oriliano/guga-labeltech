@@ -9,17 +9,9 @@ import { HERO_READER, HERO_READER_MP4, HERO_READER_WEBM } from '@/lib/imagery'
 import { sectionPath } from '@/lib/routes'
 
 const TICKER: Record<Locale, string[]> = {
-  tr: ['RFID', 'RTLS', 'IoT', 'Depo', 'Perakende', 'Tekstil', 'Sağlık', 'Lojistik', 'Kuyum', 'İhracat'],
-  en: ['RFID', 'RTLS', 'IoT', 'Warehouse', 'Retail', 'Textile', 'Healthcare', 'Logistics', 'Jewellery', 'Export'],
+  tr: ['RFID', 'RTLS', 'IoT', 'Depo', 'Perakende', 'Tekstil', 'Sağlık', 'Lojistik', 'Kuyum', 'Projeler'],
+  en: ['RFID', 'RTLS', 'IoT', 'Warehouse', 'Retail', 'Textile', 'Healthcare', 'Logistics', 'Jewellery', 'Projects'],
 }
-
-const MOTES = [
-  { x: '16%', y: '26%', s: 4, d: 0 },
-  { x: '30%', y: '68%', s: 3, d: 1.4 },
-  { x: '70%', y: '30%', s: 4, d: 2.2 },
-  { x: '84%', y: '60%', s: 3, d: 0.7 },
-  { x: '56%', y: '78%', s: 3, d: 2.7 },
-]
 
 /** Maskeli kelime kayışı: her kelime kendi kutusunda aşağıdan yukarı geliyor. */
 const Words = ({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) => (
@@ -114,23 +106,6 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
       <div className="pointer-events-none absolute inset-0 z-0 bg-stage-glow" />
       <div className="grain-dark" aria-hidden />
 
-      <div className="pointer-events-none absolute inset-0 z-0 hidden lg:block" aria-hidden>
-        {MOTES.map((mote) => (
-          <span
-            key={`${mote.x}-${mote.y}`}
-            className="animate-floaty absolute rounded-full bg-signal-400/40 blur-[1px]"
-            style={{
-              left: mote.x,
-              top: mote.y,
-              height: mote.s,
-              width: mote.s,
-              animationDelay: `${mote.d}s`,
-              animationDuration: `${6 + mote.s}s`,
-            }}
-          />
-        ))}
-      </div>
-
       <div
         style={{ transform: `translateY(${-drift * 90}px)`, opacity: Math.max(0, 1 - drift / 0.65) }}
         className="container-page relative z-20 flex flex-1 flex-col items-center justify-center pt-28 pb-10 text-center"
@@ -167,7 +142,7 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
                   key={`${copy}-${word}`}
                   className="mx-7 font-display text-lg font-semibold uppercase tracking-tight text-ink-100/25 sm:text-xl"
                 >
-                  {word} <span className="text-signal-500/50">✦</span>
+                  {word}
                 </span>
               ))}
             </div>

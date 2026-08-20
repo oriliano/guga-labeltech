@@ -291,20 +291,6 @@
   animation-play-state: paused;
 }
 
-@keyframes guga-floaty {
-  0%,
-  to {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-.animate-floaty {
-  animation: guga-floaty 7s ease-in-out infinite;
-}
-
 /* Hap butonlar: referanstaki agirlik ve harf araligi, marka renkleriyle. */
 @utility btn-pill {
   display: inline-flex;
@@ -335,7 +321,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
-  .animate-floaty,
   .text-shimmer {
     animation: none;
   }

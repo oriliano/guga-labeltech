@@ -15,7 +15,7 @@ const strings: Dictionary = {
   'nav.solutions': { tr: 'Çözümler', en: 'Solutions' },
   'nav.insights': { tr: 'Bilgi Merkezi', en: 'Insights' },
   'nav.about': { tr: 'Kurumsal', en: 'Company' },
-  'nav.export': { tr: 'İhracat', en: 'Export' },
+  'nav.export': { tr: 'Projeler', en: 'Projects' },
   'nav.contact': { tr: 'İletişim', en: 'Contact' },
   'cta.quote': { tr: 'Teklif Al', en: 'Request a Quote' },
   'cta.explore': { tr: 'Ürünleri İncele', en: 'Browse Products' },

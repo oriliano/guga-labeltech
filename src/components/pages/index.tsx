@@ -32,77 +32,14 @@ const Figure = ({ media, priority = false }: { media: unknown; priority?: boolea
 export const HomePage = ({
   locale,
   tagline,
-  solutions,
-  products,
   posts,
 }: {
   locale: Locale
   tagline: string
-  solutions: any[]
-  products: any[]
   posts: any[]
 }) => (
   <>
     <Hero locale={locale} tagline={tagline} />
-
-    <Section>
-      <SectionHeading
-        eyebrow={t('nav.solutions', locale)}
-        title={locale === 'tr' ? 'Sektörünüze göre çözümler' : 'Solutions built per sector'}
-        lead={
-          locale === 'tr'
-            ? 'Aynı teknoloji, sektöre göre farklı kurgu. Depodan kuyuma, hastaneden tekstile.'
-            : 'One technology, configured per sector — warehousing, retail, healthcare, textiles and more.'
-        }
-      />
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {solutions.slice(0, 6).map((solution, index) => (
-          <Reveal key={solution.id} delay={index * 70} className="h-full">
-          <Card
-            key={solution.id}
-            href={sectionPath('solutions', locale, solution.slug)}
-            eyebrow={solution.sector ?? undefined}
-            title={solution.title}
-            body={solution.excerpt ?? undefined}
-            footer={t('cta.readMore', locale)}
-            image={mediaOf(solution.heroImage)?.url ?? solutionImage(solution.slug)}
-          />
-          </Reveal>
-        ))}
-      </div>
-      <div className="mt-8">
-        <ButtonLink href={sectionPath('solutions', locale)} variant="secondary">
-          {t('cta.allSolutions', locale)}
-        </ButtonLink>
-      </div>
-    </Section>
-
-    <Section tone="tint">
-      <SectionHeading
-        eyebrow={t('nav.products', locale)}
-        title={locale === 'tr' ? 'Öne çıkan ürünler' : 'Featured products'}
-      />
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.slice(0, 8).map((product, index) => (
-          <Reveal key={product.id} delay={index * 60} className="h-full">
-          <Card
-            key={product.id}
-            href={sectionPath('products', locale, product.slug)}
-            eyebrow={product.model ?? undefined}
-            title={product.title}
-            body={product.excerpt ?? undefined}
-            image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
-            visual={<ProductGlyph category={product.category} className="h-full w-full" />}
-          />
-          </Reveal>
-        ))}
-      </div>
-      <div className="mt-8">
-        <ButtonLink href={sectionPath('products', locale)} variant="secondary">
-          {t('cta.allProducts', locale)}
-        </ButtonLink>
-      </div>
-    </Section>
 
     {posts.length ? (
       <Section tone="tint">
