@@ -88,7 +88,7 @@ export const SolutionsShowcase = ({
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-clip border-b border-ink-800 bg-ink-950 text-ink-100"
+      className="relative overflow-clip border-b border-white/10 bg-[#111111] text-ink-100"
       style={distance ? { height: `calc(100svh - 5rem + ${distance}px)` } : undefined}
     >
       <div className="lg:sticky lg:top-20 lg:h-[calc(100svh-5rem)] lg:overflow-hidden motion-reduce:lg:relative motion-reduce:lg:top-auto motion-reduce:lg:h-auto motion-reduce:lg:overflow-visible">
@@ -123,17 +123,16 @@ export const SolutionsShowcase = ({
                 >
                   {String(index + 1).padStart(2, '0')}
                 </span>
-                <div className="relative z-10 aspect-[16/11] overflow-hidden rounded-2xl border border-ink-700 shadow-2xl transition-colors duration-500 group-hover:border-signal-500/60">
+                <div className="relative z-10 aspect-[16/11] overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-colors duration-500 group-hover:border-signal-500/60">
                   {item.image ? (
                     <Image
                       src={item.image}
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 46vw, 100vw"
-                      className="object-cover saturate-[0.78] brightness-[1.04] contrast-[1.03] transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="object-cover grayscale-[0.35] saturate-[0.55] brightness-[1.08] contrast-[1.02] transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   ) : null}
-                  <span className="pointer-events-none absolute inset-0 bg-[#d6b58a]/10 mix-blend-color" />
                   <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                 </div>
               </Link>
@@ -157,7 +156,7 @@ export const SolutionsShowcase = ({
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden lg:block motion-reduce:lg:hidden">
           <div className="container-page flex items-center gap-5 pb-7">
             <span className="text-sm tabular-nums text-signal-400">{String(active + 1).padStart(2, '0')}</span>
-            <div className="relative h-px flex-1 overflow-hidden bg-ink-700">
+            <div className="relative h-px flex-1 overflow-hidden bg-white/15">
               <div
                 ref={progressRef}
                 className="absolute inset-0 origin-left bg-gradient-to-r from-signal-500 to-signal-300"
