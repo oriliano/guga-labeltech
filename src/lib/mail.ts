@@ -80,7 +80,9 @@ export const sendLeadMail = async (lead: LeadMail) => {
     .filter(Boolean)
 
   const bildirim = `
-    <h2 style="font:600 18px system-ui">Yeni teklif talebi</h2>
+    <!doctype html>
+    <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+    <body><h2 style="font:600 18px system-ui">Yeni teklif talebi</h2>
     <table style="font:14px system-ui;border-collapse:collapse">
       ${row('Ad Soyad', lead.name)}
       ${row('E-posta', lead.email)}
@@ -93,16 +95,39 @@ export const sendLeadMail = async (lead: LeadMail) => {
     </table>
     ${lead.message ? `<p style="font:14px system-ui;white-space:pre-wrap">${escape(lead.message)}</p>` : ''}
     ${lead.adminUrl ? `<p style="font:14px system-ui"><a href="${lead.adminUrl}">Panelde aç</a></p>` : ''}
+    </body></html>
   `
+
+  const bildirimMetni = [
+    'Yeni teklif talebi',
+    `Ad Soyad: ${lead.name}`,
+    `E-posta: ${lead.email}`,
+    lead.company ? `Firma: ${lead.company}` : '',
+    lead.phone ? `Telefon: ${lead.phone}` : '',
+    lead.country ? `Ülke: ${lead.country}` : '',
+    `Form dili: ${lead.locale === 'tr' ? 'Türkçe' : 'İngilizce'}`,
+    lead.sourcePath ? `Geldiği sayfa: ${lead.sourcePath}` : '',
+    lead.message ? `Mesaj:\n${lead.message}` : '',
+    lead.adminUrl ? `Panel: ${lead.adminUrl}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 
   const tesekkur =
     lead.locale === 'tr'
-      ? `<p style="font:14px system-ui">Merhaba ${escape(lead.name)},</p>
+      ? `<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body>
+         <p style="font:14px system-ui">Merhaba ${escape(lead.name)},</p>
          <p style="font:14px system-ui">Talebiniz bize ulaştı. Bir iş günü içinde dönüş yapacağız.</p>
-         <p style="font:14px system-ui">GUGA LABELTECH</p>`
-      : `<p style="font:14px system-ui">Hello ${escape(lead.name)},</p>
+         <p style="font:14px system-ui">GUGA LABELTECH</p></body></html>`
+      : `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head><body>
+         <p style="font:14px system-ui">Hello ${escape(lead.name)},</p>
          <p style="font:14px system-ui">We received your request and will reply within one business day.</p>
-         <p style="font:14px system-ui">GUGA LABELTECH</p>`
+         <p style="font:14px system-ui">GUGA LABELTECH</p></body></html>`
+
+  const tesekkurMetni =
+    lead.locale === 'tr'
+      ? `Merhaba ${lead.name},\n\nTalebiniz bize ulaştı. Bir iş günü içinde dönüş yapacağız.\n\nGUGA LABELTECH`
+      : `Hello ${lead.name},\n\nWe received your request and will reply within one business day.\n\nGUGA LABELTECH`
 
   try {
     await mailer.sendMail({
@@ -110,6 +135,7 @@ export const sendLeadMail = async (lead: LeadMail) => {
       to,
       replyTo: lead.email,
       subject: `Teklif talebi — ${lead.name}${lead.company ? ` (${lead.company})` : ''}`,
+      text: bildirimMetni,
       html: bildirim,
       // Ekler yalnızca firmaya gidiyor; teşekkür maili müşterinin kendi
       // gönderdiği dosyayı geri yollamak zorunda değil.
@@ -130,6 +156,7 @@ export const sendLeadMail = async (lead: LeadMail) => {
       from,
       to: lead.email,
       subject: lead.locale === 'tr' ? 'Talebiniz bize ulaştı' : 'We received your request',
+      text: tesekkurMetni,
       html: tesekkur,
     })
   } catch {
