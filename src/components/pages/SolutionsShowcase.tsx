@@ -130,10 +130,10 @@ export const SolutionsShowcase = ({
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 46vw, 100vw"
-                      className="object-cover grayscale-[0.35] saturate-[0.55] brightness-[1.08] contrast-[1.02] transition-transform duration-700 group-hover:scale-[1.04]"
+                      className="object-cover saturate-[1.12] brightness-[1.02] contrast-[1.04] transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   ) : null}
-                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
                 </div>
               </Link>
 
