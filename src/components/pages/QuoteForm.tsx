@@ -109,15 +109,29 @@ export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: 
 
       <div className="text-sm">
         <span className="mb-1.5 block font-medium">{t('form.attachments', locale)}</span>
-        <input
-          ref={fileInput}
-          type="file"
-          name="files"
-          multiple
-          accept={ACCEPT}
-          onChange={onPick}
-          className="block w-full cursor-pointer rounded-lg border border-dashed border-[var(--card-border)] bg-ink-950/30 px-4 py-3 text-sm text-muted file:mr-4 file:rounded-md file:border-0 file:bg-signal-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-ink-950 hover:border-signal-500"
-        />
+        {/* Tarayicinin kendi "Dosya secilmedi" yazisi gizleniyor: secilen dosyalar
+            asagida kendi listemizde duruyor, ikisi bir arada celisiyordu. */}
+        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-[var(--card-border)] bg-ink-950/30 px-4 py-3 text-sm text-muted hover:border-signal-500">
+          <input
+            ref={fileInput}
+            type="file"
+            name="files"
+            multiple
+            accept={ACCEPT}
+            onChange={onPick}
+            className="sr-only"
+          />
+          <span className="rounded-md bg-signal-500 px-4 py-2 text-sm font-semibold text-ink-950">
+            {locale === 'tr' ? 'Dosya seç' : 'Choose files'}
+          </span>
+          <span>
+            {files.length
+              ? `${files.length} ${locale === 'tr' ? 'dosya seçildi' : files.length === 1 ? 'file selected' : 'files selected'}`
+              : locale === 'tr'
+                ? 'Henüz dosya seçilmedi'
+                : 'No file selected yet'}
+          </span>
+        </label>
         <p className="mt-1.5 text-xs leading-relaxed text-muted">{t('form.attachmentsHint', locale)}</p>
         {files.length ? (
           <ul className="mt-3 space-y-2">
