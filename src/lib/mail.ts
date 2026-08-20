@@ -66,11 +66,49 @@ const transport = () => {
   return cached
 }
 
-export const sendLeadMail = async (lead: LeadMail) => {
-  const mailer = transport()
-  if (!mailer) return { sent: false, reason: 'SMTP yapılandırılmadı' as const }
+type ResendMessage = {
+  to: string | string[]
+  subject: string
+  html: string
+  text: string
+  replyTo?: string
+  attachments?: { name: string; data: Buffer }[]
+}
 
-  const user = process.env.SMTP_USER as string
+const sendWithResend = async (message: ResendMessage) => {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return false
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM || 'GUGA LABELTECH <bildirim@form.gugalabeltech.com>',
+      to: message.to,
+      subject: message.subject,
+      html: message.html,
+      text: message.text,
+      reply_to: message.replyTo,
+      attachments: message.attachments?.map((file) => ({
+        filename: file.name,
+        content: file.data.toString('base64'),
+      })),
+    }),
+  })
+
+  if (!response.ok) {
+    const detail = await response.text()
+    throw new Error(`Resend ${response.status}: ${detail.slice(0, 300)}`)
+  }
+
+  return true
+}
+
+export const sendLeadMail = async (lead: LeadMail) => {
+  const user = process.env.SMTP_USER || 'info@gugalabeltech.com'
   // Gönderen adresi kimlik doğrulanan kutuyla aynı olmalı, yoksa sunucular
   // "sender not allowed" diyip reddediyor; bu yüzden varsayılan SMTP_USER.
   const from = `GUGA LABELTECH <${process.env.MAIL_FROM || user}>`
@@ -128,6 +166,37 @@ export const sendLeadMail = async (lead: LeadMail) => {
     lead.locale === 'tr'
       ? `Merhaba ${lead.name},\n\nTalebiniz bize ulaştı. Bir iş günü içinde dönüş yapacağız.\n\nGUGA LABELTECH`
       : `Hello ${lead.name},\n\nWe received your request and will reply within one business day.\n\nGUGA LABELTECH`
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      await sendWithResend({
+        to,
+        replyTo: lead.email,
+        subject: `Teklif talebi — ${lead.name}${lead.company ? ` (${lead.company})` : ''}`,
+        text: bildirimMetni,
+        html: bildirim,
+        attachments: lead.attachments?.map((file) => ({ name: file.name, data: file.data })),
+      })
+    } catch (error) {
+      return { sent: false, reason: (error as Error).message }
+    }
+
+    try {
+      await sendWithResend({
+        to: lead.email,
+        subject: lead.locale === 'tr' ? 'Talebiniz bize ulaştı' : 'We received your request',
+        text: tesekkurMetni,
+        html: tesekkur,
+      })
+    } catch {
+      return { sent: true as const, reason: 'tesekkur maili gonderilemedi' }
+    }
+
+    return { sent: true as const }
+  }
+
+  const mailer = transport()
+  if (!mailer) return { sent: false, reason: 'E-posta servisi yapılandırılmadı' as const }
 
   try {
     await mailer.sendMail({
