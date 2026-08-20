@@ -69,11 +69,11 @@ export interface Config {
   collections: {
     products: Product;
     solutions: Solution;
-    references: Reference;
     posts: Post;
     media: Media;
     documents: Document;
     leads: Lead;
+    'lead-files': LeadFile;
     events: Event;
     users: User;
     'payload-kv': PayloadKv;
@@ -85,11 +85,11 @@ export interface Config {
   collectionsSelect: {
     products: ProductsSelect<false> | ProductsSelect<true>;
     solutions: SolutionsSelect<false> | SolutionsSelect<true>;
-    references: ReferencesSelect<false> | ReferencesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -367,54 +367,6 @@ export interface Solution {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "references".
- */
-export interface Reference {
-  id: number;
-  title: string;
-  /**
-   * Müşteri adı paylaşılamıyorsa boş bırakın; sektör yeterlidir.
-   */
-  client?: string | null;
-  sector: string;
-  country?: string | null;
-  challenge: string;
-  approach: string;
-  /**
-   * Rakamlı sonuç: "%80" + "sayım süresinde azalma".
-   */
-  results?:
-    | {
-        metric: string;
-        label: string;
-        id?: string | null;
-      }[]
-    | null;
-  image?: (number | null) | Media;
-  relatedSolution?: (number | null) | Solution;
-  /**
-   * Boşsa sayfa başlığı kullanılır. 60 karaktere kadar önerilir.
-   */
-  metaTitle?: string | null;
-  /**
-   * Boşsa özet kullanılır. 150-160 karakter idealdir.
-   */
-  metaDescription?: string | null;
-  /**
-   * Boşsa sayfanın ana görseli kullanılır.
-   */
-  metaImage?: (number | null) | Media;
-  noIndex?: boolean | null;
-  /**
-   * Boş bırakılırsa başlıktan otomatik üretilir. Yayındaki bir sayfanın adresini değiştirmek bağlantıları kırar.
-   */
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -484,6 +436,10 @@ export interface Lead {
   country?: string | null;
   locale?: ('tr' | 'en') | null;
   message?: string | null;
+  /**
+   * Formla gönderilen dosyalar. Bildirim mailine de eklenir.
+   */
+  attachments?: (number | LeadFile)[] | null;
   productInterest?: (number | Product)[] | null;
   sourcePath?: string | null;
   status: 'new' | 'in-progress' | 'quoted' | 'won' | 'lost' | 'spam';
@@ -494,6 +450,26 @@ export interface Lead {
   notes?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Teklif formuyla gönderilen dosyalar. Talebin kendi kaydından da açılabilir.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files".
+ */
+export interface LeadFile {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -574,10 +550,6 @@ export interface PayloadLockedDocument {
         value: number | Solution;
       } | null)
     | ({
-        relationTo: 'references';
-        value: number | Reference;
-      } | null)
-    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -592,6 +564,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'leads';
         value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'lead-files';
+        value: number | LeadFile;
       } | null)
     | ({
         relationTo: 'events';
@@ -724,35 +700,6 @@ export interface SolutionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "references_select".
- */
-export interface ReferencesSelect<T extends boolean = true> {
-  title?: T;
-  client?: T;
-  sector?: T;
-  country?: T;
-  challenge?: T;
-  approach?: T;
-  results?:
-    | T
-    | {
-        metric?: T;
-        label?: T;
-        id?: T;
-      };
-  image?: T;
-  relatedSolution?: T;
-  metaTitle?: T;
-  metaDescription?: T;
-  metaImage?: T;
-  noIndex?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -862,6 +809,7 @@ export interface LeadsSelect<T extends boolean = true> {
   country?: T;
   locale?: T;
   message?: T;
+  attachments?: T;
   productInterest?: T;
   sourcePath?: T;
   status?: T;
@@ -869,6 +817,23 @@ export interface LeadsSelect<T extends boolean = true> {
   notes?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files_select".
+ */
+export interface LeadFilesSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

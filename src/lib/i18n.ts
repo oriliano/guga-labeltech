@@ -13,7 +13,6 @@ const strings: Dictionary = {
   'nav.home': { tr: 'Ana sayfa', en: 'Home' },
   'nav.products': { tr: 'Ürünler', en: 'Products' },
   'nav.solutions': { tr: 'Çözümler', en: 'Solutions' },
-  'nav.references': { tr: 'Referanslar', en: 'References' },
   'nav.insights': { tr: 'Bilgi Merkezi', en: 'Insights' },
   'nav.about': { tr: 'Kurumsal', en: 'Company' },
   'nav.export': { tr: 'İhracat', en: 'Export' },
@@ -56,11 +55,20 @@ const strings: Dictionary = {
     en: 'Could not send. Please try again or email us directly.',
   },
   'form.required': { tr: 'Zorunlu alan', en: 'Required' },
-  'empty.products': { tr: 'Bu kategoride henüz ürün yok.', en: 'No products in this category yet.' },
-  'empty.references': {
-    tr: 'Referans çalışmalarımız yakında burada yayınlanacak.',
-    en: 'Case studies will be published here soon.',
+  'form.attachments': { tr: 'Dosya ekle', en: 'Attach files' },
+  'form.attachmentsHint': {
+    tr: 'Şartname, çizim ya da numune fotoğrafı ekleyebilirsiniz. En fazla 3 dosya, her biri 8 MB. PDF, görsel, Word, Excel.',
+    en: 'Add a specification, drawing or sample photo. Up to 3 files, 8 MB each. PDF, image, Word, Excel.',
   },
+  'form.attachmentTooBig': {
+    tr: 'Dosya 8 MB sınırını aşıyor:',
+    en: 'File exceeds the 8 MB limit:',
+  },
+  'form.attachmentTooMany': {
+    tr: 'En fazla 3 dosya ekleyebilirsiniz.',
+    en: 'You can attach at most 3 files.',
+  },
+  'empty.products': { tr: 'Bu kategoride henüz ürün yok.', en: 'No products in this category yet.' },
   'empty.posts': { tr: 'Yakında yeni yazılar eklenecek.', en: 'New articles are coming soon.' },
   'footer.rights': { tr: 'Tüm hakları saklıdır.', en: 'All rights reserved.' },
   'footer.legalNote': {

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { t, type Locale } from '@/lib/i18n'
 import { legalPath } from '@/lib/routes'
@@ -10,20 +10,57 @@ import { legalPath } from '@/lib/routes'
 const field =
   'w-full rounded-lg border border-[var(--card-border)] bg-ink-950/50 px-4 py-3 text-sm outline-none focus:border-signal-500'
 
+/** Sunucu tarafındaki sınırların aynısı; kullanıcı yüklemeyi beklemeden uyarılıyor. */
+const MAX_FILES = 3
+const MAX_BYTES = 8 * 1024 * 1024
+const ACCEPT = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,.xls,.xlsx,.csv,.txt'
+
+const readableSize = (bytes: number) =>
+  bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`
+
 export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: string }) => {
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [files, setFiles] = useState<File[]>([])
+  const [fileError, setFileError] = useState<string | null>(null)
+  // Seçilen dosyalar React tarafında tutuluyor; tek tek çıkarabilmek için input'un
+  // kendi listesi yeniden yazılamadığından gönderimde biz dolduruyoruz.
+  const fileInput = useRef<HTMLInputElement>(null)
+
+  const onPick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = Array.from(event.target.files ?? [])
+    if (fileInput.current) fileInput.current.value = ''
+    if (!picked.length) return
+
+    const tooBig = picked.find((file) => file.size > MAX_BYTES)
+    if (tooBig) {
+      setFileError(`${t('form.attachmentTooBig', locale)} ${tooBig.name}`)
+      return
+    }
+    const next = [...files, ...picked].slice(0, MAX_FILES)
+    setFileError(files.length + picked.length > MAX_FILES ? t('form.attachmentTooMany', locale) : null)
+    setFiles(next)
+  }
+
+  const removeFile = (index: number) => {
+    setFiles((current) => current.filter((_, position) => position !== index))
+    setFileError(null)
+  }
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setState('sending')
-    const form = new FormData(event.currentTarget)
+    const element = event.currentTarget
+    const form = new FormData(element)
+    form.delete('files')
+    files.forEach((file) => form.append('files', file))
     form.set('locale', locale)
     form.set('sourcePath', sourcePath)
     try {
       const response = await fetch('/api/quote', { method: 'POST', body: form })
       if (!response.ok) throw new Error('request failed')
       setState('sent')
-      event.currentTarget.reset()
+      element.reset()
+      setFiles([])
     } catch {
       setState('error')
     }
@@ -69,6 +106,46 @@ export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: 
         <span className="mb-1.5 block font-medium">{t('form.message', locale)}</span>
         <textarea name="message" rows={5} className={field} />
       </label>
+
+      <div className="text-sm">
+        <span className="mb-1.5 block font-medium">{t('form.attachments', locale)}</span>
+        <input
+          ref={fileInput}
+          type="file"
+          name="files"
+          multiple
+          accept={ACCEPT}
+          onChange={onPick}
+          className="block w-full cursor-pointer rounded-lg border border-dashed border-[var(--card-border)] bg-ink-950/30 px-4 py-3 text-sm text-muted file:mr-4 file:rounded-md file:border-0 file:bg-signal-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-ink-950 hover:border-signal-500"
+        />
+        <p className="mt-1.5 text-xs leading-relaxed text-muted">{t('form.attachmentsHint', locale)}</p>
+        {files.length ? (
+          <ul className="mt-3 space-y-2">
+            {files.map((file, index) => (
+              <li
+                key={`${file.name}-${index}`}
+                className="flex items-center justify-between gap-3 rounded-lg border border-[var(--card-border)] px-3 py-2 text-xs"
+              >
+                <span className="truncate">
+                  {file.name} <span className="text-muted">· {readableSize(file.size)}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeFile(index)}
+                  className="shrink-0 text-muted underline underline-offset-2 hover:text-signal-400"
+                >
+                  {locale === 'tr' ? 'Kaldır' : 'Remove'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {fileError ? (
+          <p role="alert" className="mt-2 text-xs text-red-600">
+            {fileError}
+          </p>
+        ) : null}
+      </div>
 
       {state === 'error' ? (
         <p role="alert" className="text-sm text-red-600">

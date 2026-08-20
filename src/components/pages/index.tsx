@@ -9,26 +9,8 @@ import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, Stat
 import { t, type Locale } from '@/lib/i18n'
 import { Hero } from '@/components/site/Hero'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
+import { mediaOf } from '@/lib/media'
 import { sectionPath } from '@/lib/routes'
-
-type Media = { url?: string | null; alt?: string | null; width?: number | null; height?: number | null }
-
-/**
- * Payload gorsel adresini tam adres olarak veriyor; next/image tam adresleri
- * remotePatterns olmadan reddediyor ve gorsel kirik cikiyor. Kendi alan
- * adimizdaki adresi goreli yola cevirmek alan adi degistiginde de calisir.
- */
-const mediaOf = (value: unknown): Media | null => {
-  if (!value || typeof value !== 'object' || !('url' in (value as Media))) return null
-  const media = value as Media
-  if (!media.url?.startsWith('http')) return media
-  try {
-    const parsed = new URL(media.url)
-    return { ...media, url: `${parsed.pathname}${parsed.search}` }
-  } catch {
-    return media
-  }
-}
 
 const Figure = ({ media, priority = false }: { media: unknown; priority?: boolean }) => {
   const image = mediaOf(media)

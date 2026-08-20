@@ -55,6 +55,14 @@ export const Leads: CollectionConfig = {
     },
     { name: 'message', type: 'textarea', label: 'Mesaj' },
     {
+      name: 'attachments',
+      type: 'relationship',
+      relationTo: 'lead-files',
+      hasMany: true,
+      label: 'Ekler',
+      admin: { description: 'Formla gönderilen dosyalar. Bildirim mailine de eklenir.' },
+    },
+    {
       name: 'productInterest',
       type: 'relationship',
       relationTo: 'products',

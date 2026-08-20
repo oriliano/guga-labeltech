@@ -25,6 +25,7 @@ import {
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
+import { imageUrl } from '@/lib/media'
 import { alternatePath, legalPath, matchLegal, matchSection, sectionPath, type Section } from '@/lib/routes'
 
 // Railway's private network is unavailable during build, so pages render per request
@@ -108,7 +109,7 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
   if (section && slug) {
     const collection = { products: 'products', solutions: 'solutions', insights: 'posts' }[
       section as string
-    ] as 'products' | 'solutions' | 'posts' | 'references' | undefined
+    ] as 'products' | 'solutions' | 'posts' | undefined
     if (collection) {
       const doc: any = await findBySlug(collection, slug, locale)
       if (doc) {
@@ -187,7 +188,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 hrefFor={(item) => sectionPath('products', locale, item.slug)}
                 eyebrowOf={(item) => item.model ?? undefined}
                 bodyOf={(item) => item.excerpt ?? undefined}
-                imageOf={(item) => productPhoto(item.slug)}
+                imageOf={(item) => imageUrl(item.images?.[0], productPhoto(item.slug))}
                 visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
                 filters={{
                   label: t('label.category', locale),
@@ -242,7 +243,9 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               model: item.model,
               excerpt: item.excerpt,
               href: sectionPath('products', locale, item.slug),
-              image: productPhoto(item.slug),
+              // Panelden yuklenen fotograf her zaman once gelir; depodaki statik
+              // gorsel yalnizca fotograf yoksa devreye giriyor.
+              image: imageUrl(item.images?.[0], productPhoto(item.slug)),
             })),
           }
         }).filter((group) => group.total)
@@ -298,7 +301,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             hrefFor={(item) => sectionPath('solutions', locale, item.slug)}
             eyebrowOf={(item) => item.sector ?? undefined}
             bodyOf={(item) => item.excerpt ?? undefined}
-            imageOf={(item) => solutionImage(item.slug)}
+            imageOf={(item) => imageUrl(item.heroImage, solutionImage(item.slug))}
           />
         )
       }
@@ -322,7 +325,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             emptyText={t('empty.posts', locale)}
             hrefFor={(item) => sectionPath('insights', locale, item.slug)}
             bodyOf={(item) => item.excerpt}
-            imageOf={(item) => postImage(item.slug)}
+            imageOf={(item) => imageUrl(item.coverImage, postImage(item.slug))}
           />
         )
       }

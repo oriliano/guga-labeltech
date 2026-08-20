@@ -8,11 +8,11 @@ import sharp from 'sharp'
 
 import { Documents } from './collections/Documents'
 import { Events } from './collections/Events'
+import { LeadFiles } from './collections/LeadFiles'
 import { Leads } from './collections/Leads'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
 import { Products } from './collections/Products'
-import { References } from './collections/References'
 import { Solutions } from './collections/Solutions'
 import { Users } from './collections/Users'
 import { Navigation } from './globals/Navigation'
@@ -59,7 +59,7 @@ export default buildConfig({
       beforeDashboard: ['@/components/admin/Dashboard#Dashboard'],
     },
   },
-  collections: [Products, Solutions, References, Posts, Media, Documents, Leads, Events, Users],
+  collections: [Products, Solutions, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
   globals: [SiteSettings, Navigation],
   localization: {
     locales: [
