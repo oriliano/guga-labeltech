@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { payloadClient } from '@/lib/data'
+import { sendLeadMail } from '@/lib/mail'
 
 /**
  * Public quote form endpoint. The Leads collection itself denies anonymous
@@ -33,7 +34,7 @@ export const POST = async (request: Request) => {
   const payload = await payloadClient()
   const sourcePath = value('sourcePath')
 
-  await payload.create({
+  const lead = await payload.create({
     collection: 'leads',
     overrideAccess: true,
     data: {
@@ -59,6 +60,20 @@ export const POST = async (request: Request) => {
       country: value('country') || undefined,
     },
   })
+
+  // Bildirim kaydın ardından gidiyor: e-posta gönderilemese de talep kaybolmuyor.
+  const mail = await sendLeadMail({
+    name,
+    email,
+    company: value('company') || undefined,
+    phone: value('phone') || undefined,
+    country: value('country') || undefined,
+    message: value('message') || undefined,
+    locale: value('locale') === 'en' ? 'en' : 'tr',
+    sourcePath: sourcePath || undefined,
+    adminUrl: `${process.env.NEXT_PUBLIC_SERVER_URL || ''}/admin/collections/leads/${lead.id}`,
+  })
+  if (!mail.sent) payload.logger.warn(`teklif bildirimi gonderilemedi: ${mail.reason}`)
 
   return NextResponse.json({ ok: true })
 }

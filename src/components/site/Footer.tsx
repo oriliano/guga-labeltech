@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { t, type Locale } from '@/lib/i18n'
 import { directionsUrl } from '@/lib/office'
+import { legalPath } from '@/lib/routes'
 
 type Office = {
   label?: string | null
@@ -130,7 +131,15 @@ export const Footer = ({
         <p>
           © {new Date().getFullYear()} {legalName}. {t('footer.rights', locale)}
         </p>
-        <p>{t('footer.legalNote', locale)}</p>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link href={legalPath('kvkk', locale)} className="hover:text-signal-400">
+            {locale === 'tr' ? 'Aydınlatma Metni' : 'Data Protection'}
+          </Link>
+          <Link href={legalPath('privacy', locale)} className="hover:text-signal-400">
+            {locale === 'tr' ? 'Gizlilik ve Çerez Politikası' : 'Privacy and Cookies'}
+          </Link>
+          <span>{t('footer.legalNote', locale)}</span>
+        </div>
       </div>
     </div>
   </footer>

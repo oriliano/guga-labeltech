@@ -20,7 +20,6 @@ import type { Locale } from '../lib/i18n'
 const NAV_LABELS = {
   products: { tr: 'Ürünler', en: 'Products' },
   solutions: { tr: 'Çözümler', en: 'Solutions' },
-  references: { tr: 'Referanslar', en: 'References' },
   export: { tr: 'İhracat', en: 'Export' },
   insights: { tr: 'Bilgi Merkezi', en: 'Insights' },
   about: { tr: 'Kurumsal', en: 'Company' },
@@ -48,7 +47,6 @@ const navigation = (locale: Locale) => ({
       })),
     },
     { label: NAV_LABELS.solutions[locale], href: sectionPath('solutions', locale) },
-    { label: NAV_LABELS.references[locale], href: sectionPath('references', locale) },
     { label: NAV_LABELS.export[locale], href: sectionPath('export', locale) },
     { label: NAV_LABELS.insights[locale], href: sectionPath('insights', locale) },
     { label: NAV_LABELS.about[locale], href: sectionPath('about', locale) },
@@ -68,8 +66,7 @@ const navigation = (locale: Locale) => ({
       title: FOOTER_TITLES.company[locale],
       links: [
         { label: NAV_LABELS.solutions[locale], href: sectionPath('solutions', locale) },
-        { label: NAV_LABELS.references[locale], href: sectionPath('references', locale) },
-        { label: NAV_LABELS.export[locale], href: sectionPath('export', locale) },
+            { label: NAV_LABELS.export[locale], href: sectionPath('export', locale) },
         { label: NAV_LABELS.insights[locale], href: sectionPath('insights', locale) },
         { label: NAV_LABELS.about[locale], href: sectionPath('about', locale) },
         { label: NAV_LABELS.contact[locale], href: sectionPath('contact', locale) },

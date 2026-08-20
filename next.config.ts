@@ -77,9 +77,19 @@ const legacyRedirects = Object.entries(LEGACY_ROUTES).flatMap(([slug, destinatio
   return [...sources].map((source) => ({ source, destination, permanent: true }))
 })
 
+// Referans bolumu kaldirildi; eski adresler cozumlere gidiyor.
+const REMOVED_SECTIONS: Record<string, string> = {
+  '/referanslar': '/cozumler',
+  '/en/references': '/en/solutions',
+}
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      ...Object.entries(REMOVED_SECTIONS).flatMap(([source, destination]) => [
+        { source, destination, permanent: true },
+        { source: `${source}/:slug*`, destination, permanent: true },
+      ]),
       ...legacyRedirects,
       // Eşleşmeyen eski blog adresleri 404 yerine listeye düşsün.
       { source: '/f/:slug*', destination: '/bilgi-merkezi', permanent: true },

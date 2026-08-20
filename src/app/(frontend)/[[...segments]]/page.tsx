@@ -7,10 +7,10 @@ import {
   ListingPage,
   PostDetail,
   ProductDetail,
-  ReferenceDetail,
   SolutionDetail,
 } from '@/components/pages'
 import { AboutPage } from '@/components/pages/about'
+import { KvkkPage, PrivacyPage } from '@/components/pages/legal'
 import { ContactPage, ExportPage } from '@/components/pages/static'
 import { ProductGlyph } from '@/components/site/ProductGlyph'
 import { Shell } from '@/components/site/Shell'
@@ -20,13 +20,12 @@ import {
   getSiteSettings,
   listPosts,
   listProducts,
-  listReferences,
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
-import { alternatePath, matchSection, sectionPath, type Section } from '@/lib/routes'
+import { alternatePath, legalPath, matchLegal, matchSection, sectionPath, type Section } from '@/lib/routes'
 
 // Railway's private network is unavailable during build, so pages render per request
 // instead of being prerendered against the database.
@@ -40,14 +39,14 @@ const resolve = (segments: string[] = []) => {
   const locale: Locale = first && isLocale(first) ? first : DEFAULT_LOCALE
   const path = first && isLocale(first) ? rest : segments
   const section = path[0] ? matchSection(locale, path[0]) : null
-  return { locale, section, slug: path[1], extra: path.slice(2), isHome: path.length === 0 }
+  const legal = path[0] && !section ? matchLegal(locale, path[0]) : null
+  return { locale, section, legal, slug: path[1], extra: path.slice(2), isHome: path.length === 0 }
 }
 
 const titleFor = (section: Section, locale: Locale) =>
   ({
     products: t('nav.products', locale),
     solutions: t('nav.solutions', locale),
-    references: t('nav.references', locale),
     insights: t('nav.insights', locale),
     about: t('nav.about', locale),
     export: t('nav.export', locale),
@@ -55,8 +54,26 @@ const titleFor = (section: Section, locale: Locale) =>
   })[section]
 
 export const generateMetadata = async ({ params }: { params: Promise<Params> }): Promise<Metadata> => {
-  const { locale, section, slug, extra, isHome } = resolve((await params).segments)
+  const { locale, section, legal, slug, extra, isHome } = resolve((await params).segments)
   const settings = await getSiteSettings(locale)
+
+  if (legal) {
+    const title =
+      legal === 'kvkk'
+        ? locale === 'tr'
+          ? 'Kişisel Verilerin Korunması Aydınlatma Metni'
+          : 'Personal Data Protection Notice'
+        : locale === 'tr'
+          ? 'Gizlilik ve Çerez Politikası'
+          : 'Privacy and Cookie Policy'
+    return {
+      title,
+      alternates: {
+        canonical: legalPath(legal, locale),
+        languages: { tr: legalPath(legal, 'tr'), en: legalPath(legal, 'en') },
+      },
+    }
+  }
 
   const alternates = {
     canonical: slug && section ? sectionPath(section, locale, slug) : section ? sectionPath(section, locale) : locale === 'tr' ? '/' : '/en',
@@ -89,7 +106,7 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
   }
 
   if (section && slug) {
-    const collection = { products: 'products', solutions: 'solutions', insights: 'posts', references: 'references' }[
+    const collection = { products: 'products', solutions: 'solutions', insights: 'posts' }[
       section as string
     ] as 'products' | 'solutions' | 'posts' | 'references' | undefined
     if (collection) {
@@ -109,7 +126,7 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
 }
 
 const Page = async ({ params }: { params: Promise<Params> }) => {
-  const { locale, section, slug, extra, isHome } = resolve((await params).segments)
+  const { locale, section, legal, slug, extra, isHome } = resolve((await params).segments)
   const isCategory = section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra.length === 1
   if (extra.length && !isCategory) notFound()
 
@@ -117,17 +134,20 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
   // be built from the category rather than from the section alone.
   const otherLocale: Locale = locale === 'tr' ? 'en' : 'tr'
   const categoryOnPage = isCategory ? categoryBySlug(locale, extra[0]) : undefined
-  const alternateHref = categoryOnPage
-    ? categoryPath(categoryOnPage, otherLocale)
-    : alternatePath(locale, section, slug)
+  const alternateHref = legal
+    ? legalPath(legal, otherLocale)
+    : categoryOnPage
+      ? categoryPath(categoryOnPage, otherLocale)
+      : alternatePath(locale, section, slug)
 
   const content = await (async () => {
+    if (legal) return legal === 'kvkk' ? <KvkkPage locale={locale} /> : <PrivacyPage locale={locale} />
+
     if (isHome) {
-      const [settings, solutions, products, references, posts] = await Promise.all([
+      const [settings, solutions, products, posts] = await Promise.all([
         getSiteSettings(locale),
         listSolutions({ locale, limit: 6 }),
         listProducts({ locale, limit: 8, where: { featured: { equals: true } } }),
-        listReferences({ locale, limit: 3 }),
         listPosts({ locale, limit: 3 }),
       ])
       const featured = products.length ? products : await listProducts({ locale, limit: 8 })
@@ -142,7 +162,6 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
           }
           solutions={solutions}
           products={featured}
-          references={references}
           posts={posts}
         />
       )
@@ -195,17 +214,27 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             </>
           )
         }
-        const products = await listProducts({ locale })
+        // Gruplama tum katalogu istiyor; varsayilan 100 limiti kalabalik
+        // kategorilerde sayiyi yanlis gosteriyordu.
+        const products = await listProducts({ locale, limit: 500 })
         // Liste kategori kategori gruplanıyor; tek uzun ızgara 48 üründe
         // gezilmesi zor bir yığın oluyordu.
-        const groups = CATEGORIES.map((category) => ({
-          key: category.value,
-          label: category.label[locale],
-          lead: category.lead[locale],
-          href: categoryPath(category, locale),
-          items: products
-            .filter((item: any) => item.category === category.value)
-            .map((item: any) => ({
+        // Grupta ilk üç ürün gösteriliyor; sıra panelden `order` alanıyla
+        // belirleniyor, gerisi kategori sayfasında.
+        const PREVIEW = 3
+        const groups = CATEGORIES.map((category) => {
+          const inCategory = products.filter((item: any) => item.category === category.value)
+          return {
+            key: category.value,
+            label: category.label[locale],
+            lead: category.lead[locale],
+            href: categoryPath(category, locale),
+            total: inCategory.length,
+            moreLabel:
+              locale === 'tr'
+                ? `Tüm ${category.label[locale].toLocaleLowerCase('tr')} (${inCategory.length})`
+                : `All ${category.label[locale].toLowerCase()} (${inCategory.length})`,
+            items: inCategory.slice(0, PREVIEW).map((item: any) => ({
               id: item.id,
               title: item.title,
               model: item.model,
@@ -213,7 +242,8 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               href: sectionPath('products', locale, item.slug),
               image: productPhoto(item.slug),
             })),
-        })).filter((group) => group.items.length)
+          }
+        }).filter((group) => group.total)
 
         return (
           <>
@@ -267,29 +297,6 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             eyebrowOf={(item) => item.sector ?? undefined}
             bodyOf={(item) => item.excerpt ?? undefined}
             imageOf={(item) => solutionImage(item.slug)}
-          />
-        )
-      }
-      case 'references': {
-        if (slug) {
-          const item = await findBySlug('references', slug, locale)
-          if (!item) notFound()
-          return (
-            <>
-              <BreadcrumbJsonLd locale={locale} section="references" title={item.title} />
-              <ReferenceDetail locale={locale} item={item} />
-            </>
-          )
-        }
-        const items = await listReferences({ locale })
-        return (
-          <ListingPage
-            title={t('nav.references', locale)}
-            items={items}
-            emptyText={t('empty.references', locale)}
-            hrefFor={(item) => sectionPath('references', locale, item.slug)}
-            eyebrowOf={(item) => item.sector}
-            bodyOf={(item) => item.challenge}
           />
         )
       }

@@ -25,7 +25,6 @@ const defaultNav = (locale: Locale): NavItem[] => [
     })),
   },
   { label: t('nav.solutions', locale), href: sectionPath('solutions', locale) },
-  { label: t('nav.references', locale), href: sectionPath('references', locale) },
   { label: t('nav.export', locale), href: sectionPath('export', locale) },
   { label: t('nav.insights', locale), href: sectionPath('insights', locale) },
   { label: t('nav.about', locale), href: sectionPath('about', locale) },

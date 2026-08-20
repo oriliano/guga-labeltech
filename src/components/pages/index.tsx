@@ -52,14 +52,12 @@ export const HomePage = ({
   tagline,
   solutions,
   products,
-  references,
   posts,
 }: {
   locale: Locale
   tagline: string
   solutions: any[]
   products: any[]
-  references: any[]
   posts: any[]
 }) => (
   <>
@@ -123,24 +121,6 @@ export const HomePage = ({
         </ButtonLink>
       </div>
     </Section>
-
-    {references.length ? (
-      <Section>
-        <SectionHeading eyebrow={t('nav.references', locale)} title={locale === 'tr' ? 'Sahadan sonuçlar' : 'Results from the field'} />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {references.slice(0, 3).map((item) => (
-            <Card
-              key={item.id}
-              href={sectionPath('references', locale, item.slug)}
-              eyebrow={item.sector}
-              title={item.title}
-              body={item.challenge}
-              footer={item.results?.[0] ? `${item.results[0].metric} — ${item.results[0].label}` : undefined}
-            />
-          ))}
-        </div>
-      </Section>
-    ) : null}
 
     {posts.length ? (
       <Section tone="tint">
@@ -251,7 +231,15 @@ export const GroupedProducts = ({
   eyebrow?: string
   title: string
   lead?: string
-  groups: { key: string; label: string; lead?: string; href: string; items: any[] }[]
+  groups: {
+    key: string
+    label: string
+    lead?: string
+    href: string
+    items: any[]
+    total: number
+    moreLabel: string
+  }[]
   filters?: {
     label: string
     items: { label: string; href: string; active: boolean }[]
@@ -294,7 +282,7 @@ export const GroupedProducts = ({
               {group.lead ? <p className="mt-2 max-w-2xl text-sm text-muted">{group.lead}</p> : null}
             </div>
             <Link href={group.href} className="text-sm font-medium text-signal-400 hover:underline">
-              {group.items.length} ürün →
+              {group.total} ürün →
             </Link>
           </div>
           <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -311,6 +299,14 @@ export const GroupedProducts = ({
               </Reveal>
             ))}
           </div>
+
+          {group.total > group.items.length ? (
+            <div className="mt-8">
+              <ButtonLink href={group.href} variant="secondary">
+                {group.moreLabel}
+              </ButtonLink>
+            </div>
+          ) : null}
         </section>
       ))}
     </div>
@@ -565,32 +561,3 @@ export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => {
   </Section>
   )
 }
-
-export const ReferenceDetail = ({ locale, item }: { locale: Locale; item: any }) => (
-  <Section>
-    <div className="mx-auto max-w-3xl">
-      <Breadcrumbs
-        items={[{ label: t('nav.references', locale), href: sectionPath('references', locale) }, { label: item.title }]}
-      />
-      <p className="text-sm font-semibold uppercase tracking-widest text-signal-400">{item.sector}</p>
-      <h1 className="mt-2 text-h1 font-semibold">{item.title}</h1>
-      {item.client ? <p className="mt-3 text-muted">{item.client}</p> : null}
-
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {item.results?.map((result: any, index: number) => (
-          <StatTile key={index} metric={result.metric} label={result.label} />
-        ))}
-      </div>
-
-      <h2 className="mt-12 text-h2 font-semibold">{t('label.challenge', locale)}</h2>
-      <p className="mt-4 leading-relaxed text-muted">{item.challenge}</p>
-
-      <h2 className="mt-10 text-h2 font-semibold">{t('label.approach', locale)}</h2>
-      <p className="mt-4 leading-relaxed text-muted">{item.approach}</p>
-
-      <div className="mt-12">
-        <ButtonLink href={sectionPath('contact', locale)}>{t('cta.quote', locale)}</ButtonLink>
-      </div>
-    </div>
-  </Section>
-)

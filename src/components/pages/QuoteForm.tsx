@@ -1,8 +1,11 @@
 'use client'
 
+import Link from 'next/link'
+
 import { useState } from 'react'
 
 import { t, type Locale } from '@/lib/i18n'
+import { legalPath } from '@/lib/routes'
 
 const field =
   'w-full rounded-lg border border-[var(--card-border)] bg-ink-950/50 px-4 py-3 text-sm outline-none focus:border-signal-500'
@@ -72,6 +75,21 @@ export const QuoteForm = ({ locale, sourcePath }: { locale: Locale; sourcePath: 
           {t('form.error', locale)}
         </p>
       ) : null}
+
+      {/* Kanun gereği form gönderilmeden önce aydınlatma metnine erişim verilmeli. */}
+      <p className="text-xs leading-relaxed text-muted">
+        {locale === 'tr' ? 'Formu göndererek ' : 'By sending this form you accept the '}
+        <Link href={legalPath('kvkk', locale)} className="text-signal-400 underline underline-offset-2">
+          {locale === 'tr' ? 'Aydınlatma Metni' : 'Data Protection Notice'}
+        </Link>
+        {locale === 'tr' ? ' ve ' : ' and the '}
+        <Link href={legalPath('privacy', locale)} className="text-signal-400 underline underline-offset-2">
+          {locale === 'tr' ? 'Gizlilik Politikası' : 'Privacy Policy'}
+        </Link>
+        {locale === 'tr'
+          ? '’nı okuduğunuzu kabul etmiş olursunuz. Bilgileriniz yalnızca talebinizi yanıtlamak için kullanılır.'
+          : '. Your details are used only to answer your request.'}
+      </p>
 
       <button
         type="submit"

@@ -7,12 +7,29 @@ import { DEFAULT_LOCALE, localePrefix, type Locale } from './i18n'
 export const SECTION_SLUGS = {
   products: { tr: 'urunler', en: 'products' },
   solutions: { tr: 'cozumler', en: 'solutions' },
-  references: { tr: 'referanslar', en: 'references' },
   insights: { tr: 'bilgi-merkezi', en: 'insights' },
   about: { tr: 'kurumsal', en: 'company' },
   export: { tr: 'ihracat', en: 'export' },
   contact: { tr: 'iletisim', en: 'contact' },
 } as const
+
+/** Yasal sayfalar menüde değil, alt bilgide duruyor. */
+export const LEGAL_SLUGS = {
+  kvkk: { tr: 'kvkk-aydinlatma-metni', en: 'data-protection' },
+  privacy: { tr: 'gizlilik-politikasi', en: 'privacy' },
+} as const
+
+export type Legal = keyof typeof LEGAL_SLUGS
+
+export const legalPath = (page: Legal, locale: Locale): string =>
+  `${localePrefix(locale)}/${LEGAL_SLUGS[page][locale]}`
+
+export const matchLegal = (locale: Locale, segment: string): Legal | null => {
+  const entry = (Object.entries(LEGAL_SLUGS) as [Legal, Record<Locale, string>][]).find(
+    ([, slugs]) => slugs[locale] === segment,
+  )
+  return entry ? entry[0] : null
+}
 
 export type Section = keyof typeof SECTION_SLUGS
 

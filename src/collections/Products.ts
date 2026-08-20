@@ -22,9 +22,12 @@ export const Products: CollectionConfig = {
   admin: {
     group: 'İçerik',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'model', 'category', '_status', 'updatedAt'],
+    defaultColumns: ['title', 'model', 'category', 'order', '_status', 'updatedAt'],
     listSearchableFields: ['title', 'model'],
   },
+  // Liste sayfasi kategoriye gore gruplanmis ilk uc urunu `order` alanina gore
+  // seciyor; panel de ayni siraya gore aciliyor ki editor gordugu sira gercek olsun.
+  defaultSort: 'order',
   access: {
     create: authenticated,
     delete: authenticated,
