@@ -38,7 +38,7 @@ export const Posts: CollectionConfig = {
       name: 'tags',
       type: 'array',
       label: 'Etiketler',
-      fields: [{ name: 'tag', type: 'text', required: true, localized: true }],
+      fields: [{ name: 'tag', type: 'text', required: true, localized: true, label: 'Etiket' }],
     },
     {
       name: 'relatedSolutions',

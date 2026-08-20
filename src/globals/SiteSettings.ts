@@ -77,7 +77,7 @@ export const SiteSettings: GlobalConfig = {
               name: 'incoterms',
               type: 'array',
               label: 'Teslim şekilleri (Incoterms)',
-              fields: [{ name: 'term', type: 'text', required: true }],
+              fields: [{ name: 'term', type: 'text', required: true, label: 'Terim' }],
             },
             {
               name: 'certifications',
@@ -92,7 +92,7 @@ export const SiteSettings: GlobalConfig = {
               name: 'shippedCountries',
               type: 'array',
               label: 'İhracat yapılan ülkeler',
-              fields: [{ name: 'country', type: 'text', required: true }],
+              fields: [{ name: 'country', type: 'text', required: true, label: 'Ülke' }],
             },
           ],
         },
@@ -116,7 +116,7 @@ export const SiteSettings: GlobalConfig = {
                     { label: 'Facebook', value: 'facebook' },
                   ],
                 },
-                { name: 'url', type: 'text', required: true },
+                { name: 'url', type: 'text', required: true, label: 'Bağlantı' },
               ],
             },
             {

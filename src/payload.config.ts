@@ -1,6 +1,8 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { en } from '@payloadcms/translations/languages/en'
+import { tr } from '@payloadcms/translations/languages/tr'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -62,6 +64,10 @@ export default buildConfig({
   },
   collections: [Products, Solutions, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
   globals: [SiteSettings, Navigation],
+  i18n: {
+    supportedLanguages: { tr, en },
+    fallbackLanguage: 'tr',
+  },
   localization: {
     locales: [
       { label: 'Türkçe', code: 'tr' },
