@@ -531,6 +531,324 @@ const posts: { publishedAt: string; tr: Content; en: Content }[] = [
       ],
     },
   },
+  {
+    publishedAt: '2025-12-01',
+    tr: {
+      title: 'Termal transfer ribon seçimi: wax, wax-resin, resin',
+      excerpt:
+        'Yanlış ribon önce baskı kalitesini, sonra etiketin dayanımını bozar. Üç ribon türü arasındaki farkı ve hangisinin nerede kullanılacağını anlatıyoruz.',
+      tags: ['Ribon', 'Baskı'],
+      blocks: [
+        {
+          p: 'Bir barkod yazıcısı üç parçadan oluşur: yazıcı kafası, etiket rulosu, ribon. Üçü birbirine uymazsa baskı bozulur. Ribon genelde en son düşünülen parçadır, ama sonucu en çok o belirler.',
+        },
+        { h: 'Üç ribon türü, üç farklı iş' },
+        {
+          p: 'Ribonun üstündeki mürekkep tabakası üç farklı yapıda üretilir. Hangisini seçtiğiniz etiketin nereye yapıştığına ve ne kadar dayanması gerektiğine bağlıdır.',
+        },
+        {
+          ul: [
+            'Wax (balmumu): en ucuzu, en düşük dayanımı. Kağıt etikette ve kısa ömürlü sevkiyat etiketinde yeterli.',
+            'Wax-resin: kağıt ve sentetik yüzeyde çalışır, çizilmeye orta düzeyde dayanır. Depo ve lojistik etiketlerinde en çok kullanılan tür budur.',
+            'Resin (reçine): sentetik (PP, PE, PET) etikette kullanılır, kimyasala, sürtünmeye ve yüksek sıcaklığa dayanır. Endüstriyel ve demirbaş etiketinde tercih edilir.',
+          ],
+        },
+        {
+          p: 'Kural basit görünür ama sık atlanır: kağıt etikete resin ribon sürerseniz baskı dökülür. Sentetik etikete wax ribon sürerseniz mürekkep yüzeye tutunmaz, ilk sürtünmede silinir. Etiket malzemesi ile ribon türü aynı ailede olmalı.',
+        },
+        { h: 'Yazıcı kafası neden önemli' },
+        {
+          p: 'Ribon üreticileri formülü baskı kafasının enerji ayarına göre hazırlar. Aynı resin ribon bir markanın yazıcısında net çıkarken başkasında bulanık çıkabilir. Yazıcı değiştirirken ribonu da küçük partide test etmeden büyük siparişe geçmeyin.',
+        },
+        {
+          p: 'Kafa sıcaklığı (density) ayarı da sonucu değiştirir. Düşük ayar soluk baskı verir, yüksek ayar kafayı erken yıpratır ve ribonun arka kaplamasını delip yapışmasına yol açabilir.',
+        },
+        { h: 'Genişlik israfı, gözden kaçan kalem' },
+        {
+          p: 'Ribon eninin etiket eninden geniş seçilmesi sık yapılan bir hatadır. Kullanılmayan kısım da tüketilir. Etiket eninize en yakın ribon genişliğini seçmek, yıllık tüketimde gözle görülür fark yaratır.',
+        },
+        { h: 'Karar verirken sorulacak sorular' },
+        {
+          p: 'Etiket kaç yıl okunabilir kalmalı. Dışarıda mı kalacak, güneş görecek mi. Elle mi silinecek, kimyasalla mı temizlenecek. Bu üç sorunun cevabı ribon türünü neredeyse tek başına belirler; gerisi yazıcı markasına göre ince ayardır.',
+        },
+      ],
+    },
+    en: {
+      title: 'Choosing thermal transfer ribbon: wax, wax-resin, resin',
+      excerpt:
+        'The wrong ribbon ruins print quality first and label durability second. Here is what separates the three ribbon types and where each one belongs.',
+      tags: ['Ribbon', 'Printing'],
+      blocks: [
+        {
+          p: 'A barcode printer has three parts: the print head, the label stock, and the ribbon. If any one of them is mismatched the print suffers. Ribbon is usually the part people think about last, and the one that decides the result most.',
+        },
+        { h: 'Three ribbon types, three different jobs' },
+        {
+          p: 'The ink layer on a ribbon comes in three formulations. Which one you need depends on what the label is stuck to and how long it has to last.',
+        },
+        {
+          ul: [
+            'Wax: cheapest, least durable. Fine for paper labels and short-lived shipping labels.',
+            'Wax-resin: works on paper and synthetic stock, holds up reasonably to scuffing. This is the type most warehouse and logistics labels use.',
+            'Resin: for synthetic stock (PP, PE, PET), resists chemicals, abrasion and high temperature. Used on industrial and long-life asset labels.',
+          ],
+        },
+        {
+          p: 'The rule sounds obvious but gets skipped often: put resin on paper stock and the print flakes off. Put wax on synthetic stock and the ink never bonds, it wipes off on the first pass of a hand. Label stock and ribbon type have to come from the same family.',
+        },
+        { h: 'Why the print head matters' },
+        {
+          p: 'Ribbon makers tune their formula to a print head energy setting. The same resin ribbon can print crisp on one printer brand and soft on another. When you switch printers, test the ribbon on a small run before ordering a large one.',
+        },
+        {
+          p: 'Head temperature (darkness setting) changes the result too. Too low gives a faint print. Too high wears the head out early, and can burn through the ribbon back-coat until it sticks to the head.',
+        },
+        { h: 'Width waste is the cost nobody checks' },
+        {
+          p: 'Ordering ribbon wider than the label is a common mistake. The unused width still gets consumed. Matching ribbon width to label width makes a visible difference in annual ribbon spend.',
+        },
+        { h: 'Three questions before you order' },
+        {
+          p: 'How many years does the label need to stay readable. Will it sit outdoors, in sunlight. Will it be wiped by hand or cleaned with chemicals. Those three answers pick the ribbon type almost by themselves; everything else is fine-tuning for the printer brand.',
+        },
+      ],
+    },
+  },
+  {
+    publishedAt: '2025-12-08',
+    tr: {
+      title: 'RFID okuyucu seçimi: el terminali mi, sabit kapı mı',
+      excerpt:
+        'Aynı etiketi farklı okuyucular çok farklı okur. Okuyucu seçerken bakılacak dört şey ve hangi işte hangisinin doğru olduğu.',
+      tags: ['Okuyucu', 'RFID'],
+      blocks: [
+        {
+          p: 'Bir RFID projesinde etiket kadar okuyucu da işi belirler. Aynı etiket, el terminaliyle bir sonuç verir, tavana monte sabit okuyucuyla başka bir sonuç. İkisi farklı işler için tasarlanmıştır, birinin yerine öbürünü koymak sık yapılan hatadır.',
+        },
+        { h: 'El terminali: kişinin gittiği yere gider' },
+        {
+          p: 'El terminali, operatörün elinde raflar arasında dolaşarak sayım yaptığı cihazdır. Menzili birkaç metreyle sınırlıdır ama esnekliği yüksektir; rafın hangi katını taradığınızı siz seçersiniz.',
+        },
+        {
+          p: 'Doğru kullanım alanı, düzenli sayımlar ve nokta kontrollerdir. Mağazada haftalık stok sayımı, depoda rastgele denetim, kuyumda vitrin sayımı buraya girer. Personel eğitimi kısa sürer, cihaz maliyeti de sabit sisteme göre düşüktür.',
+        },
+        { h: 'Sabit kapı okuyucu: geçen her şeyi kaydeder' },
+        {
+          p: 'Kapıya monte edilen anten, o kapıdan geçen her etiketi otomatik okur. Kimse cihazı elle yönlendirmez, kayıt kendiliğinden oluşur. Depo giriş-çıkışı, sevkiyat doğrulama, personel geçiş takibi bu kuruluma girer.',
+        },
+        {
+          p: 'Zorluğu kurulumdadır. Anten sayısı, açısı ve gücü kapı genişliğine göre ayarlanmalı, aksi hâlde bir kenardan geçen palet okunmaz. İlk kurulumda saha testi yapılmadan bu ayarlar tahminle bırakılırsa, sistem "bazen kaçırıyor" sorunuyla anılır.',
+        },
+        { h: 'Masaüstü okuyucu: yazma ve doğrulama işi' },
+        {
+          p: 'Etiketleme hattında ya da paketleme masasında kullanılan küçük, kısa menzilli okuyucular üçüncü kategoridir. İşleri sayım değil, yeni basılan etiketi yazıp anında doğrulamaktır. Hatalı etiket bu aşamada yakalanmazsa, sahaya çıktıktan sonra maliyeti çok daha yüksek olur.',
+        },
+        { h: 'Anten sayısı ve güç ayarı' },
+        {
+          p: 'Sabit okuyucularda bir cihaza birden fazla anten bağlanabilir. Kapının iki yanına birer anten koymak, tek antenle bırakmaktan daha güvenilir okuma sağlar, çünkü etiketin okuyucuya bakış açısı değişse bile ikinci anten onu görür.',
+        },
+        {
+          p: 'Güç ayarı da tuzak barındırır. Gücü yükseltmek okuma mesafesini artırır ama komşu kapıdaki ya da rafta beklemeyen üründeki etiketi de okumaya başlayabilir. Amaç en uzak okuma değil, doğru bölgeyi net okumaktır.',
+        },
+        { h: 'Karar nasıl verilir' },
+        {
+          p: 'Soru şudur: kayıt insanın harekete geçmesiyle mi oluşacak, yoksa üründen bağımsız otomatik mi oluşmalı. Birincisi el terminali, ikincisi sabit okuyucu ister. Çoğu olgun kurulumda ikisi bir arada çalışır: sabit okuyucu günlük hareketi otomatik kaydeder, el terminali ay sonunda doğrulama sayımı yapar.',
+        },
+      ],
+    },
+    en: {
+      title: 'Choosing an RFID reader: handheld or fixed gate',
+      excerpt:
+        'The same tag reads differently depending on the reader. Four things to check before you choose, and which job each reader type actually fits.',
+      tags: ['Readers', 'RFID'],
+      blocks: [
+        {
+          p: 'In an RFID project the reader shapes the outcome as much as the tag does. The same tag gives one result with a handheld and a different one with a ceiling-mounted fixed reader. They are built for different jobs, and using one in place of the other is a common mistake.',
+        },
+        { h: 'Handheld: goes where the person goes' },
+        {
+          p: 'A handheld reader is what an operator carries between racks to count. Its range is limited to a few metres, but it is flexible: you decide which shelf level you are scanning.',
+        },
+        {
+          p: 'It fits scheduled counts and spot checks: weekly stock counts in a store, random audits in a warehouse, a display case count in a jewellery shop. Staff training is short, and the hardware costs less than a fixed installation.',
+        },
+        { h: 'Fixed gate reader: logs everything that passes' },
+        {
+          p: 'An antenna mounted at a doorway reads every tag that passes through automatically, with nobody aiming the device. Warehouse inbound and outbound, shipment verification, staff access logging all fall into this setup.',
+        },
+        {
+          p: 'The hard part is the install. Antenna count, angle and power need to be tuned to the doorway width, or a pallet passing along one edge goes unread. Skip the site test at install and the system earns a reputation for "sometimes missing reads".',
+        },
+        { h: 'Desktop reader: the writing and verification job' },
+        {
+          p: 'Small, short-range readers used on a labelling line or a packing table are a third category. Their job is not counting, it is writing a freshly printed tag and verifying it on the spot. Catch a bad tag here and it costs little. Miss it and the cost shows up much later, in the field.',
+        },
+        { h: 'Antenna count and power setting' },
+        {
+          p: 'A fixed reader can drive more than one antenna. Placing one on each side of a doorway is more reliable than a single antenna, because the second one still sees a tag whose orientation changed relative to the first.',
+        },
+        {
+          p: 'Power setting hides its own trap. Turning it up extends read range, but it can also start reading tags on a neighbouring door or on stock sitting nearby that was never meant to be counted. The goal is not the longest possible range, it is a clean read of the intended zone.',
+        },
+        { h: 'How to decide' },
+        {
+          p: 'The question is whether the record should be created by a person acting, or automatically regardless of who is around. The first calls for a handheld, the second for a fixed reader. Most mature installations run both: the fixed reader logs daily movement automatically, and the handheld does a verification count at month end.',
+        },
+      ],
+    },
+  },
+  {
+    publishedAt: '2025-12-15',
+    tr: {
+      title: 'Kuyumda RFID: sayım ve güvenlik aynı etikette',
+      excerpt:
+        'Kuyum sektöründe RFID’yi öne çıkaran şey hız değil, ürün başına düşen değer. Küçük etiket, sıkı bütçe, ama kayıp toleransı sıfır.',
+      tags: ['Kuyum', 'RFID'],
+      blocks: [
+        {
+          p: 'Bir tekstil mağazasında bir ürünün kaybolması stok raporunu bozar. Bir kuyumcuda bir ürünün kaybolması doğrudan zarar demektir. Bu fark, kuyum sektöründeki RFID projelerinin diğer sektörlerden neden farklı kurulduğunu açıklar.',
+        },
+        { h: 'Ürün küçük, etiket daha da küçük olmalı' },
+        {
+          p: 'Bir yüzüğün içine, bir kolyenin ucuna ya da bir küpenin arkasına sığacak etiket birkaç milimetre kare olmak zorundadır. Bu boyutta bir antenin okuma mesafesi de kısalır; kuyum RFID’sinde genelde birkaç santimetreyle onlarca santimetre arası bir menzil beklenir, koridorun öbür ucundan okuma beklenmez.',
+        },
+        {
+          p: 'Kısa menzil burada bir kusur değildir. Vitrin çekmecesinin içindeki elli ürünü tek tek değil, çekmeceyi el terminaliyle taratarak saymak amaçlanır. Menzilin kısa olması komşu vitrindeki ürünün karışmasını da engeller.',
+        },
+        { h: 'Sayım sıklığı, kuyumda güvenliğin bir parçasıdır' },
+        {
+          p: 'Fiziksel sayım kuyumda zaten yapılan bir iştir, RFID onu hızlandırır. Ama asıl kazanç, sayımın sıklaşabilmesidir. Elle sayım günde bir kez yapılabilirken, RFID ile vardiya değişiminde beş dakikada tam sayım mümkün olur. Kayıp, oluştuğu gün fark edilir; bir haftalık gecikme olmaz.',
+        },
+        {
+          p: 'Bu, hırsızlığı önlemez ama tespit süresini kısaltır. Kısa tespit süresi hem kayıp ürünün izini sürmeyi kolaylaştırır hem de personel arasında sorumluluğu netleştirir: hangi vardiyada eksik oluştuğu bellidir.',
+        },
+        { h: 'Etiketleme süreci ayrı bir titizlik ister' },
+        {
+          p: 'Değerli bir ürüne etiket takmak, ürünü değiştirmeden yapılmalıdır. Çoğu kuyum etiketi ürünün kendisine değil, ürünün asıldığı karta ya da poşete iliştirilir; ayrılabilir etiketler satış anında kolayca çıkarılır ama sayım sırasında ürünle birlikte sayılır.',
+        },
+        {
+          p: 'Etiket-ürün eşleşmesinin doğru kaydedilmesi kritik. Yanlış eşleşen tek bir etiket, sayım sonucunu değil, envanter kaydının tamamını şüpheli hâle getirir. Bu yüzden etiketleme aşamasında ikinci bir doğrulama okuması yapılır.',
+        },
+        { h: 'Maliyet nereye gider' },
+        {
+          p: 'Kuyumda etiket birim fiyatı ürün değerine göre önemsizdir; sorun etiket sayısı değil, sistemin doğruluğudur. Bütçenin büyük kısmı etikete değil, doğru okuyucuya ve doğru sayım disiplinine gider. Ucuz bir etiketle yüzde birkaçlık okuma kaybı, kuyumda tekstildeki gibi "yeniden sayarız" ile kapatılamaz; kayıp, ürünün kendisi olabilir.',
+        },
+      ],
+    },
+    en: {
+      title: 'RFID in jewellery: counting and security on the same tag',
+      excerpt:
+        'What makes RFID worth it in jewellery is not speed, it is value per item. A tiny tag, a tight budget, and zero tolerance for loss.',
+      tags: ['Jewellery', 'RFID'],
+      blocks: [
+        {
+          p: 'In a clothing store, a missing item throws off a stock report. In a jewellery store, a missing item is a direct loss. That difference explains why RFID projects in jewellery get built differently from other sectors.',
+        },
+        { h: 'A small product needs an even smaller tag' },
+        {
+          p: 'A tag that fits inside a ring, at the end of a necklace, or behind an earring has to measure a few square millimetres. At that size the antenna shrinks too, so jewellery RFID typically expects a range from a few centimetres to a few tens of centimetres, not a read from across the room.',
+        },
+        {
+          p: 'Short range is not a flaw here. The goal is to sweep a display drawer of fifty items with a handheld, not to read across the store. Short range also keeps a neighbouring case from being read by accident.',
+        },
+        { h: 'Count frequency is part of jewellery security' },
+        {
+          p: 'Physical counting already happens in jewellery, RFID just speeds it up. The real gain is how often it can happen. A manual count might run once a day. With RFID a full count at shift change takes five minutes. A loss gets noticed the day it happens, not a week later.',
+        },
+        {
+          p: 'That does not prevent theft, but it shortens detection time. A short detection window makes it easier to trace a missing item, and it makes accountability clear: which shift the shortfall appeared in is on record.',
+        },
+        { h: 'Tagging needs its own care' },
+        {
+          p: 'Tagging a valuable item has to happen without altering it. Most jewellery tags attach to the card or pouch the item is displayed on rather than the item itself. Removable tags come off easily at the point of sale, but during a count they still need to be read alongside the item they belong to.',
+        },
+        {
+          p: 'Getting the tag-to-item pairing recorded correctly is critical. One mismatched tag does not just skew a single count, it puts the whole inventory record in doubt. That is why a second verification read happens at the tagging stage.',
+        },
+        { h: 'Where the budget actually goes' },
+        {
+          p: 'Unit tag cost barely registers against item value in jewellery. The real issue is not tag count, it is system accuracy. Most of the budget goes to the right reader and the right counting discipline, not the tag itself. A cheap tag with a few percent read loss cannot be shrugged off with "we will count again" the way it can in textiles; the loss might be the item itself.',
+        },
+      ],
+    },
+  },
+  {
+    publishedAt: '2025-12-22',
+    tr: {
+      title: 'Soğuk zincirde RFID: sıcaklık takibi neden ayrı bir problem',
+      excerpt:
+        'Soğuk zincirde etiketin okunması yetmez, düşmeden ve doğru sıcaklığı kaydederek okunması gerekir. Bu ikisi aynı etikette çakışan iki ayrı gereksinim.',
+      tags: ['Soğuk zincir', 'RFID'],
+      blocks: [
+        {
+          p: 'Oda sıcaklığında mükemmel yapışan bir etiket, dondurucuya girdiğinde birkaç gün içinde kalkabilir. Soğuk zincir RFID’sinde ilk atlanan konu budur: etiket seçimi sıcaklığa göre değil, yapışkanın davranışına göre yapılır.',
+        },
+        { h: 'Yapışkan, çipten önce test edilir' },
+        {
+          p: 'Standart akrilik yapışkanlar düşük sıcaklıkta sertleşir ve tutunma gücünü kaybeder. Soğuk zincir etiketleri kauçuk esaslı ya da özel formüle edilmiş yapışkanlarla üretilir; bunlar donma sıcaklığında da esnekliğini korur.',
+        },
+        {
+          p: 'Test oda sıcaklığında yapılırsa yanıltıcı sonuç verir. Doğru test, etiketi hedef sıcaklıkta (örneğin -18°C) belirli bir süre bekletip sonra yapışma gücünü ölçmektir. Etiket tedarikçisinden bu veriyi datasheet üzerinde isteyin, laboratuvar koşulunda değil sahada doğrulayın.',
+        },
+        { h: 'Nem, soğuk zincirin gizli düşmanı' },
+        {
+          p: 'Soğuk odadan çıkan bir ürün yüzeyinde anlık yoğuşma oluşur. Bu nem hem yapışkanı hem de etiketin baskısını etkiler, özellikle giriş-çıkışı sık olan ürünlerde. Nem dayanımı düşük bir kağıt etiket birkaç giriş-çıkış döngüsünde okunamaz hâle gelir.',
+        },
+        { h: 'RFID mi, sıcaklık sensörü mü, ikisi birden mi' },
+        {
+          p: 'Standart bir UHF RFID etiketi kimlik bilgisini taşır, sıcaklığı ölçmez. Sıcaklık verisi isteniyorsa sensörlü etiket ya da ayrı bir veri kaydedici (data logger) gerekir. İkisini karıştırmamak önemlidir: "RFID takıyoruz, sıcaklığı da görürüz" beklentisi, sensör olmadan karşılanmaz.',
+        },
+        {
+          p: 'Sensörlü RFID etiketleri daha pahalıdır ve daha büyük gövde gerektirir, çünkü küçük bir batarya ya da enerji hasadı devresi taşırlar. Her ürüne değil, palet ya da koli düzeyinde örnekleme mantığıyla kullanılmaları çoğu projede yeterlidir.',
+        },
+        { h: 'Okuma noktası sıcaklık geçişinde olmalı' },
+        {
+          p: 'Soğuk zincirde en kritik bilgi, ürünün ne zaman soğuk zincir dışına çıktığıdır. Bu yüzden okuyucular soğuk odaya değil, soğuk odanın giriş ve çıkış kapılarına yerleştirilir. Zincirin kırıldığı an, o an değil kapıdan geçiş anıdır ve kayıt orada tutulur.',
+        },
+        { h: 'Projeye başlamadan önce' },
+        {
+          p: 'Etiketi hedef sıcaklıkta test edin, oda sıcaklığında değil. Sıcaklık verisi gerekip gerekmediğine baştan karar verin, projenin ortasında sensöre geçmek pahalıdır. Okuma noktalarını ürünün durduğu yere değil, sıcaklığın değiştiği kapılara yerleştirin.',
+        },
+      ],
+    },
+    en: {
+      title: 'RFID in the cold chain: why temperature tracking is a separate problem',
+      excerpt:
+        'In the cold chain a tag has to do more than read. It has to stay stuck and, if temperature matters, record it correctly. Those are two separate requirements colliding on one label.',
+      tags: ['Cold chain', 'RFID'],
+      blocks: [
+        {
+          p: 'A label that sticks perfectly at room temperature can lift off within days inside a freezer. This is the first thing cold chain RFID projects get wrong: tag selection needs to follow adhesive behaviour, not temperature alone.',
+        },
+        { h: 'Adhesive gets tested before the chip does' },
+        {
+          p: 'Standard acrylic adhesives stiffen at low temperature and lose their grip. Cold chain labels use rubber-based or specially formulated adhesives that stay flexible at freezing temperatures.',
+        },
+        {
+          p: 'A test run at room temperature gives a misleading result. The correct test holds the label at the target temperature, say -18°C, for a set period and then measures adhesion. Ask the label supplier for this figure on the datasheet, and verify it on site rather than trusting lab conditions alone.',
+        },
+        { h: 'Moisture is the cold chain hidden enemy' },
+        {
+          p: 'A product coming out of cold storage picks up instant condensation on its surface. That moisture affects both the adhesive and the print, especially on items that move in and out of cold storage repeatedly. A paper label with poor moisture resistance becomes unreadable after a few such cycles.',
+        },
+        { h: 'RFID, a temperature sensor, or both' },
+        {
+          p: 'A standard UHF RFID tag carries identity, not temperature. If temperature data is required you need a sensor tag or a separate data logger. Do not conflate the two: expecting "we tagged it, so we will see the temperature too" without a sensor never gets met.',
+        },
+        {
+          p: 'Sensor-equipped RFID tags cost more and need a larger housing, because they carry a small battery or an energy-harvesting circuit. Applying them at pallet or carton level as a sample, rather than on every item, is enough for most projects.',
+        },
+        { h: 'Read points belong at the temperature transition' },
+        {
+          p: 'The most critical piece of information in a cold chain is when a product left the cold chain. That is why readers get placed at the doors of a cold room, not inside it. The moment the chain breaks is not a moment inside storage, it is the moment of passing through a door, and that is where the record needs to be kept.',
+        },
+        { h: 'Before the project starts' },
+        {
+          p: 'Test the label at the target temperature, not at room temperature. Decide up front whether temperature data is actually needed; switching to a sensor mid-project is expensive. Place read points at the doors where temperature changes, not where the product happens to sit.',
+        },
+      ],
+    },
+  },
 ]
 
 const main = async () => {
