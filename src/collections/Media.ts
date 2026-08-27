@@ -5,7 +5,11 @@ import { anyone, authenticated } from '../access'
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Görsel', plural: 'Görseller' },
-  admin: { group: 'İçerik' },
+  admin: {
+    group: 'İçerik',
+    description:
+      'Kartlar ve detay sayfaları görseli 16:9 çerçevede gösterir. Oranı 1.3 ile 2.1 arasındaki yatay görsel çerçeveyi doldurur (önerilen ölçü 1600×900). Kare, dikey ya da çok geniş görsel kırpılmaz, tamamı çerçeveye sığdırılır ve kenarlarda boşluk kalır. Ürün fotoğrafı hiçbir zaman kırpılmaz; sade zeminde 1200×1200 civarı kare fotoğraf en iyi sonucu verir. Yüklenen dosya olduğu gibi saklanır, panelde kırpma aracı yok.',
+  },
   access: {
     create: authenticated,
     delete: authenticated,

@@ -23,6 +23,53 @@ const Tile = ({ value, label }: { value: string | number; label: string }) => (
   </div>
 )
 
+/**
+ * Görsel yükleme kuralı panelde yazılı dursun diye burada. Ön yüzdeki oran
+ * kararı `src/lib/media.ts` içindeki `imageFitOf` ile aynı sayıları kullanıyor.
+ */
+const ImageRules = () => (
+  <div
+    style={{
+      border: '1px solid var(--theme-elevation-150)',
+      borderRadius: '.5rem',
+      padding: '1.25rem 1.5rem',
+      marginTop: '2rem',
+    }}
+  >
+    <h3 style={{ fontSize: '1rem', marginBottom: '.25rem' }}>Görsel yükleme kuralı</h3>
+    <p style={{ color: 'var(--theme-elevation-600)', fontSize: '.875rem', marginBottom: '1rem' }}>
+      Kartlar ve detay sayfaları görseli 16:9 bir çerçevede gösterir. Çerçeve, yüklediğin dosyanın
+      kendi ölçüsünü okuyup nasıl yerleşeceğine karar verir.
+    </p>
+    <ul style={{ fontSize: '.875rem', lineHeight: 1.7, paddingLeft: '1.1rem', margin: 0 }}>
+      <li>
+        Yatay bir görselin genişlik/yükseklik oranı 1.3 ile 2.1 arasındaysa çerçeveyi tamamen
+        doldurur. 1600×900 bu aralığın tam ortasında, kapak görselleri için önerimiz bu.
+      </li>
+      <li>
+        Kare, dikey ya da çok geniş bir görsel yüklersen kırpılmaz. Tamamı çerçevenin içine
+        sığdırılır, kenarlarda boşluk kalır.
+      </li>
+      <li>
+        Ürün fotoğrafı hiçbir zaman kırpılmaz. Beyaz ya da sade zeminde 1200×1200 civarı kare bir
+        fotoğraf en iyi sonucu veriyor.
+      </li>
+      <li>
+        Görsel yüklemezsen kart boş kalmaz, konuya uygun bir yedek fotoğraf devreye girer. Panelden
+        yüklediğin fotoğraf her zaman yedeğin önüne geçer.
+      </li>
+      <li>
+        Alternatif metin zorunlu. Görseli göremeyen ziyaretçi ve arama motorları bunu okur, bir
+        cümle yeter.
+      </li>
+      <li>
+        Dosyayı yüklemeden önce kırpmak istersen 16:9 kırp. Panelde kırpma aracı yok, yüklenen dosya
+        olduğu gibi saklanır.
+      </li>
+    </ul>
+  </div>
+)
+
 const List = ({ title, rows }: { title: string; rows: { label: string; count: number }[] }) => (
   <div style={{ flex: '1 1 18rem' }}>
     <h3 style={{ fontSize: '.875rem', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: '.75rem' }}>
@@ -102,6 +149,8 @@ export const Dashboard = async () => {
         <List title="En çok görüntülenen sayfalar" rows={tally(pageviews.map((event) => event.path))} />
         <List title="Ülkeler" rows={tally(docs.map((event) => event.country))} />
       </div>
+
+      <ImageRules />
     </div>
   )
 }
