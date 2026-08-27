@@ -35,8 +35,9 @@ const LEGACY_ROUTES: Record<string, string> = {
   'perakende-ürünlerimiz': '/urunler/kategori/perakende-urunleri',
 
   // Çözümler (yeni slug'lar src/seed/solutions.ts'ten)
-  'rfid-depo-yönetimi': '/cozumler/rfid-depo-yonetimi',
-  'rfid-lojistik-yönetimi': '/cozumler/rfid-lojistik-yonetimi',
+  // Depo ve lojistik çözümleri panelde tek kayıtta birleştirildi.
+  'rfid-depo-yönetimi': '/cozumler/depo-ve-lojistik',
+  'rfid-lojistik-yönetimi': '/cozumler/depo-ve-lojistik',
   'rfid-perakende-yönetimi': '/cozumler/rfid-perakende-yonetimi',
   'rfid-tekstil-yönetimi': '/cozumler/rfid-tekstil-yonetimi',
   'rfid-medikal-yönetimi': '/cozumler/rfid-medikal-yonetimi',
@@ -85,6 +86,14 @@ const nextConfig: NextConfig = {
     return [
       { source: '/ihracat', destination: '/projeler', permanent: true },
       { source: '/en/export', destination: '/en/projects', permanent: true },
+      // Depo ve lojistik tek çözümde birleşti; birleşmeden önceki ve panelde
+      // yanlışlıkla kaydedilen adresler yeni sayfaya gidiyor.
+      ...['cozumler-kategori-depovelojistik', 'rfid-depo-yonetimi', 'rfid-lojistik-yonetimi'].flatMap(
+        (slug) => [
+          { source: `/cozumler/${slug}`, destination: '/cozumler/depo-ve-lojistik', permanent: true },
+          { source: `/en/solutions/${slug}`, destination: '/en/solutions/depo-ve-lojistik', permanent: true },
+        ],
+      ),
       ...legacyRedirects,
       // Eşleşmeyen eski blog adresleri 404 yerine listeye düşsün.
       { source: '/f/:slug*', destination: '/bilgi-merkezi', permanent: true },

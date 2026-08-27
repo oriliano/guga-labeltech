@@ -51,7 +51,8 @@ export const References: CollectionConfig = {
       name: 'results',
       type: 'array',
       label: 'Sonuçlar',
-      minRows: 1,
+      // Rakam zorunlu değil: bir vaka, ölçülmüş bir kazanç paylaşılamadan da
+      // yayına alınabiliyor. Uydurma rakam girilmesin diye satır da zorunlu değil.
       fields: [
         { name: 'metric', type: 'text', required: true, label: 'Rakam' },
         { name: 'label', type: 'text', required: true, localized: true, label: 'Açıklama' },

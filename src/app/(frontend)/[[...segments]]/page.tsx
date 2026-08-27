@@ -255,7 +255,11 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             : 'cta.allProjects',
         locale,
       )
-      const groupLabel = (item: any) => item.sector?.trim() || (locale === 'tr' ? 'Diğer' : 'Other')
+      // Panelde sektör alanına bazen "E-Ticaret • Perakende • Üretim" gibi uzun
+      // bir liste giriliyor. Grup başlığı ve filtre düğmesi için yalnızca ilk
+      // sektör kullanılıyor, yoksa filtre şeridi tek satırda okunmaz oluyor.
+      const groupLabel = (item: any) =>
+        item.sector?.split(/[•|,/]/)[0]?.trim() || (locale === 'tr' ? 'Diğer' : 'Other')
 
       if (isContentCategory) {
         const selectedLabel = items.map(groupLabel).find((label) => slugify(label) === extra[0])
@@ -273,7 +277,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               items={selectedItems}
               emptyText={emptyText}
               hrefFor={(item) => sectionPath(section, locale, item.slug)}
-              eyebrowOf={(item) => item.client ?? item.sector ?? undefined}
+              eyebrowOf={(item) => item.client ?? groupLabel(item)}
               bodyOf={(item) => item.excerpt ?? undefined}
               imageOf={(item) =>
                 section === 'solutions'
@@ -342,7 +346,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         items: groupItems.slice(0, PREVIEW).map((item) => ({
           id: item.id,
           title: item.title,
-          eyebrow: item.client ?? item.sector ?? undefined,
+          eyebrow: item.client ?? groupLabel(item),
           excerpt: item.excerpt ?? undefined,
           href: sectionPath(section, locale, item.slug),
           image:

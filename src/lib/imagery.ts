@@ -96,5 +96,17 @@ export const PRODUCT_PHOTOS = new Set<string>([
 export const productPhoto = (slug?: string | null) =>
   slug && PRODUCT_PHOTOS.has(slug) ? `/img/urun/${slug}.jpg` : undefined
 
-export const solutionImage = (slug?: string | null) => (slug ? SOLUTION_IMAGES[slug] : undefined)
-export const postImage = (slug?: string | null) => (slug ? POST_IMAGES[slug] : undefined)
+/**
+ * Panelden açılan yeni bir çözümün slug'ı bu listede olmuyor. Görsel de
+ * yüklenmediyse kart fotoğrafsız kalıyordu; bu yüzden nötr bir depo fotoğrafı
+ * son çare olarak devrede.
+ */
+export const SOLUTION_FALLBACK_IMAGE = '/img/solution-rfid-depo-yonetimi.jpg'
+
+export const solutionImage = (slug?: string | null) =>
+  (slug ? SOLUTION_IMAGES[slug] : undefined) ?? SOLUTION_FALLBACK_IMAGE
+/** Kapak görseli girilmemiş yazı kartsız kalmasın diye nötr bir yedek. */
+export const POST_FALLBACK_IMAGE = '/img/hero-iot.jpg'
+
+export const postImage = (slug?: string | null) =>
+  (slug ? POST_IMAGES[slug] : undefined) ?? POST_FALLBACK_IMAGE
