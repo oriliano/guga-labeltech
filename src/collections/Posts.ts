@@ -32,7 +32,13 @@ export const Posts: CollectionConfig = {
       label: 'Özet',
       admin: { description: 'Liste kartlarında ve arama sonuçlarında görünür.' },
     },
-    { name: 'coverImage', type: 'upload', relationTo: 'media', label: 'Kapak görseli' },
+    {
+      name: 'coverImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Kapak görseli',
+      admin: { description: 'Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.' },
+    },
     { name: 'body', type: 'richText', localized: true, label: 'İçerik' },
     {
       name: 'tags',

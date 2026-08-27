@@ -23,6 +23,21 @@ export const mediaOf = (value: unknown): Media | null => {
   }
 }
 
+export type ImageFit = 'cover' | 'contain'
+
+/**
+ * Kart çerçevesi 16:9. Panelden yüklenen fotoğraf buna yakınsa çerçeveyi
+ * dolduruyor; kare, dikey ya da çok geniş bir görsel yüklendiğinde kırpmak
+ * yerine tamamı sığdırılıyor. Ölçüsü bilinmeyen görsel için çağıran tarafın
+ * verdiği varsayılan kullanılıyor.
+ */
+export const imageFitOf = (value: unknown, fallback: ImageFit): ImageFit => {
+  const media = mediaOf(value)
+  if (!media?.url || !media.width || !media.height) return fallback
+  const ratio = media.width / media.height
+  return ratio >= 1.3 && ratio <= 2.1 ? 'cover' : 'contain'
+}
+
 /** Panelden yüklenen görsel her zaman önce gelir, depodaki statik görsel yedektir. */
 export const imageUrl = (value: unknown, fallback?: string): string | undefined =>
   mediaOf(value)?.url ?? fallback

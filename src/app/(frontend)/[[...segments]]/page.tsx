@@ -28,7 +28,7 @@ import {
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
-import { imageUrl } from '@/lib/media'
+import { imageFitOf, imageUrl } from '@/lib/media'
 import {
   CONTENT_CATEGORY_SEGMENT,
   alternatePath,
@@ -284,6 +284,9 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                   ? imageUrl(item.heroImage, solutionImage(item.slug))
                   : imageUrl(item.image)
               }
+              imageFitOf={(item) =>
+                imageFitOf(section === 'solutions' ? item.heroImage : item.image, 'cover')
+              }
               filters={{
                 label: t('label.sector', locale),
                 items: allGroups.map((label) => ({
@@ -353,6 +356,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             section === 'solutions'
               ? imageUrl(item.heroImage, solutionImage(item.slug))
               : imageUrl(item.image),
+          imageFit: imageFitOf(section === 'solutions' ? item.heroImage : item.image, 'cover'),
         })),
       }))
 
@@ -399,7 +403,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 eyebrowOf={(item) => item.model ?? undefined}
                 bodyOf={(item) => item.excerpt ?? undefined}
                 imageOf={(item) => imageUrl(item.images?.[0], productPhoto(item.slug))}
-                imageFit="contain"
+                imageFitOf={(item) => imageFitOf(item.images?.[0], 'contain')}
                 visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
                 filters={{
                   label: t('label.category', locale),
@@ -458,7 +462,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               // Panelden yuklenen fotograf her zaman once gelir; depodaki statik
               // gorsel yalnizca fotograf yoksa devreye giriyor.
               image: imageUrl(item.images?.[0], productPhoto(item.slug)),
-              imageFit: 'contain' as const,
+              imageFit: imageFitOf(item.images?.[0], 'contain'),
               visual: <ProductGlyph category={item.category} className="h-full w-full" />,
             })),
           }
@@ -512,6 +516,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             hrefFor={(item) => sectionPath('insights', locale, item.slug)}
             bodyOf={(item) => item.excerpt}
             imageOf={(item) => imageUrl(item.coverImage, postImage(item.slug))}
+            imageFitOf={(item) => imageFitOf(item.coverImage, 'cover')}
           />
         )
       }

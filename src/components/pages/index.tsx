@@ -10,7 +10,7 @@ import { Breadcrumbs, ButtonLink, Card, Section, SectionHeading, SpecTable, Stat
 import { t, type Locale } from '@/lib/i18n'
 import { Hero } from '@/components/site/Hero'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
-import { mediaOf } from '@/lib/media'
+import { imageFitOf, mediaOf } from '@/lib/media'
 import { sectionPath } from '@/lib/routes'
 
 const Figure = ({
@@ -60,6 +60,15 @@ export const HomePage = ({
   </>
 )
 
+/**
+ * Detay sayfalarındaki 16:9 çerçeve. Panelden yüklenen görsel bu orana yakınsa
+ * çerçeveyi dolduruyor, değilse kırpılmadan içine sığdırılıyor.
+ */
+const frameClass = (fit: 'cover' | 'contain') =>
+  fit === 'contain'
+    ? 'aspect-[16/9] w-full rounded-xl bg-ink-900 object-contain p-4'
+    : 'aspect-[16/9] w-full rounded-xl object-cover'
+
 /* ------------------------------------------------------------ listings ---- */
 
 export const ListingPage = ({
@@ -73,6 +82,7 @@ export const ListingPage = ({
   bodyOf,
   imageOf,
   imageFit,
+  imageFitOf,
   visualOf,
   filters,
 }: {
@@ -86,6 +96,8 @@ export const ListingPage = ({
   bodyOf?: (item: any) => string | undefined
   imageOf?: (item: any) => string | undefined
   imageFit?: 'cover' | 'contain'
+  /** Görsel başına oran kararı; verilmezse `imageFit` geçerli. */
+  imageFitOf?: (item: any) => 'cover' | 'contain'
   visualOf?: (item: any) => ReactNode
   filters?: {
     label: string
@@ -129,7 +141,7 @@ export const ListingPage = ({
             title={item.title}
             body={bodyOf?.(item)}
             image={imageOf?.(item)}
-            imageFit={imageFit}
+            imageFit={imageFitOf?.(item) ?? imageFit}
             visual={visualOf?.(item)}
           />
           </Reveal>
@@ -336,6 +348,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
 
 export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution: any }) => {
   const heroSrc = mediaOf(solution.heroImage)?.url ?? solutionImage(solution.slug)
+  const heroFit = imageFitOf(solution.heroImage, 'cover')
 
   return (
   <>
@@ -364,7 +377,9 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
             width={1400}
             height={900}
             priority
-            className="h-full w-full rounded-xl object-cover"
+            className={
+              heroFit === 'contain' ? frameClass('contain') : 'h-full w-full rounded-xl object-cover'
+            }
           />
         ) : null}
       </div>
@@ -490,7 +505,7 @@ export const CaseStudyDetail = ({
               width={image.width ?? 1400}
               height={image.height ?? 900}
               priority
-              className="aspect-[16/9] w-full rounded-xl object-cover"
+              className={frameClass(imageFitOf(item.image, 'cover'))}
             />
           ) : null}
         </div>
@@ -576,7 +591,7 @@ export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => {
           width={1200}
           height={675}
           priority
-          className="mb-8 aspect-[16/9] w-full rounded-xl object-cover"
+          className={`mb-8 ${frameClass(imageFitOf(post.coverImage, 'cover'))}`}
         />
       ) : null}
       <h1 className="text-h1 font-semibold">{post.title}</h1>

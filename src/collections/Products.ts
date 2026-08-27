@@ -101,7 +101,14 @@ export const Products: CollectionConfig = {
         {
           label: 'Görseller & İlişkiler',
           fields: [
-            { name: 'images', type: 'upload', relationTo: 'media', hasMany: true, label: 'Görseller' },
+            {
+              name: 'images',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              label: 'Görseller',
+              admin: { description: 'Ürün kartı fotoğrafı kırpmadan gösteriyor. Beyaz ya da sade zeminde, 1200×1200 civarı kare bir fotoğraf en iyi sonucu veriyor.' },
+            },
             {
               name: 'relatedSolutions',
               type: 'relationship',

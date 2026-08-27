@@ -49,6 +49,10 @@ export const Solutions: CollectionConfig = {
               type: 'upload',
               relationTo: 'media',
               label: 'Kapak görseli',
+              admin: {
+                description:
+                  'Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.',
+              },
             },
           ],
         },
