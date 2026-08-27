@@ -35,7 +35,10 @@ export const Solutions: CollectionConfig = {
               type: 'text',
               localized: true,
               label: 'Sektör etiketi',
-              admin: { description: 'Örn. Depo, Perakende, Sağlık. Kartlarda rozet olarak görünür.' },
+              admin: {
+                description:
+                  'Örn. Depo, Perakende, Sağlık. Kartta rozet olarak görünür, ayrıca liste sayfasında grup başlığı ve filtre düğmesi olur. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.',
+              },
             },
             {
               name: 'excerpt',

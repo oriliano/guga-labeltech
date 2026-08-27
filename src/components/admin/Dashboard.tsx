@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
@@ -20,6 +21,89 @@ const Tile = ({ value, label }: { value: string | number; label: string }) => (
   >
     <div style={{ fontSize: '1.75rem', fontWeight: 600, lineHeight: 1.1 }}>{value}</div>
     <div style={{ fontSize: '.8125rem', color: 'var(--theme-elevation-600)', marginTop: '.25rem' }}>{label}</div>
+  </div>
+)
+
+/**
+ * Panelde sık sorulan işlerin yazılı karşılığı. Uzun bir duvar olmasın diye her
+ * başlık kapalı açılıyor.
+ */
+const GuideSection = ({ title, children }: { title: string; children: ReactNode }) => (
+  <details style={{ borderTop: '1px solid var(--theme-elevation-100)', padding: '.75rem 0' }}>
+    <summary style={{ cursor: 'pointer', fontSize: '.9375rem', fontWeight: 500 }}>{title}</summary>
+    <div style={{ fontSize: '.875rem', lineHeight: 1.7, marginTop: '.5rem' }}>{children}</div>
+  </details>
+)
+
+const PanelGuide = () => (
+  <div
+    style={{
+      border: '1px solid var(--theme-elevation-150)',
+      borderRadius: '.5rem',
+      padding: '1.25rem 1.5rem',
+      marginTop: '1rem',
+    }}
+  >
+    <h3 style={{ fontSize: '1rem', marginBottom: '.25rem' }}>Panel rehberi</h3>
+    <p style={{ color: 'var(--theme-elevation-600)', fontSize: '.875rem', marginBottom: '.5rem' }}>
+      Başlığa tıklayınca açılır.
+    </p>
+
+    <GuideSection title="Taslak ve yayın">
+      Her kayıt ya taslak ya da yayında. Sağdaki kutuda <strong>Taslağı kaydet</strong> ile
+      kaydettiğin sürece kayıt sitede görünmez, yalnızca panelde durur. Ziyaretçinin görmesi için{' '}
+      <strong>Yayınla</strong> demen gerekir. Yayındaki bir kaydı düzenlerken de aynısı geçerli:
+      değişiklik yayına girene kadar sitede eski hâli kalır. Eski sürümler <strong>Sürümler</strong>{' '}
+      sekmesinde duruyor, yanlış bir düzenlemeyi oradan geri alabilirsin.
+    </GuideSection>
+
+    <GuideSection title="İki dil: Türkçe ve İngilizce">
+      Başlık, özet, içerik gibi alanlar her dil için ayrı yazılıyor. Sağ üstteki dil seçicisinden{' '}
+      <strong>English</strong>'e geçip aynı kaydı bir de İngilizce doldur. İngilizcesini boş
+      bırakırsan o alan İngilizce sayfada boş görünür, Türkçesi otomatik kopyalanmaz. Görsel, sıra
+      ve ilişki alanları dilden bağımsız, bir kez girmen yeterli.
+    </GuideSection>
+
+    <GuideSection title="Sayfa adresi (slug)">
+      Adres başlıktan otomatik üretiliyor: “RFID ile tekstil takibi” başlığı{' '}
+      <code>/cozumler/rfid-ile-tekstil-takibi</code> adresine düşer. Yayına girmiş bir kaydın
+      adresini sonradan değiştirirsen eski adres kırılır; arama motorundaki ve paylaşılmış
+      bağlantılar 404 verir. Değiştirmen gerekirse haber ver, eski adresten yenisine yönlendirme
+      ekleyelim.
+    </GuideSection>
+
+    <GuideSection title="Sektör alanı listeyi gruplar">
+      Çözüm, referans ve projelerdeki <strong>sektör</strong> alanı yalnızca bir rozet değil: liste
+      sayfasındaki grup başlığı ve üstteki filtre düğmesi buradan üretiliyor. Tek bir sektör yaz
+      (Depo, Perakende, Sağlık gibi). Birden fazla sektör yazarsan başlık olarak yalnızca ilki
+      kullanılır, gerisi görünmez.
+    </GuideSection>
+
+    <GuideSection title="Referans ve proje eklemek">
+      Panelde hazır taslaklar var; müşteri adını, ülkeyi ve rakamları doldurup yayınlaman yeterli.
+      Müşteri adı paylaşılamıyorsa <strong>Müşteri</strong> alanını boş bırak, kayıt yine yayına
+      girer. <strong>Sonuçlar</strong> bölümü zorunlu değil: elde ölçülmüş bir rakam yoksa satır
+      ekleme, uydurma sayı girme. <strong>İlgili çözüm</strong> alanını doldurursan vaka ile çözüm
+      sayfası birbirine bağlanır.
+    </GuideSection>
+
+    <GuideSection title="Sıralama">
+      Sağdaki <strong>Sıra</strong> alanında küçük sayı önce gelir. Liste sayfalarında her grubun
+      ilk üç kaydı gösteriliyor, gerisi grubun kendi sayfasında. Bir kaydın öne çıkmasını istersen
+      sırasını küçült.
+    </GuideSection>
+
+    <GuideSection title="Teklif talepleri">
+      Siteden gelen form <strong>Teklif Talepleri</strong> altına düşer ve aynı anda e-posta
+      bildirimi gider. Formla gönderilen dosyalar <strong>Talep Ekleri</strong> koleksiyonunda
+      durur. Talebin durumunu panelden değiştirebilirsin, böylece hangisine dönüldüğü belli olur.
+    </GuideSection>
+
+    <GuideSection title="Analitik">
+      Ana sayfadaki sayılar kendi kayıtlarımızdan üretiliyor, üçüncü taraf bir izleyici ve çerez
+      yok. Sayfa görüntüleme ve doküman indirme olayları <strong>Analitik</strong> altında ham
+      hâliyle duruyor.
+    </GuideSection>
   </div>
 )
 
@@ -151,6 +235,7 @@ export const Dashboard = async () => {
       </div>
 
       <ImageRules />
+      <PanelGuide />
     </div>
   )
 }

@@ -41,7 +41,10 @@ export const References: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Kategori / sektör',
-      admin: { description: 'Liste sayfasındaki kategori ve filtre adı.' },
+      admin: {
+        description:
+          'Liste sayfasındaki grup başlığı ve filtre düğmesi. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.',
+      },
     },
     { name: 'country', type: 'text', label: 'Ülke' },
     { name: 'excerpt', type: 'textarea', required: true, localized: true, label: 'Kısa özet' },
