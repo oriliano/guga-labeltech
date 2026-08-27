@@ -20,7 +20,8 @@ import type { Locale } from '../lib/i18n'
 const NAV_LABELS = {
   products: { tr: 'Ürünler', en: 'Products' },
   solutions: { tr: 'Çözümler', en: 'Solutions' },
-  export: { tr: 'Projeler', en: 'Projects' },
+  references: { tr: 'Referanslar', en: 'References' },
+  projects: { tr: 'Projeler', en: 'Projects' },
   insights: { tr: 'Bilgi Merkezi', en: 'Insights' },
   about: { tr: 'Kurumsal', en: 'Company' },
   contact: { tr: 'İletişim', en: 'Contact' },
@@ -47,7 +48,8 @@ const navigation = (locale: Locale) => ({
       })),
     },
     { label: NAV_LABELS.solutions[locale], href: sectionPath('solutions', locale) },
-    { label: NAV_LABELS.export[locale], href: sectionPath('export', locale) },
+    { label: NAV_LABELS.references[locale], href: sectionPath('references', locale) },
+    { label: NAV_LABELS.projects[locale], href: sectionPath('projects', locale) },
     { label: NAV_LABELS.insights[locale], href: sectionPath('insights', locale) },
     { label: NAV_LABELS.about[locale], href: sectionPath('about', locale) },
   ],
@@ -66,7 +68,8 @@ const navigation = (locale: Locale) => ({
       title: FOOTER_TITLES.company[locale],
       links: [
         { label: NAV_LABELS.solutions[locale], href: sectionPath('solutions', locale) },
-            { label: NAV_LABELS.export[locale], href: sectionPath('export', locale) },
+        { label: NAV_LABELS.references[locale], href: sectionPath('references', locale) },
+        { label: NAV_LABELS.projects[locale], href: sectionPath('projects', locale) },
         { label: NAV_LABELS.insights[locale], href: sectionPath('insights', locale) },
         { label: NAV_LABELS.about[locale], href: sectionPath('about', locale) },
         { label: NAV_LABELS.contact[locale], href: sectionPath('contact', locale) },
@@ -122,7 +125,7 @@ const main = async () => {
   }
   console.log('menuler ve ihracat girisi yazildi')
 
-  const collections = ['products', 'solutions', 'posts'] as const
+  const collections = ['products', 'solutions', 'references', 'projects', 'posts'] as const
   for (const collection of collections) {
     let written = 0
     for (const locale of locales) {

@@ -7,6 +7,8 @@ import { DEFAULT_LOCALE, localePrefix, type Locale } from './i18n'
 export const SECTION_SLUGS = {
   products: { tr: 'urunler', en: 'products' },
   solutions: { tr: 'cozumler', en: 'solutions' },
+  references: { tr: 'referanslar', en: 'references' },
+  projects: { tr: 'projeler', en: 'projects' },
   insights: { tr: 'bilgi-merkezi', en: 'insights' },
   about: { tr: 'kurumsal', en: 'company' },
   export: { tr: 'ihracat', en: 'export' },
@@ -37,6 +39,11 @@ export const sectionPath = (section: Section, locale: Locale, slug?: string): st
   const base = `${localePrefix(locale)}/${SECTION_SLUGS[section][locale]}`
   return slug ? `${base}/${slug}` : base
 }
+
+export const CONTENT_CATEGORY_SEGMENT = { tr: 'kategori', en: 'category' } as const
+
+export const contentCategoryPath = (section: Section, locale: Locale, category: string): string =>
+  `${sectionPath(section, locale)}/${CONTENT_CATEGORY_SEGMENT[locale]}/${category}`
 
 export const homePath = (locale: Locale): string => localePrefix(locale) || '/'
 

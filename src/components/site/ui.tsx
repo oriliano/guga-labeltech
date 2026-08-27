@@ -79,6 +79,7 @@ export const Card = ({
   body,
   footer,
   image,
+  imageFit = 'cover',
   visual,
 }: {
   href: string
@@ -87,6 +88,7 @@ export const Card = ({
   body?: string
   footer?: ReactNode
   image?: string
+  imageFit?: 'cover' | 'contain'
   visual?: ReactNode
 }) => (
   <Link
@@ -101,7 +103,7 @@ export const Card = ({
           alt=""
           fill
           sizes="(min-width: 1024px) 24rem, (min-width: 640px) 50vw, 100vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          className={`${imageFit === 'contain' ? 'object-contain p-3' : 'object-cover group-hover:scale-[1.04]'} transition-transform duration-500`}
         />
       </div>
     ) : null}

@@ -10,6 +10,13 @@ export const localePrefix = (locale: Locale) => (locale === DEFAULT_LOCALE ? '' 
 type Dictionary = Record<string, { tr: string; en: string }>
 
 const strings: Dictionary = {
+  'nav.references': { tr: 'Referanslar', en: 'References' },
+  'nav.projects': { tr: 'Projeler', en: 'Projects' },
+  'cta.allReferences': { tr: 'Tüm referanslar', en: 'All references' },
+  'cta.allProjects': { tr: 'Tüm projeler', en: 'All projects' },
+  'empty.solutions': { tr: 'Bu kategoride henüz çözüm yok.', en: 'No solutions in this category yet.' },
+  'empty.references': { tr: 'Yakında referanslarımızı burada paylaşacağız.', en: 'References will be shared here soon.' },
+  'empty.projects': { tr: 'Yakında tamamlanan projelerimizi burada paylaşacağız.', en: 'Completed projects will be shared here soon.' },
   'nav.home': { tr: 'Ana sayfa', en: 'Home' },
   'nav.products': { tr: 'Ürünler', en: 'Products' },
   'nav.solutions': { tr: 'Çözümler', en: 'Solutions' },

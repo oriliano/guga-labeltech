@@ -6,9 +6,8 @@ export type Media = {
 }
 
 /**
- * Payload görsel adresini tam adres olarak veriyor; next/image tam adresleri
- * remotePatterns olmadan reddediyor ve görsel kırık çıkıyor. Kendi alan
- * adımızdaki adresi göreli yola çevirmek alan adı değiştiğinde de çalışır.
+ * Payload can return an absolute URL. Keep a different public origin (such as
+ * R2) intact; turning it into a local path would make the image return 404.
  */
 export const mediaOf = (value: unknown): Media | null => {
   if (!value || typeof value !== 'object' || !('url' in (value as Media))) return null
@@ -16,7 +15,9 @@ export const mediaOf = (value: unknown): Media | null => {
   if (!media.url?.startsWith('http')) return media
   try {
     const parsed = new URL(media.url)
-    return { ...media, url: `${parsed.pathname}${parsed.search}` }
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
+    const serverOrigin = serverUrl ? new URL(serverUrl).origin : undefined
+    return parsed.origin === serverOrigin ? { ...media, url: `${parsed.pathname}${parsed.search}` } : media
   } catch {
     return media
   }

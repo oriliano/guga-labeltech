@@ -38,6 +38,32 @@ export const listSolutions = async ({ locale, limit = 100, where, sort = 'order'
   return docs
 }
 
+export const listReferences = async ({ locale, limit = 100, where, sort = 'order' }: ListArgs) => {
+  const payload = await payloadClient()
+  const { docs } = await payload.find({
+    collection: 'references',
+    locale,
+    limit,
+    sort,
+    where: { _status: { equals: 'published' }, ...(where ?? {}) },
+    depth: 1,
+  })
+  return docs
+}
+
+export const listProjects = async ({ locale, limit = 100, where, sort = 'order' }: ListArgs) => {
+  const payload = await payloadClient()
+  const { docs } = await payload.find({
+    collection: 'projects',
+    locale,
+    limit,
+    sort,
+    where: { _status: { equals: 'published' }, ...(where ?? {}) },
+    depth: 1,
+  })
+  return docs
+}
+
 export const listPosts = async ({ locale, limit = 50 }: ListArgs) => {
   const payload = await payloadClient()
   const { docs } = await payload.find({
@@ -51,7 +77,7 @@ export const listPosts = async ({ locale, limit = 50 }: ListArgs) => {
   return docs
 }
 
-export const findBySlug = async <T extends 'products' | 'solutions' | 'posts'>(
+export const findBySlug = async <T extends 'products' | 'solutions' | 'references' | 'projects' | 'posts'>(
   collection: T,
   slug: string,
   locale: Locale,

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import {
+  CaseStudyDetail,
   GroupedProducts,
   HomePage,
   ListingPage,
@@ -19,20 +20,79 @@ import {
   findBySlug,
   getSiteSettings,
   listPosts,
+  listProjects,
   listProducts,
+  listReferences,
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
 import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { imageUrl } from '@/lib/media'
-import { alternatePath, legalPath, matchLegal, matchSection, sectionPath, type Section } from '@/lib/routes'
+import {
+  CONTENT_CATEGORY_SEGMENT,
+  alternatePath,
+  contentCategoryPath,
+  legalPath,
+  matchLegal,
+  matchSection,
+  sectionPath,
+  type Section,
+} from '@/lib/routes'
+import { slugify } from '@/fields/slug'
 
 // Railway's private network is unavailable during build, so pages render per request
 // instead of being prerendered against the database.
 export const dynamic = 'force-dynamic'
 
 type Params = { segments?: string[] }
+type ContentSection = 'solutions' | 'references' | 'projects'
+
+const isContentSection = (section: Section | null): section is ContentSection =>
+  section === 'solutions' || section === 'references' || section === 'projects'
+
+const listContent = (section: ContentSection, locale: Locale) => {
+  switch (section) {
+    case 'solutions':
+      return listSolutions({ locale, limit: 500 })
+    case 'references':
+      return listReferences({ locale, limit: 500 })
+    case 'projects':
+      return listProjects({ locale, limit: 500 })
+  }
+}
+
+const collectionForContent = (
+  section: ContentSection,
+): 'solutions' | 'references' | 'projects' =>
+  section
+
+const contentLead = (section: ContentSection, locale: Locale) => {
+  const copy = {
+    solutions: {
+      tr: 'Sektöre özel RFID, RTLS ve IoT kurguları.',
+      en: 'Sector-specific RFID, RTLS and IoT deployments.',
+    },
+    references: {
+      tr: 'Farklı sektörlerde tamamladığımız uygulama örnekleri.',
+      en: 'Examples of deployments completed across different sectors.',
+    },
+    projects: {
+      tr: 'İhtiyaca göre tasarlanan ve uygulanan RFID projeleri.',
+      en: 'RFID projects designed and delivered around each deployment need.',
+    },
+  } as const
+  return copy[section][locale]
+}
+
+const contentItemLabel = (section: ContentSection, locale: Locale) => {
+  const labels = {
+    solutions: { tr: 'çözüm', en: 'solutions' },
+    references: { tr: 'referans', en: 'references' },
+    projects: { tr: 'proje', en: 'projects' },
+  } as const
+  return labels[section][locale]
+}
 
 /** Splits `/en/products/guga-ty850` into locale `en`, section `products`, slug `guga-ty850`. */
 const resolve = (segments: string[] = []) => {
@@ -48,6 +108,8 @@ const titleFor = (section: Section, locale: Locale) =>
   ({
     products: t('nav.products', locale),
     solutions: t('nav.solutions', locale),
+    references: t('nav.references', locale),
+    projects: t('nav.projects', locale),
     insights: t('nav.insights', locale),
     about: t('nav.about', locale),
     export: t('nav.export', locale),
@@ -107,9 +169,15 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
   }
 
   if (section && slug) {
-    const collection = { products: 'products', solutions: 'solutions', insights: 'posts' }[
+    const collection = {
+      products: 'products',
+      solutions: 'solutions',
+      references: 'references',
+      projects: 'projects',
+      insights: 'posts',
+    }[
       section as string
-    ] as 'products' | 'solutions' | 'posts' | undefined
+    ] as 'products' | 'solutions' | 'references' | 'projects' | 'posts' | undefined
     if (collection) {
       const doc: any = await findBySlug(collection, slug, locale)
       if (doc) {
@@ -128,17 +196,20 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
 
 const Page = async ({ params }: { params: Promise<Params> }) => {
   const { locale, section, legal, slug, extra, isHome } = resolve((await params).segments)
-  const isCategory = section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra.length === 1
-  if (extra.length && !isCategory) notFound()
+  const isProductCategory = section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra.length === 1
+  const isContentCategory = isContentSection(section) && slug === CONTENT_CATEGORY_SEGMENT[locale] && extra.length === 1
+  if (extra.length && !isProductCategory && !isContentCategory) notFound()
 
   // A category page has its own localized segments, so the language switch has to
   // be built from the category rather than from the section alone.
   const otherLocale: Locale = locale === 'tr' ? 'en' : 'tr'
-  const categoryOnPage = isCategory ? categoryBySlug(locale, extra[0]) : undefined
+  const categoryOnPage = isProductCategory ? categoryBySlug(locale, extra[0]) : undefined
   const alternateHref = legal
     ? legalPath(legal, otherLocale)
     : categoryOnPage
       ? categoryPath(categoryOnPage, otherLocale)
+      : isContentCategory && section
+        ? sectionPath(section, otherLocale)
       : alternatePath(locale, section, slug)
 
   const content = await (async () => {
@@ -172,6 +243,139 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
 
     if (!section) notFound()
 
+    if (isContentSection(section)) {
+      const items = await listContent(section, locale)
+      const itemLabel = contentItemLabel(section, locale)
+      const emptyText = t(`empty.${section}`, locale)
+      const allLabel = t(
+        section === 'solutions'
+          ? 'cta.allSolutions'
+          : section === 'references'
+            ? 'cta.allReferences'
+            : 'cta.allProjects',
+        locale,
+      )
+      const groupLabel = (item: any) => item.sector?.trim() || (locale === 'tr' ? 'Diğer' : 'Other')
+
+      if (isContentCategory) {
+        const selectedLabel = items.map(groupLabel).find((label) => slugify(label) === extra[0])
+        if (!selectedLabel) notFound()
+        const selectedItems = items.filter((item: any) => groupLabel(item) === selectedLabel)
+        const allGroups = [...new Set(items.map(groupLabel))]
+
+        return (
+          <>
+            <BreadcrumbJsonLd locale={locale} section={section} title={selectedLabel} />
+            <ListingPage
+              eyebrow={t(`nav.${section}`, locale)}
+              title={selectedLabel}
+              lead={contentLead(section, locale)}
+              items={selectedItems}
+              emptyText={emptyText}
+              hrefFor={(item) => sectionPath(section, locale, item.slug)}
+              eyebrowOf={(item) => item.client ?? item.sector ?? undefined}
+              bodyOf={(item) => item.excerpt ?? undefined}
+              imageOf={(item) =>
+                section === 'solutions'
+                  ? imageUrl(item.heroImage, solutionImage(item.slug))
+                  : imageUrl(item.image)
+              }
+              filters={{
+                label: t('label.sector', locale),
+                items: allGroups.map((label) => ({
+                  label,
+                  href: contentCategoryPath(section, locale, slugify(label)),
+                  active: label === selectedLabel,
+                })),
+                allHref: sectionPath(section, locale),
+                allLabel,
+              }}
+            />
+          </>
+        )
+      }
+
+      if (slug) {
+        const item = await findBySlug(collectionForContent(section), slug, locale)
+        if (!item) notFound()
+        return (
+          <>
+            <BreadcrumbJsonLd locale={locale} section={section} title={item.title} />
+            {section === 'solutions' ? (
+              <SolutionDetail locale={locale} solution={item} />
+            ) : (
+              <CaseStudyDetail locale={locale} item={item} section={section} />
+            )}
+          </>
+        )
+      }
+
+      if (!items.length) {
+        return (
+          <ListingPage
+            eyebrow={t(`nav.${section}`, locale)}
+            title={t(`nav.${section}`, locale)}
+            lead={contentLead(section, locale)}
+            items={[]}
+            emptyText={emptyText}
+            hrefFor={() => sectionPath(section, locale)}
+          />
+        )
+      }
+
+      const grouped = new Map<string, any[]>()
+      for (const item of items) {
+        const label = groupLabel(item)
+        grouped.set(label, [...(grouped.get(label) ?? []), item])
+      }
+
+      const PREVIEW = 3
+      const groups = [...grouped.entries()].map(([label, groupItems]) => ({
+        key: slugify(label),
+        label,
+        href: contentCategoryPath(section, locale, slugify(label)),
+        total: groupItems.length,
+        moreLabel:
+          locale === 'tr'
+            ? `Tüm ${label} (${groupItems.length})`
+            : `All ${label} (${groupItems.length})`,
+        items: groupItems.slice(0, PREVIEW).map((item) => ({
+          id: item.id,
+          title: item.title,
+          eyebrow: item.client ?? item.sector ?? undefined,
+          excerpt: item.excerpt ?? undefined,
+          href: sectionPath(section, locale, item.slug),
+          image:
+            section === 'solutions'
+              ? imageUrl(item.heroImage, solutionImage(item.slug))
+              : imageUrl(item.image),
+        })),
+      }))
+
+      return (
+        <>
+          <BreadcrumbJsonLd locale={locale} section={section} />
+          <GroupedProducts
+            eyebrow={t(`nav.${section}`, locale)}
+            title={t(`nav.${section}`, locale)}
+            lead={contentLead(section, locale)}
+            groups={groups}
+            countLabel={(count) => `${count} ${itemLabel}`}
+            filters={{
+              label: t('label.sector', locale),
+              items: [...grouped.keys()].map((label) => ({
+                label,
+                href: contentCategoryPath(section, locale, slugify(label)),
+                active: false,
+              })),
+              allHref: sectionPath(section, locale),
+              allLabel,
+            }}
+          />
+        </>
+      )
+    }
+
     switch (section) {
       case 'products': {
         if (slug === CATEGORY_SEGMENT[locale] && extra[0]) {
@@ -191,6 +395,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 eyebrowOf={(item) => item.model ?? undefined}
                 bodyOf={(item) => item.excerpt ?? undefined}
                 imageOf={(item) => imageUrl(item.images?.[0], productPhoto(item.slug))}
+                imageFit="contain"
                 visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
                 filters={{
                   label: t('label.category', locale),
@@ -243,11 +448,14 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               id: item.id,
               title: item.title,
               model: item.model,
+              eyebrow: item.model,
               excerpt: item.excerpt,
               href: sectionPath('products', locale, item.slug),
               // Panelden yuklenen fotograf her zaman once gelir; depodaki statik
               // gorsel yalnizca fotograf yoksa devreye giriyor.
               image: imageUrl(item.images?.[0], productPhoto(item.slug)),
+              imageFit: 'contain' as const,
+              visual: <ProductGlyph category={item.category} className="h-full w-full" />,
             })),
           }
         }).filter((group) => group.total)
@@ -264,6 +472,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                   : 'RFID tags, industrial tags, readers, cards, ribbons and lanyards.'
               }
               groups={groups}
+              countLabel={(count) => (locale === 'tr' ? `${count} ürün` : `${count} products`)}
               filters={{
                 label: t('label.category', locale),
                 items: CATEGORIES.map((entry) => ({
@@ -276,35 +485,6 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               }}
             />
           </>
-        )
-      }
-      case 'solutions': {
-        if (slug) {
-          const solution = await findBySlug('solutions', slug, locale)
-          if (!solution) notFound()
-          return (
-            <>
-              <BreadcrumbJsonLd locale={locale} section="solutions" title={solution.title} />
-              <SolutionDetail locale={locale} solution={solution} />
-            </>
-          )
-        }
-        const solutions = await listSolutions({ locale })
-        return (
-          <ListingPage
-            title={t('nav.solutions', locale)}
-            lead={
-              locale === 'tr'
-                ? 'Sektöre özel RFID, RTLS ve IoT kurguları.'
-                : 'Sector-specific RFID, RTLS and IoT deployments.'
-            }
-            items={solutions}
-            emptyText={t('empty.products', locale)}
-            hrefFor={(item) => sectionPath('solutions', locale, item.slug)}
-            eyebrowOf={(item) => item.sector ?? undefined}
-            bodyOf={(item) => item.excerpt ?? undefined}
-            imageOf={(item) => imageUrl(item.heroImage, solutionImage(item.slug))}
-          />
         )
       }
       case 'insights': {

@@ -77,19 +77,14 @@ const legacyRedirects = Object.entries(LEGACY_ROUTES).flatMap(([slug, destinatio
   return [...sources].map((source) => ({ source, destination, permanent: true }))
 })
 
-// Referans bolumu kaldirildi; eski adresler cozumlere gidiyor.
-const REMOVED_SECTIONS: Record<string, string> = {
-  '/referanslar': '/cozumler',
-  '/en/references': '/en/solutions',
-}
+// R2 public origin is optional; when absent media remains on the app origin.
+const r2PublicUrl = process.env.R2_PUBLIC_URL?.replace(/\/+$/, '')
 
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      ...Object.entries(REMOVED_SECTIONS).flatMap(([source, destination]) => [
-        { source, destination, permanent: true },
-        { source: `${source}/:slug*`, destination, permanent: true },
-      ]),
+      { source: '/ihracat', destination: '/projeler', permanent: true },
+      { source: '/en/export', destination: '/en/projects', permanent: true },
       ...legacyRedirects,
       // Eşleşmeyen eski blog adresleri 404 yerine listeye düşsün.
       { source: '/f/:slug*', destination: '/bilgi-merkezi', permanent: true },
@@ -109,6 +104,7 @@ const nextConfig: NextConfig = {
         pathname: '/img/**',
       },
     ],
+    remotePatterns: r2PublicUrl ? [new URL(`${r2PublicUrl}/**`)] : [],
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {

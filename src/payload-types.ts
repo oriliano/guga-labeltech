@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     products: Product;
     solutions: Solution;
+    references: Reference;
+    projects: Project;
     posts: Post;
     media: Media;
     documents: Document;
@@ -85,6 +87,8 @@ export interface Config {
   collectionsSelect: {
     products: ProductsSelect<false> | ProductsSelect<true>;
     solutions: SolutionsSelect<false> | SolutionsSelect<true>;
+    references: ReferencesSelect<false> | ReferencesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
@@ -367,6 +371,113 @@ export interface Solution {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "references".
+ */
+export interface Reference {
+  id: number;
+  title: string;
+  /**
+   * Müşteri adı paylaşılamıyorsa boş bırakın.
+   */
+  client?: string | null;
+  /**
+   * Liste sayfasındaki kategori ve filtre adı.
+   */
+  sector: string;
+  country?: string | null;
+  excerpt: string;
+  challenge: string;
+  approach: string;
+  results?:
+    | {
+        metric: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (number | null) | Media;
+  relatedSolution?: (number | null) | Solution;
+  /**
+   * Boşsa sayfa başlığı kullanılır. 60 karaktere kadar önerilir.
+   */
+  metaTitle?: string | null;
+  /**
+   * Boşsa özet kullanılır. 150-160 karakter idealdir.
+   */
+  metaDescription?: string | null;
+  /**
+   * Boşsa sayfanın ana görseli kullanılır.
+   */
+  metaImage?: (number | null) | Media;
+  noIndex?: boolean | null;
+  /**
+   * Boş bırakılırsa başlıktan otomatik üretilir. Yayındaki bir sayfanın adresini değiştirmek bağlantıları kırar.
+   */
+  slug: string;
+  /**
+   * Küçük sayı önce gelir.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * Gizlilik gerektiriyorsa boş bırakın.
+   */
+  client?: string | null;
+  /**
+   * Liste sayfasındaki kategori ve filtre adı.
+   */
+  sector: string;
+  country?: string | null;
+  excerpt: string;
+  challenge: string;
+  approach: string;
+  results?:
+    | {
+        metric: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (number | null) | Media;
+  relatedSolution?: (number | null) | Solution;
+  relatedProducts?: (number | Product)[] | null;
+  /**
+   * Boşsa sayfa başlığı kullanılır. 60 karaktere kadar önerilir.
+   */
+  metaTitle?: string | null;
+  /**
+   * Boşsa özet kullanılır. 150-160 karakter idealdir.
+   */
+  metaDescription?: string | null;
+  /**
+   * Boşsa sayfanın ana görseli kullanılır.
+   */
+  metaImage?: (number | null) | Media;
+  noIndex?: boolean | null;
+  /**
+   * Boş bırakılırsa başlıktan otomatik üretilir. Yayındaki bir sayfanın adresini değiştirmek bağlantıları kırar.
+   */
+  slug: string;
+  /**
+   * Küçük sayı önce gelir.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
 export interface Post {
@@ -550,6 +661,14 @@ export interface PayloadLockedDocument {
         value: number | Solution;
       } | null)
     | ({
+        relationTo: 'references';
+        value: number | Reference;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -693,6 +812,69 @@ export interface SolutionsSelect<T extends boolean = true> {
   noIndex?: T;
   slug?: T;
   featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "references_select".
+ */
+export interface ReferencesSelect<T extends boolean = true> {
+  title?: T;
+  client?: T;
+  sector?: T;
+  country?: T;
+  excerpt?: T;
+  challenge?: T;
+  approach?: T;
+  results?:
+    | T
+    | {
+        metric?: T;
+        label?: T;
+        id?: T;
+      };
+  image?: T;
+  relatedSolution?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaImage?: T;
+  noIndex?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  client?: T;
+  sector?: T;
+  country?: T;
+  excerpt?: T;
+  challenge?: T;
+  approach?: T;
+  results?:
+    | T
+    | {
+        metric?: T;
+        label?: T;
+        id?: T;
+      };
+  image?: T;
+  relatedSolution?: T;
+  relatedProducts?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaImage?: T;
+  noIndex?: T;
+  slug?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

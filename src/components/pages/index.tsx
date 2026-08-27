@@ -13,7 +13,15 @@ import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { mediaOf } from '@/lib/media'
 import { sectionPath } from '@/lib/routes'
 
-const Figure = ({ media, priority = false }: { media: unknown; priority?: boolean }) => {
+const Figure = ({
+  media,
+  priority = false,
+  fit = 'cover',
+}: {
+  media: unknown
+  priority?: boolean
+  fit?: 'cover' | 'contain'
+}) => {
   const image = mediaOf(media)
   if (!image?.url) return null
   return (
@@ -23,7 +31,7 @@ const Figure = ({ media, priority = false }: { media: unknown; priority?: boolea
       width={image.width ?? 1600}
       height={image.height ?? 900}
       priority={priority}
-      className="h-full w-full rounded-xl object-cover"
+      className={`w-full rounded-xl ${fit === 'contain' ? 'aspect-[4/3] bg-ink-900 object-contain p-4' : 'h-full object-cover'}`}
     />
   )
 }
@@ -64,6 +72,7 @@ export const ListingPage = ({
   eyebrowOf,
   bodyOf,
   imageOf,
+  imageFit,
   visualOf,
   filters,
 }: {
@@ -76,6 +85,7 @@ export const ListingPage = ({
   eyebrowOf?: (item: any) => string | undefined
   bodyOf?: (item: any) => string | undefined
   imageOf?: (item: any) => string | undefined
+  imageFit?: 'cover' | 'contain'
   visualOf?: (item: any) => ReactNode
   filters?: {
     label: string
@@ -119,6 +129,7 @@ export const ListingPage = ({
             title={item.title}
             body={bodyOf?.(item)}
             image={imageOf?.(item)}
+            imageFit={imageFit}
             visual={visualOf?.(item)}
           />
           </Reveal>
@@ -131,12 +142,13 @@ export const ListingPage = ({
 )
 
 /** Kategori kategori gruplanmış ürün listesi. Her grup kendi başlığıyla açılır. */
-export const GroupedProducts = ({
+export const GroupedCatalog = ({
   eyebrow,
   title,
   lead,
   groups,
   filters,
+  countLabel = (count) => String(count),
 }: {
   eyebrow?: string
   title: string
@@ -156,6 +168,7 @@ export const GroupedProducts = ({
     allHref: string
     allLabel: string
   }
+  countLabel?: (count: number) => string
 }) => (
   <Section>
     <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />
@@ -192,7 +205,7 @@ export const GroupedProducts = ({
               {group.lead ? <p className="mt-2 max-w-2xl text-sm text-muted">{group.lead}</p> : null}
             </div>
             <Link href={group.href} className="text-sm font-medium text-signal-400 hover:underline">
-              {group.total} ürün →
+              {countLabel(group.total)} →
             </Link>
           </div>
           <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -200,11 +213,12 @@ export const GroupedProducts = ({
               <Reveal key={item.id} delay={Math.min(index, 6) * 60} className="h-full">
                 <Card
                   href={item.href}
-                  eyebrow={item.model ?? undefined}
+                  eyebrow={item.eyebrow ?? item.model ?? undefined}
                   title={item.title}
                   body={item.excerpt ?? undefined}
                   image={item.image}
-                  visual={<ProductGlyph category={group.key} className="h-full w-full" />}
+                  imageFit={item.imageFit}
+                  visual={item.visual}
                 />
               </Reveal>
             ))}
@@ -222,6 +236,8 @@ export const GroupedProducts = ({
     </div>
   </Section>
 )
+
+export const GroupedProducts = GroupedCatalog
 
 /* -------------------------------------------------------------- details ---- */
 
@@ -271,7 +287,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
       </div>
       <div className="space-y-6">
         {mediaOf(product.images?.[0]) ? (
-          <Figure media={product.images?.[0]} priority />
+          <Figure media={product.images?.[0]} priority fit="contain" />
         ) : productPhoto(product.slug) ? (
           <Image
             src={productPhoto(product.slug) as string}
@@ -279,7 +295,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
             width={900}
             height={700}
             priority
-            className="w-full rounded-xl border border-[var(--card-border)] object-cover"
+            className="aspect-[4/3] w-full rounded-xl border border-[var(--card-border)] bg-ink-900 object-contain p-4"
           />
         ) : (
           <ProductGlyph category={product.category} className="aspect-[16/9] w-full rounded-xl" />
@@ -429,6 +445,118 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
       </Section>
     ) : null}
   </>
+  )
+}
+
+export const CaseStudyDetail = ({
+  locale,
+  item,
+  section,
+}: {
+  locale: Locale
+  item: any
+  section: 'references' | 'projects'
+}) => {
+  const image = mediaOf(item.image)
+  const sectionLabel = t(`nav.${section}`, locale)
+
+  return (
+    <>
+      <Section>
+        <Breadcrumbs
+          items={[
+            { label: sectionLabel, href: sectionPath(section, locale) },
+            { label: item.title },
+          ]}
+        />
+        <div className={`grid gap-12 lg:items-center ${image?.url ? 'lg:grid-cols-[1.05fr_0.95fr]' : 'max-w-3xl'}`}>
+          <div>
+            {item.sector ? <p className="eyebrow">{item.sector}</p> : null}
+            <h1 className="mt-3 text-h1 font-semibold">{item.title}</h1>
+            {item.excerpt ? <p className="mt-4 text-lead text-muted">{item.excerpt}</p> : null}
+            {item.client || item.country ? (
+              <p className="mt-5 text-sm text-muted">
+                {[item.client, item.country].filter(Boolean).join(' · ')}
+              </p>
+            ) : null}
+            <div className="mt-8">
+              <ButtonLink href={sectionPath('contact', locale)}>{t('cta.contactUs', locale)}</ButtonLink>
+            </div>
+          </div>
+          {image?.url ? (
+            <Image
+              src={image.url}
+              alt={image.alt ?? item.title}
+              width={image.width ?? 1400}
+              height={image.height ?? 900}
+              priority
+              className="aspect-[16/9] w-full rounded-xl object-cover"
+            />
+          ) : null}
+        </div>
+      </Section>
+
+      {item.results?.length ? (
+        <Section tone="tint">
+          <h2 className="text-h2 font-semibold">{t('label.results', locale)}</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {item.results.map((result: any, index: number) => (
+              <StatTile key={index} metric={result.metric} label={result.label} />
+            ))}
+          </div>
+        </Section>
+      ) : null}
+
+      <Section className={item.results?.length ? '' : 'pt-0'}>
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="card-surface p-7">
+            <h2 className="text-h3 font-semibold">{t('label.challenge', locale)}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{item.challenge}</p>
+          </div>
+          <div className="card-surface p-7">
+            <h2 className="text-h3 font-semibold">{t('label.approach', locale)}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{item.approach}</p>
+          </div>
+        </div>
+      </Section>
+
+      {item.relatedSolution?.slug ? (
+        <Section tone="tint">
+          <h2 className="text-h2 font-semibold">{t('label.relatedSolutions', locale)}</h2>
+          <div className="mt-8 max-w-md">
+            <Card
+              href={sectionPath('solutions', locale, item.relatedSolution.slug)}
+              eyebrow={item.relatedSolution.sector ?? undefined}
+              title={item.relatedSolution.title}
+              body={item.relatedSolution.excerpt ?? undefined}
+              image={mediaOf(item.relatedSolution.heroImage)?.url ?? solutionImage(item.relatedSolution.slug)}
+            />
+          </div>
+        </Section>
+      ) : null}
+
+      {item.relatedProducts?.length ? (
+        <Section>
+          <h2 className="text-h2 font-semibold">{t('label.relatedProducts', locale)}</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {item.relatedProducts.map((product: any) =>
+              product?.slug ? (
+                <Card
+                  key={product.id}
+                  href={sectionPath('products', locale, product.slug)}
+                  eyebrow={product.model ?? undefined}
+                  title={product.title}
+                  body={product.excerpt ?? undefined}
+                  image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
+                  imageFit="contain"
+                  visual={<ProductGlyph category={product.category} className="h-full w-full" />}
+                />
+              ) : null,
+            )}
+          </div>
+        </Section>
+      ) : null}
+    </>
   )
 }
 

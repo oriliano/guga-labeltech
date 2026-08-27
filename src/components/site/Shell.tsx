@@ -25,7 +25,8 @@ const defaultNav = (locale: Locale): NavItem[] => [
     })),
   },
   { label: t('nav.solutions', locale), href: sectionPath('solutions', locale) },
-  { label: t('nav.export', locale), href: sectionPath('export', locale) },
+  { label: t('nav.references', locale), href: sectionPath('references', locale) },
+  { label: t('nav.projects', locale), href: sectionPath('projects', locale) },
   { label: t('nav.insights', locale), href: sectionPath('insights', locale) },
   { label: t('nav.about', locale), href: sectionPath('about', locale) },
 ]
@@ -41,23 +42,51 @@ export const Shell = async ({
 }) => {
   const [settings, navigation] = await Promise.all([getSiteSettings(locale), getNavigation(locale)])
 
-  const headerItems: NavItem[] = navigation?.header?.length
+  const legacyProjectPath = sectionPath('export', locale)
+  const projectPath = sectionPath('projects', locale)
+  const normalizeHref = (href: string) => (href === legacyProjectPath ? projectPath : href)
+
+  let headerItems: NavItem[] = navigation?.header?.length
     ? navigation.header.map((item) => ({
-        label: item.href === sectionPath('export', locale) ? t('nav.export', locale) : item.label,
-        href: item.href,
-        children: item.children?.map((child) => ({ label: child.label, href: child.href })),
+        label: item.href === legacyProjectPath ? t('nav.projects', locale) : item.label,
+        href: normalizeHref(item.href),
+        children: item.children?.map((child) => ({ label: child.label, href: normalizeHref(child.href) })),
       }))
     : defaultNav(locale)
 
-  const footerColumns = navigation?.footerColumns?.length
+  if (!headerItems.some((item) => item.href === sectionPath('references', locale))) {
+    const insertAt = Math.min(2, headerItems.length)
+    headerItems = [
+      ...headerItems.slice(0, insertAt),
+      { label: t('nav.references', locale), href: sectionPath('references', locale) },
+      ...headerItems.slice(insertAt),
+    ]
+  }
+
+  let footerColumns = navigation?.footerColumns?.length
     ? navigation.footerColumns.map((column) => ({
         title: column.title,
         links: column.links?.map((link) => ({
-          label: link.href === sectionPath('export', locale) ? t('nav.export', locale) : link.label,
-          href: link.href,
+          label: link.href === legacyProjectPath ? t('nav.projects', locale) : link.label,
+          href: normalizeHref(link.href),
         })),
       }))
     : [{ title: t('nav.solutions', locale), links: defaultNav(locale).map(({ label, href }) => ({ label, href })) }]
+
+  if (!footerColumns.some((column) => column.links?.some((link) => link.href === sectionPath('references', locale)))) {
+    const lastIndex = footerColumns.length - 1
+    footerColumns = footerColumns.map((column, index) =>
+      index === lastIndex
+        ? {
+            ...column,
+            links: [
+              ...(column.links ?? []),
+              { label: t('nav.references', locale), href: sectionPath('references', locale) },
+            ],
+          }
+        : column,
+    )
+  }
 
   const whatsappNumber = settings?.phones?.find((phone) => phone.whatsapp)?.number
 

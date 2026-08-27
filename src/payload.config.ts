@@ -14,7 +14,9 @@ import { LeadFiles } from './collections/LeadFiles'
 import { Leads } from './collections/Leads'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
+import { Projects } from './collections/Projects'
 import { Products } from './collections/Products'
+import { References } from './collections/References'
 import { Solutions } from './collections/Solutions'
 import { Users } from './collections/Users'
 import { Navigation } from './globals/Navigation'
@@ -25,6 +27,16 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const r2PublicURL = process.env.R2_PUBLIC_URL?.replace(/\/+$/, '')
+
+const r2FileUrl = ({ filename, prefix }: { filename: string; prefix?: string }) => {
+  if (!r2PublicURL) return filename
+  const path = [prefix, filename]
+    .filter((part): part is string => Boolean(part))
+    .flatMap((part) => part.split('/').map(encodeURIComponent))
+    .join('/')
+  return `${r2PublicURL}/${path}`
+}
 
 /**
  * R2 is S3-compatible. Without a bucket configured (fresh clone, local dev) uploads
@@ -34,8 +46,8 @@ const storagePlugins = process.env.R2_BUCKET
   ? [
       s3Storage({
         collections: {
-          media: { prefix: 'media' },
-          documents: { prefix: 'documents' },
+          media: { prefix: 'media', ...(r2PublicURL ? { generateFileURL: r2FileUrl } : {}) },
+          documents: { prefix: 'documents', ...(r2PublicURL ? { generateFileURL: r2FileUrl } : {}) },
         },
         bucket: process.env.R2_BUCKET,
         config: {
@@ -62,7 +74,7 @@ export default buildConfig({
       beforeDashboard: ['@/components/admin/Dashboard#Dashboard'],
     },
   },
-  collections: [Products, Solutions, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
+  collections: [Products, Solutions, References, Projects, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
   globals: [SiteSettings, Navigation],
   i18n: {
     supportedLanguages: { tr, en },
