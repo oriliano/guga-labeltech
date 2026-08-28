@@ -56,7 +56,22 @@ export const Posts: CollectionConfig = {
       name: 'tags',
       type: 'array',
       label: 'Etiketler',
-      fields: [{ name: 'tag', type: 'text', required: true, localized: true, label: 'Etiket' }],
+      admin: {
+        description:
+          'İsteğe bağlıdır. Yazının konusunu anlatan kısa kelime veya ifadeler ekleyin; örneğin RFID, depo, lojistik, kuyum, tekstil veya soğuk zincir.',
+      },
+      fields: [
+        {
+          name: 'tag',
+          type: 'text',
+          localized: true,
+          label: 'Etiket (isteğe bağlı)',
+          admin: {
+            description: 'Örnek: RFID, depo, lojistik, kuyum, tekstil, soğuk zincir',
+            placeholder: 'Örnek: RFID',
+          },
+        },
+      ],
     },
     {
       name: 'relatedSolutions',

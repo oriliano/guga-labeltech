@@ -527,9 +527,15 @@ export interface Post {
     };
     [k: string]: unknown;
   };
+  /**
+   * İsteğe bağlıdır. Yazının konusunu anlatan kısa kelime veya ifadeler ekleyin; örneğin RFID, depo, lojistik, kuyum, tekstil veya soğuk zincir.
+   */
   tags?:
     | {
-        tag: string;
+        /**
+         * Örnek: RFID, depo, lojistik, kuyum, tekstil, soğuk zincir
+         */
+        tag?: string | null;
         id?: string | null;
       }[]
     | null;
