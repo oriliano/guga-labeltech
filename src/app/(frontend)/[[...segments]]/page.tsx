@@ -40,6 +40,7 @@ import {
   type Section,
 } from '@/lib/routes'
 import { slugify } from '@/fields/slug'
+import { SOLUTION_CATEGORIES } from '@/lib/solutionCategories'
 
 // Railway's private network is unavailable during build, so pages render per request
 // instead of being prerendered against the database.
@@ -261,11 +262,16 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
       const groupLabel = (item: any) =>
         item.sector?.split(/[•|,/]/)[0]?.trim() || (locale === 'tr' ? 'Diğer' : 'Other')
 
+      const solutionGroups = [
+        ...SOLUTION_CATEGORIES[locale],
+        ...items.map(groupLabel).filter((label) => !SOLUTION_CATEGORIES[locale].includes(label)),
+      ]
+
       if (isContentCategory) {
-        const selectedLabel = items.map(groupLabel).find((label) => slugify(label) === extra[0])
+        if (section !== 'solutions') notFound()
+        const selectedLabel = solutionGroups.find((label) => slugify(label) === extra[0])
         if (!selectedLabel) notFound()
         const selectedItems = items.filter((item: any) => groupLabel(item) === selectedLabel)
-        const allGroups = [...new Set(items.map(groupLabel))]
 
         return (
           <>
@@ -289,7 +295,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               }
               filters={{
                 label: t('label.sector', locale),
-                items: allGroups.map((label) => ({
+                items: solutionGroups.map((label) => ({
                   label,
                   href: contentCategoryPath(section, locale, slugify(label)),
                   active: label === selectedLabel,
@@ -317,6 +323,26 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         )
       }
 
+      if (section !== 'solutions') {
+        return (
+          <>
+            <BreadcrumbJsonLd locale={locale} section={section} />
+            <ListingPage
+              eyebrow={t(`nav.${section}`, locale)}
+              title={t(`nav.${section}`, locale)}
+              lead={contentLead(section, locale)}
+              items={items}
+              emptyText={emptyText}
+              hrefFor={(item) => sectionPath(section, locale, item.slug)}
+              eyebrowOf={(item) => item.client ?? undefined}
+              bodyOf={(item) => item.excerpt ?? undefined}
+              imageOf={(item) => imageUrl(item.image)}
+              imageFitOf={(item) => imageFitOf(item.image, 'cover')}
+            />
+          </>
+        )
+      }
+
       if (!items.length) {
         return (
           <ListingPage
@@ -326,6 +352,16 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             items={[]}
             emptyText={emptyText}
             hrefFor={() => sectionPath(section, locale)}
+            filters={{
+              label: t('label.sector', locale),
+              items: solutionGroups.map((label) => ({
+                label,
+                href: contentCategoryPath('solutions', locale, slugify(label)),
+                active: false,
+              })),
+              allHref: sectionPath('solutions', locale),
+              allLabel,
+            }}
           />
         )
       }
@@ -371,7 +407,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             countLabel={(count) => `${count} ${itemLabel}`}
             filters={{
               label: t('label.sector', locale),
-              items: [...grouped.keys()].map((label) => ({
+              items: solutionGroups.map((label) => ({
                 label,
                 href: contentCategoryPath(section, locale, slugify(label)),
                 active: false,

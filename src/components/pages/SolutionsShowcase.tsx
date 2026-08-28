@@ -88,14 +88,14 @@ export const SolutionsShowcase = ({
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-clip border-b border-white/10 bg-[#111111] text-ink-100"
+      className="relative overflow-clip border-b border-signal-500/20 bg-ink-950 text-ink-100"
       style={distance ? { height: `calc(100svh - 5rem + ${distance}px)` } : undefined}
     >
       <div className="lg:sticky lg:top-20 lg:h-[calc(100svh-5rem)] lg:overflow-hidden motion-reduce:lg:relative motion-reduce:lg:top-auto motion-reduce:lg:h-auto motion-reduce:lg:overflow-visible">
         <div ref={trackRef} className="flex flex-col gap-16 py-24 will-change-transform lg:h-full lg:w-max lg:flex-row lg:items-center lg:gap-0 lg:py-0 motion-reduce:lg:h-auto motion-reduce:lg:w-auto motion-reduce:lg:flex-col motion-reduce:lg:gap-16 motion-reduce:lg:py-24">
           <div className="container-page flex shrink-0 flex-col justify-center lg:mx-0 lg:h-full lg:w-[42vw] lg:min-w-[32rem] lg:pl-12 lg:pr-10">
             <span className="eyebrow text-signal-400">{locale === 'tr' ? 'Çözümler' : 'Solutions'}</span>
-            <Heading className="mt-4 max-w-xl text-h1 font-semibold leading-[0.95]">
+            <Heading className="mt-4 max-w-xl text-h1 font-semibold">
               {locale === 'tr' ? 'Sektörünüze göre çözümler' : 'Solutions built for your sector'}
             </Heading>
             <p className="mt-6 max-w-md text-base leading-relaxed text-ink-300">
@@ -133,13 +133,13 @@ export const SolutionsShowcase = ({
                       className="object-cover saturate-[1.12] brightness-[1.02] contrast-[1.04] transition-transform duration-700 group-hover:scale-[1.04]"
                     />
                   ) : null}
-                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent" />
+                  <span className="pointer-events-none absolute inset-0 bg-ink-950/10" />
                 </div>
               </Link>
 
               <div className="lg:w-[42%]">
                 {item.sector ? <p className="eyebrow text-signal-400">{item.sector}</p> : null}
-                <h2 className="mt-4 text-4xl font-semibold leading-[0.98] sm:text-5xl">{item.title}</h2>
+                <h2 className="mt-4 text-h2 font-semibold">{item.title}</h2>
                 {item.excerpt ? (
                   <p className="mt-5 max-w-md text-base leading-relaxed text-ink-300">{item.excerpt}</p>
                 ) : null}

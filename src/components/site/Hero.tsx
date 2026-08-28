@@ -112,13 +112,13 @@ export const Hero = ({ locale, tagline }: { locale: Locale; tagline: string }) =
       >
         <p className="eyebrow text-signal-400">RFID · RTLS · IoT</p>
 
-        <h1 className="mt-6 font-sans text-[clamp(2.2rem,min(7vw,12svh),5.5rem)] font-extrabold leading-[0.95] tracking-[-0.03em]">
+        <h1 className="mt-6 font-sans text-h1 font-extrabold tracking-[-0.03em]">
           <Words text={line[0]} delay={80} />
           <Words text={line[1]} delay={260} />
           <Words text={accent} delay={440} className="font-display text-shimmer lowercase italic tracking-normal" />
         </h1>
 
-        <p className="fade-up-slow mt-7 max-w-xl text-base leading-relaxed text-ink-200 sm:text-lg">{tagline}</p>
+        <p className="fade-up-slow mt-7 max-w-xl text-base text-ink-200">{tagline}</p>
 
         <div className="fade-up-slow mt-9 flex w-full flex-col items-stretch justify-center gap-4 sm:w-auto sm:flex-row sm:items-center">
           <Link href={sectionPath('contact', locale)} className="btn-pill btn-pill-brand hover:brightness-110">

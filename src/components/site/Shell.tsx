@@ -4,6 +4,7 @@ import { getNavigation, getSiteSettings } from '@/lib/data'
 import { CATEGORIES, categoryPath } from '@/lib/categories'
 import { t, type Locale } from '@/lib/i18n'
 import { sectionPath } from '@/lib/routes'
+import { SOLUTION_CATEGORIES, solutionCategoryPath } from '@/lib/solutionCategories'
 
 import { Analytics } from './Analytics'
 import { Footer } from './Footer'
@@ -24,13 +25,16 @@ const defaultNav = (locale: Locale): NavItem[] => [
       description: category.lead[locale],
     })),
   },
-  ...(['solutions', 'references', 'projects'] as const).map((section) => ({
-    label: t(`nav.${section}`, locale),
-    href: sectionPath(section, locale),
-    // İçerik kategorileri CMS'ten çoğaldıkça buraya eklenebilir; bölüm bağlantısı
-    // yine de açılır menüde sabit bir keşif noktası olarak görünür.
-    children: [{ label: t(`nav.${section}`, locale), href: sectionPath(section, locale) }],
-  })),
+  {
+    label: t('nav.solutions', locale),
+    href: sectionPath('solutions', locale),
+    children: SOLUTION_CATEGORIES[locale].map((label) => ({
+      label,
+      href: solutionCategoryPath(locale, label),
+    })),
+  },
+  { label: t('nav.references', locale), href: sectionPath('references', locale) },
+  { label: t('nav.projects', locale), href: sectionPath('projects', locale) },
   { label: t('nav.insights', locale), href: sectionPath('insights', locale) },
   { label: t('nav.about', locale), href: sectionPath('about', locale) },
 ]
@@ -58,15 +62,23 @@ export const Shell = async ({
       }))
     : defaultNav(locale)
 
-  // Eski/panelden kaydedilmiş menülerde children bulunmasa da yeni katalog
-  // bölümleri ürünler ile aynı hover davranışını korusun.
+  // Eski/panelden kaydedilmiş menüde kategori çocukları bulunmasa bile
+  // çözümler ürünlerle aynı hover menüsünü kullanır. Referanslar ve projeler
+  // kategori menüsü taşımaz.
   headerItems = headerItems.map((item) => {
-    const section = (['solutions', 'references', 'projects'] as const).find(
-      (key) => item.href === sectionPath(key, locale),
-    )
-    return section && !item.children?.length
-      ? { ...item, children: [{ label: item.label, href: item.href }] }
-      : item
+    if (item.href === sectionPath('solutions', locale)) {
+      return {
+        ...item,
+        children: SOLUTION_CATEGORIES[locale].map((label) => ({
+          label,
+          href: solutionCategoryPath(locale, label),
+        })),
+      }
+    }
+    if (item.href === sectionPath('references', locale) || item.href === sectionPath('projects', locale)) {
+      return { ...item, children: undefined }
+    }
+    return item
   })
 
   if (!headerItems.some((item) => item.href === sectionPath('references', locale))) {

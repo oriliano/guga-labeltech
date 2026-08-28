@@ -51,7 +51,7 @@ export const Header = ({
               <li key={item.href} className="group relative">
                 <Link
                   href={item.href}
-                  className="relative inline-block px-3 py-2 text-sm font-medium after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-signal-500 after:transition-all after:duration-300 hover:text-signal-400 group-hover:after:w-[calc(100%-1.5rem)]"
+                  className="relative inline-block px-3 py-2 text-button font-medium after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-signal-500 after:transition-all after:duration-300 hover:text-signal-400 group-hover:after:w-[calc(100%-1.5rem)]"
                 >
                   {item.label}
                 </Link>
@@ -105,7 +105,7 @@ export const Header = ({
           </Link>
           <Link
             href={quoteHref}
-            className="hidden rounded-xl bg-signal-500 px-5 py-2.5 text-sm font-semibold text-ink-950 shadow-[0_10px_24px_-14px_rgba(201,162,39,0.9)] transition hover:-translate-y-px hover:bg-signal-400 sm:inline-block"
+            className="hidden rounded-xl bg-signal-500 px-5 py-2.5 text-button font-semibold text-ink-950 shadow-[0_10px_24px_-14px_rgba(201,162,39,0.9)] transition hover:-translate-y-px hover:bg-signal-400 sm:inline-block"
           >
             {t('cta.quote', locale)}
           </Link>

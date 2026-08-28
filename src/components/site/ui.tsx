@@ -47,7 +47,7 @@ export const SectionHeading = ({
 )
 
 const buttonBase =
-  'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-2'
+  'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-button font-semibold transition duration-200 focus-visible:outline-2'
 
 export const ButtonLink = ({
   href,
