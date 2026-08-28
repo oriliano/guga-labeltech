@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     'product-categories': ProductCategory;
     products: Product;
+    'solution-categories': SolutionCategory;
     solutions: Solution;
     references: Reference;
     projects: Project;
@@ -88,6 +89,7 @@ export interface Config {
   collectionsSelect: {
     'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    'solution-categories': SolutionCategoriesSelect<false> | SolutionCategoriesSelect<true>;
     solutions: SolutionsSelect<false> | SolutionsSelect<true>;
     references: ReferencesSelect<false> | ReferencesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -110,13 +112,11 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
-    'solution-category-content': SolutionCategoryContent;
     'corporate-content': CorporateContent;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
-    'solution-category-content': SolutionCategoryContentSelect<false> | SolutionCategoryContentSelect<true>;
     'corporate-content': CorporateContentSelect<false> | CorporateContentSelect<true>;
   };
   locale: 'tr' | 'en';
@@ -343,7 +343,11 @@ export interface Solution {
   id: number;
   title: string;
   /**
-   * Örn. Depo, Perakende, Sağlık. Kartta rozet olarak görünür, ayrıca liste sayfasında grup başlığı ve filtre düğmesi olur. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.
+   * Çözümün hangi kategori sayfasında ve menü başlığı altında çıkacağını belirler. Liste “Çözüm Kategorileri” bölümünden yönetiliyor; yeni kategori gerekiyorsa alanın yanındaki artı düğmesiyle ekleyebilirsiniz.
+   */
+  category: number | SolutionCategory;
+  /**
+   * İsteğe bağlı. Kartın üstünde küçük yazı olarak görünür; boş bırakılırsa kategori adı kullanılır. Gruplama ve filtre buna değil, yukarıdaki kategoriye bakar.
    */
   sector?: string | null;
   excerpt: string;
@@ -415,6 +419,37 @@ export interface Solution {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Çözüm kategorileri ve kategori sayfalarının metinleri. Yeni kategori eklediğinizde menüde, filtre şeridinde ve çözüm formundaki kategori listesinde kendiliğinden görünür.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solution-categories".
+ */
+export interface SolutionCategory {
+  id: number;
+  /**
+   * Menüde, filtrede ve kategori sayfasının başlığında görünür.
+   */
+  title: string;
+  /**
+   * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+   */
+  lead?: string | null;
+  /**
+   * Kod tarafındaki sabit anahtar (depo, soguk-zincir gibi). Boş bırakılırsa kategori adından üretilir. Bir kez verilir, sonradan değiştirmeyin.
+   */
+  key: string;
+  /**
+   * Kategori sayfasının adresi, her dil için ayrı. Boş bırakılırsa kategori adından üretilir. Yayındaki bir adresi değiştirmek bağlantıları kırar.
+   */
+  slug: string;
+  /**
+   * Küçük sayı önce gelir. Menüdeki ve listedeki sırayı belirler.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -728,6 +763,10 @@ export interface PayloadLockedDocument {
         value: number | Product;
       } | null)
     | ({
+        relationTo: 'solution-categories';
+        value: number | SolutionCategory;
+      } | null)
+    | ({
         relationTo: 'solutions';
         value: number | Solution;
       } | null)
@@ -861,10 +900,24 @@ export interface ProductsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solution-categories_select".
+ */
+export interface SolutionCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  lead?: T;
+  key?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "solutions_select".
  */
 export interface SolutionsSelect<T extends boolean = true> {
   title?: T;
+  category?: T;
   sector?: T;
   excerpt?: T;
   heroImage?: T;
@@ -1300,37 +1353,6 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
- * Çözüm kategorilerini, kategori sayfası başlıklarını ve kısa açıklamalarını buradan yönetebilirsiniz.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solution-category-content".
- */
-export interface SolutionCategoryContent {
-  id: number;
-  /**
-   * Yeni kategori için “Kategori ekle”ye basın. Anahtarı kısa ve sabit yazın (depo, saglik gibi). Çözüm kaydındaki “Sektör etiketi” ile kategori başlığı aynı olmalıdır.
-   */
-  categories?:
-    | {
-        /**
-         * URL için sabit anahtar. Örnek: depo, lojistik, soguk-zincir.
-         */
-        key: string;
-        /**
-         * Menüde, filtrede ve kategori sayfasında görünür. Yeni kategorilerde mutlaka doldurun.
-         */
-        label?: string | null;
-        /**
-         * Kategori sayfasının başlığı altında görünen kısa metin.
-         */
-        lead?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * Kurumsal sayfadaki metinleri, kutuları ve sertifikaları buradan düzenleyebilirsiniz. Boş alanlarda mevcut site metni korunur.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1527,23 +1549,6 @@ export interface NavigationSelect<T extends boolean = true> {
               href?: T;
               id?: T;
             };
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "solution-category-content_select".
- */
-export interface SolutionCategoryContentSelect<T extends boolean = true> {
-  categories?:
-    | T
-    | {
-        key?: T;
-        label?: T;
-        lead?: T;
         id?: T;
       };
   updatedAt?: T;

@@ -13,6 +13,7 @@ import 'dotenv/config'
 import { getPayload } from 'payload'
 
 import config from '../payload.config'
+import { FALLBACK_SOLUTION_CATEGORIES } from '../lib/solutionCategories'
 
 type Cap = { t: string; d: string }
 type Side = { title: string; sector: string; excerpt: string; problem: string[]; caps: Cap[] }
@@ -967,10 +968,30 @@ const main = async () => {
   }
 
   let order = 10
+  // Kategori artik ayri bir koleksiyon; sektor metni yalnizca kart rozeti.
+  // Turkce sektor adindan kategori kaydinin kimligine esleniyor.
+  const categoryDocs = await payload.find({ collection: 'solution-categories', limit: 0, depth: 0 })
+  const categoryIdByKey = new Map<string, number | string>(
+    categoryDocs.docs.map((doc: any) => [doc.key as string, doc.id]),
+  )
+  const keyByLabel = new Map<string, string>(
+    FALLBACK_SOLUTION_CATEGORIES.flatMap((category) => [
+      [category.label.tr, category.value] as [string, string],
+      [category.label.en, category.value] as [string, string],
+    ]),
+  )
+  const categoryId = (sector: string) => {
+    const key = keyByLabel.get(sector.split(/[•|,/]/)[0]?.trim())
+    const id = key ? categoryIdByKey.get(key) : undefined
+    if (!id) throw new Error(`Kategori bulunamadi: ${sector}. Once cozum kategorilerini olusturun.`)
+    return id
+  }
+
   for (const entry of entries) {
     const side = (data: Side) => ({
       title: data.title,
       sector: data.sector,
+      category: categoryId(entry.tr.sector),
       excerpt: data.excerpt,
       problem: richText(data.problem),
       capabilities: data.caps.map((cap) => ({ title: cap.t, description: cap.d })),

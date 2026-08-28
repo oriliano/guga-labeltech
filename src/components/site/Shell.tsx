@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { getNavigation, getSiteSettings, getSolutionCategoryContent, listProductCategories } from '@/lib/data'
+import { getNavigation, getSiteSettings, listProductCategories, listSolutionCategories } from '@/lib/data'
 import { categoryPath, type ProductCategory } from '@/lib/categories'
 import { t, type Locale } from '@/lib/i18n'
 import { sectionPath } from '@/lib/routes'
-import { solutionCategoryEntries, solutionCategoryPath } from '@/lib/solutionCategories'
+import { solutionCategoryPath, type SolutionCategory } from '@/lib/solutionCategories'
 
 import { Analytics } from './Analytics'
 import { Footer } from './Footer'
@@ -18,7 +18,7 @@ import { WhatsAppButton } from './WhatsAppButton'
 const defaultNav = (
   locale: Locale,
   categories: ProductCategory[],
-  solutionContent?: object | null,
+  solutionCategories: SolutionCategory[],
 ): NavItem[] => [
   {
     label: t('nav.products', locale),
@@ -32,10 +32,10 @@ const defaultNav = (
   {
     label: t('nav.solutions', locale),
     href: sectionPath('solutions', locale),
-    children: solutionCategoryEntries(solutionContent, locale).map((category) => ({
-      label: category.label,
-      href: solutionCategoryPath(locale, category.label),
-      description: category.lead,
+    children: solutionCategories.map((category) => ({
+      label: category.label[locale],
+      href: solutionCategoryPath(category, locale),
+      description: category.lead[locale],
     })),
   },
   { label: t('nav.references', locale), href: sectionPath('references', locale) },
@@ -53,11 +53,11 @@ export const Shell = async ({
   alternateHref: string
   children: ReactNode
 }) => {
-  const [settings, navigation, categories, solutionContent] = await Promise.all([
+  const [settings, navigation, categories, solutionCategories] = await Promise.all([
     getSiteSettings(locale),
     getNavigation(locale),
     listProductCategories(),
-    getSolutionCategoryContent(locale),
+    listSolutionCategories(),
   ])
 
   const legacyProjectPath = sectionPath('export', locale)
@@ -70,7 +70,7 @@ export const Shell = async ({
         href: normalizeHref(item.href),
         children: item.children?.map((child) => ({ label: child.label, href: normalizeHref(child.href) })),
       }))
-    : defaultNav(locale, categories, solutionContent)
+    : defaultNav(locale, categories, solutionCategories)
 
   // Eski/panelden kaydedilmiş menüde kategori çocukları bulunmasa bile
   // çözümler ürünlerle aynı hover menüsünü kullanır. Referanslar ve projeler
@@ -89,10 +89,10 @@ export const Shell = async ({
     if (item.href === sectionPath('solutions', locale)) {
       return {
         ...item,
-        children: solutionCategoryEntries(solutionContent, locale).map((category) => ({
-          label: category.label,
-          href: solutionCategoryPath(locale, category.label),
-          description: category.lead,
+        children: solutionCategories.map((category) => ({
+          label: category.label[locale],
+          href: solutionCategoryPath(category, locale),
+          description: category.lead[locale],
         })),
       }
     }
@@ -121,7 +121,7 @@ export const Shell = async ({
       }))
     : [{
         title: t('nav.solutions', locale),
-        links: defaultNav(locale, categories, solutionContent).map(({ label, href }) => ({ label, href })),
+        links: defaultNav(locale, categories, solutionCategories).map(({ label, href }) => ({ label, href })),
       }]
 
   if (!footerColumns.some((column) => column.links?.some((link) => link.href === sectionPath('references', locale)))) {

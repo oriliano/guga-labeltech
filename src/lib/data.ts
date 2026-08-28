@@ -3,6 +3,18 @@ import configPromise from '@payload-config'
 
 import { FALLBACK_CATEGORIES, type ProductCategory } from './categories'
 import type { Locale } from './i18n'
+import { FALLBACK_SOLUTION_CATEGORIES, type SolutionCategory } from './solutionCategories'
+
+/**
+ * `locale: 'all'` ile okunan alan {tr, en} nesnesi dönüyor. Bir dil boşsa
+ * diğerine düşüyor ki menü ya da başlık boş kalmasın.
+ */
+const localized = (value: unknown, fallback = ''): Record<Locale, string> => {
+  const record = (value ?? {}) as Partial<Record<Locale, string>>
+  const tr = record.tr?.trim() || record.en?.trim() || fallback
+  const en = record.en?.trim() || tr
+  return { tr, en }
+}
 
 export const payloadClient = async () => getPayload({ config: configPromise })
 
@@ -120,30 +132,43 @@ export const listProductCategories = async (): Promise<ProductCategory[]> => {
     depth: 0,
   })
 
-  const pick = (value: unknown, fallback = ''): Record<Locale, string> => {
-    const record = (value ?? {}) as Partial<Record<Locale, string>>
-    const tr = record.tr?.trim() || record.en?.trim() || fallback
-    const en = record.en?.trim() || tr
-    return { tr, en }
-  }
-
   const mapped = docs.map((doc: any) => {
-    const label = pick(doc.title, doc.key ?? '')
+    const label = localized(doc.title, doc.key ?? '')
     return {
       id: doc.id,
       value: doc.key ?? String(doc.id),
       label,
-      slug: pick(doc.slug, doc.key ?? ''),
-      lead: pick(doc.lead),
+      slug: localized(doc.slug, doc.key ?? ''),
+      lead: localized(doc.lead),
     }
   })
 
   return mapped.length ? mapped : FALLBACK_CATEGORIES
 }
 
-export const getSolutionCategoryContent = async (locale: Locale) => {
+/** Çözüm kategorileri; ürün kategorileriyle aynı okuma düzeni. */
+export const listSolutionCategories = async (): Promise<SolutionCategory[]> => {
   const payload = await payloadClient()
-  return payload.findGlobal({ slug: 'solution-category-content', locale, depth: 0 })
+  const { docs } = await payload.find({
+    collection: 'solution-categories',
+    locale: 'all',
+    limit: 0,
+    sort: 'order',
+    depth: 0,
+  })
+
+  const mapped = docs.map((doc: any) => {
+    const label = localized(doc.title, doc.key ?? '')
+    return {
+      id: doc.id,
+      value: doc.key ?? String(doc.id),
+      label,
+      slug: localized(doc.slug, doc.key ?? ''),
+      lead: localized(doc.lead),
+    }
+  })
+
+  return mapped.length ? mapped : FALLBACK_SOLUTION_CATEGORIES
 }
 
 export const getCorporateContent = async (locale: Locale) => {

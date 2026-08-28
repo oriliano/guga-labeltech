@@ -10,7 +10,7 @@ export const Solutions: CollectionConfig = {
   admin: {
     group: 'İçerik',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'sector', '_status', 'updatedAt'],
+    defaultColumns: ['title', 'category', '_status', 'updatedAt'],
   },
   access: {
     create: authenticated,
@@ -31,13 +31,24 @@ export const Solutions: CollectionConfig = {
           fields: [
             { name: 'title', type: 'text', required: true, localized: true, label: 'Başlık' },
             {
+              name: 'category',
+              type: 'relationship',
+              relationTo: 'solution-categories',
+              required: true,
+              label: 'Kategori',
+              admin: {
+                description:
+                  'Çözümün hangi kategori sayfasında ve menü başlığı altında çıkacağını belirler. Liste “Çözüm Kategorileri” bölümünden yönetiliyor; yeni kategori gerekiyorsa alanın yanındaki artı düğmesiyle ekleyebilirsiniz.',
+              },
+            },
+            {
               name: 'sector',
               type: 'text',
               localized: true,
-              label: 'Sektör etiketi',
+              label: 'Kart rozeti',
               admin: {
                 description:
-                  'Örn. Depo, Perakende, Sağlık. Kartta rozet olarak görünür, ayrıca liste sayfasında grup başlığı ve filtre düğmesi olur. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.',
+                  'İsteğe bağlı. Kartın üstünde küçük yazı olarak görünür; boş bırakılırsa kategori adı kullanılır. Gruplama ve filtre buna değil, yukarıdaki kategoriye bakar.',
               },
             },
             {
