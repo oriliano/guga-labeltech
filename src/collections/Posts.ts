@@ -11,6 +11,8 @@ export const Posts: CollectionConfig = {
     group: 'İçerik',
     useAsTitle: 'title',
     defaultColumns: ['title', 'publishedAt', '_status'],
+    description:
+      'Yeni blog yazısı için “Yeni Ekle” düğmesini kullanın. Başlık, özet, kapak ve ana yazıyı doldurduktan sonra “Yayınla”ya basın.',
   },
   access: {
     create: authenticated,
@@ -39,7 +41,17 @@ export const Posts: CollectionConfig = {
       label: 'Kapak görseli',
       admin: { description: 'Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.' },
     },
-    { name: 'body', type: 'richText', localized: true, label: 'İçerik' },
+    {
+      name: 'body',
+      type: 'richText',
+      required: true,
+      localized: true,
+      label: 'Blog yazısı — ana içerik',
+      admin: {
+        description:
+          'Yazının tamamını burada hazırlayın. Paragraf, ara başlık, kalın/italik metin, bağlantı ve listeler kullanabilirsiniz.',
+      },
+    },
     {
       name: 'tags',
       type: 'array',

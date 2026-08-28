@@ -493,6 +493,8 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Yeni blog yazısı için “Yeni Ekle” düğmesini kullanın. Başlık, özet, kapak ve ana yazıyı doldurduktan sonra “Yayınla”ya basın.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
@@ -507,7 +509,10 @@ export interface Post {
    * Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.
    */
   coverImage?: (number | null) | Media;
-  body?: {
+  /**
+   * Yazının tamamını burada hazırlayın. Paragraf, ara başlık, kalın/italik metin, bağlantı ve listeler kullanabilirsiniz.
+   */
+  body: {
     root: {
       type: string;
       children: {
@@ -521,7 +526,7 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
+  };
   tags?:
     | {
         tag: string;
