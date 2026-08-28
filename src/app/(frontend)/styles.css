@@ -22,8 +22,8 @@
 
   --color-amber-cta: #d4af37;
 
-  --font-sans: var(--font-sans-loaded), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: var(--font-display-loaded), Georgia, 'Times New Roman', serif;
+  --font-sans: 'Times New Roman', Times, serif;
+  --font-display: 'Times New Roman', Times, serif;
 
   --text-display: 3.75rem;
   --text-display--line-height: 1.04;
