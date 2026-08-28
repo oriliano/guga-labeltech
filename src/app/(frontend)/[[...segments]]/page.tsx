@@ -35,7 +35,6 @@ import { imageFitOf, imageUrl } from '@/lib/media'
 import {
   CONTENT_CATEGORY_SEGMENT,
   alternatePath,
-  contentCategoryPath,
   legalPath,
   matchLegal,
   matchSection,
@@ -378,11 +377,22 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
       }
 
       const PREVIEW = 3
+      // Kategori sayfası yalnızca çözümlerde ve yalnızca kategori kaydı varsa
+      // açılıyor. Eşleşme yoksa (ör. kategorisi seçilmemiş bir çözümün düştüğü
+      // "Diğer" grubu) başlık bölüm sayfasına gidiyor, kırık bağlantı kalmıyor.
+      const categoryForLabel = (label: string) =>
+        section === 'solutions'
+          ? solutionCategories.find((category) => category.label[locale] === label)
+          : undefined
+
       const groups = [...grouped.entries()].map(([label, groupItems]) => ({
         key: slugify(label),
         label,
-        lead: solutionCategories.find((category) => category.label[locale] === label)?.lead[locale],
-        href: contentCategoryPath(section, locale, slugify(label)),
+        lead: categoryForLabel(label)?.lead[locale],
+        href: (() => {
+          const category = categoryForLabel(label)
+          return category ? solutionCategoryPath(category, locale) : sectionPath(section, locale)
+        })(),
         total: groupItems.length,
         moreLabel:
           locale === 'tr'
