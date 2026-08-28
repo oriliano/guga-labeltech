@@ -21,6 +21,8 @@ import { Solutions } from './collections/Solutions'
 import { Users } from './collections/Users'
 import { Navigation } from './globals/Navigation'
 import { CatalogContent } from './globals/CatalogContent'
+import { CorporateContent } from './globals/CorporateContent'
+import { SolutionCategoryContent } from './globals/SolutionCategoryContent'
 import { migrations } from './migrations'
 import { SiteSettings } from './globals/SiteSettings'
 
@@ -76,7 +78,7 @@ export default buildConfig({
     },
   },
   collections: [Products, Solutions, References, Projects, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
-  globals: [SiteSettings, Navigation, CatalogContent],
+  globals: [SiteSettings, Navigation, CatalogContent, SolutionCategoryContent, CorporateContent],
   i18n: {
     supportedLanguages: { tr, en },
     fallbackLanguage: 'tr',

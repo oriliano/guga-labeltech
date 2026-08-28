@@ -107,3 +107,13 @@ export const getCatalogContent = async (locale: Locale) => {
   const payload = await payloadClient()
   return payload.findGlobal({ slug: 'catalog-content', locale, depth: 0 })
 }
+
+export const getSolutionCategoryContent = async (locale: Locale) => {
+  const payload = await payloadClient()
+  return payload.findGlobal({ slug: 'solution-category-content', locale, depth: 0 })
+}
+
+export const getCorporateContent = async (locale: Locale) => {
+  const payload = await payloadClient()
+  return payload.findGlobal({ slug: 'corporate-content', locale, depth: 1 })
+}

@@ -19,7 +19,9 @@ import { ArticleJsonLd, BreadcrumbJsonLd, ProductJsonLd } from '@/components/sit
 import {
   findBySlug,
   getCatalogContent,
+  getCorporateContent,
   getSiteSettings,
+  getSolutionCategoryContent,
   listPosts,
   listProjects,
   listProducts,
@@ -41,7 +43,7 @@ import {
   type Section,
 } from '@/lib/routes'
 import { slugify } from '@/fields/slug'
-import { SOLUTION_CATEGORIES } from '@/lib/solutionCategories'
+import { SOLUTION_CATEGORY_DEFINITIONS, solutionCategoryEntries } from '@/lib/solutionCategories'
 
 // Railway's private network is unavailable during build, so pages render per request
 // instead of being prerendered against the database.
@@ -247,6 +249,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
 
     if (isContentSection(section)) {
       const items = await listContent(section, locale)
+      const solutionCategoryContent = section === 'solutions' ? await getSolutionCategoryContent(locale) : null
       const itemLabel = contentItemLabel(section, locale)
       const emptyText = t(`empty.${section}`, locale)
       const allLabel = t(
@@ -260,27 +263,47 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
       // Panelde sektör alanına bazen "E-Ticaret • Perakende • Üretim" gibi uzun
       // bir liste giriliyor. Grup başlığı ve filtre düğmesi için yalnızca ilk
       // sektör kullanılıyor, yoksa filtre şeridi tek satırda okunmaz oluyor.
-      const groupLabel = (item: any) =>
+      const rawGroupLabel = (item: any) =>
         item.sector?.split(/[•|,/]/)[0]?.trim() || (locale === 'tr' ? 'Diğer' : 'Other')
-
-      const solutionGroups = [
-        ...SOLUTION_CATEGORIES[locale],
-        ...items.map(groupLabel).filter((label) => !SOLUTION_CATEGORIES[locale].includes(label)),
-      ]
+      const configuredSolutionGroups = solutionCategoryEntries(solutionCategoryContent, locale)
+      const groupForItem = (item: any) => {
+        const rawLabel = rawGroupLabel(item)
+        const definition = SOLUTION_CATEGORY_DEFINITIONS.find(
+          (category) => category.label[locale] === rawLabel,
+        )
+        return (
+          (definition
+            ? configuredSolutionGroups.find((category) => category.key === definition.value)
+            : configuredSolutionGroups.find((category) => category.label === rawLabel)) ?? {
+            key: slugify(rawLabel),
+            label: rawLabel,
+            lead: contentLead('solutions', locale),
+          }
+        )
+      }
+      const groupLabel = (item: any) => groupForItem(item).label
+      const dynamicSolutionGroups = items
+        .map(groupForItem)
+        .filter(
+          (category, index, all) =>
+            !configuredSolutionGroups.some((configured) => configured.key === category.key) &&
+            all.findIndex((entry) => entry.key === category.key) === index,
+        )
+      const solutionGroups = [...configuredSolutionGroups, ...dynamicSolutionGroups]
 
       if (isContentCategory) {
         if (section !== 'solutions') notFound()
-        const selectedLabel = solutionGroups.find((label) => slugify(label) === extra[0])
-        if (!selectedLabel) notFound()
-        const selectedItems = items.filter((item: any) => groupLabel(item) === selectedLabel)
+        const selectedCategory = solutionGroups.find((category) => slugify(category.label) === extra[0])
+        if (!selectedCategory) notFound()
+        const selectedItems = items.filter((item: any) => groupForItem(item).key === selectedCategory.key)
 
         return (
           <>
-            <BreadcrumbJsonLd locale={locale} section={section} title={selectedLabel} />
+            <BreadcrumbJsonLd locale={locale} section={section} title={selectedCategory.label} />
             <ListingPage
               eyebrow={t(`nav.${section}`, locale)}
-              title={selectedLabel}
-              lead={contentLead(section, locale)}
+              title={selectedCategory.label}
+              lead={selectedCategory.lead}
               items={selectedItems}
               emptyText={emptyText}
               hrefFor={(item) => sectionPath(section, locale, item.slug)}
@@ -294,12 +317,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               imageFitOf={(item) =>
                 imageFitOf(section === 'solutions' ? item.heroImage : item.image, 'cover')
               }
+              cardVariant="compact"
               filters={{
                 label: t('label.sector', locale),
-                items: solutionGroups.map((label) => ({
-                  label,
-                  href: contentCategoryPath(section, locale, slugify(label)),
-                  active: label === selectedLabel,
+                items: solutionGroups.map((category) => ({
+                  label: category.label,
+                  href: contentCategoryPath(section, locale, slugify(category.label)),
+                  active: category.key === selectedCategory.key,
                 })),
                 allHref: sectionPath(section, locale),
                 allLabel,
@@ -355,9 +379,9 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             hrefFor={() => sectionPath(section, locale)}
             filters={{
               label: t('label.sector', locale),
-              items: solutionGroups.map((label) => ({
-                label,
-                href: contentCategoryPath('solutions', locale, slugify(label)),
+              items: solutionGroups.map((category) => ({
+                label: category.label,
+                href: contentCategoryPath('solutions', locale, slugify(category.label)),
                 active: false,
               })),
               allHref: sectionPath('solutions', locale),
@@ -377,6 +401,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
       const groups = [...grouped.entries()].map(([label, groupItems]) => ({
         key: slugify(label),
         label,
+        lead: solutionGroups.find((category) => category.label === label)?.lead,
         href: contentCategoryPath(section, locale, slugify(label)),
         total: groupItems.length,
         moreLabel:
@@ -405,12 +430,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
             title={t(`nav.${section}`, locale)}
             lead={contentLead(section, locale)}
             groups={groups}
+            cardVariant="compact"
             countLabel={(count) => `${count} ${itemLabel}`}
             filters={{
               label: t('label.sector', locale),
-              items: solutionGroups.map((label) => ({
-                label,
-                href: contentCategoryPath(section, locale, slugify(label)),
+              items: solutionGroups.map((category) => ({
+                label: category.label,
+                href: contentCategoryPath(section, locale, slugify(category.label)),
                 active: false,
               })),
               allHref: sectionPath(section, locale),
@@ -564,8 +590,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
           />
         )
       }
-      case 'about':
-        return <AboutPage locale={locale} settings={await getSiteSettings(locale)} />
+      case 'about': {
+        const [settings, corporate] = await Promise.all([
+          getSiteSettings(locale),
+          getCorporateContent(locale),
+        ])
+        return <AboutPage locale={locale} settings={settings} content={corporate} />
+      }
       case 'export':
         return <ExportPage locale={locale} settings={await getSiteSettings(locale)} />
       case 'contact':

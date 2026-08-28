@@ -109,11 +109,15 @@ export interface Config {
     'site-settings': SiteSetting;
     navigation: Navigation;
     'catalog-content': CatalogContent;
+    'solution-category-content': SolutionCategoryContent;
+    'corporate-content': CorporateContent;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     'catalog-content': CatalogContentSelect<false> | CatalogContentSelect<true>;
+    'solution-category-content': SolutionCategoryContentSelect<false> | SolutionCategoryContentSelect<true>;
+    'corporate-content': CorporateContentSelect<false> | CorporateContentSelect<true>;
   };
   locale: 'tr' | 'en';
   widgets: {
@@ -1246,102 +1250,208 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
- * Ürün kategori sayfalarının başlık ve açıklamalarını buradan değiştirebilirsiniz.
+ * Ürün kategorilerini listeye ekleyip kategori sayfasındaki başlık ve açıklamayı buradan yönetebilirsiniz.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "catalog-content".
  */
 export interface CatalogContent {
   id: number;
+  /**
+   * “Kategori ekle” ile düzenlemek istediğiniz ürün kategorisini seçin. Aynı kategoriyi iki kez eklemeyin.
+   */
+  categories?:
+    | {
+        category:
+          | 'label'
+          | 'industrial-tag'
+          | 'hardware'
+          | 'industrial-label'
+          | 'card'
+          | 'ribbon'
+          | 'lanyard'
+          | 'library'
+          | 'retail';
+        /**
+         * Boş bırakılırsa kategorinin mevcut adı kullanılır.
+         */
+        label?: string | null;
+        /**
+         * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+         */
+        lead?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   category_label?: {
-    /**
-     * Boş bırakılırsa “RFID Etiket” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_industrial_tag?: {
-    /**
-     * Boş bırakılırsa “RFID Endüstriyel Tag” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_hardware?: {
-    /**
-     * Boş bırakılırsa “RFID Donanım” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_industrial_label?: {
-    /**
-     * Boş bırakılırsa “Endüstriyel Etiketler” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_card?: {
-    /**
-     * Boş bırakılırsa “Kart Ürünlerimiz” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_ribbon?: {
-    /**
-     * Boş bırakılırsa “Ribon” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_lanyard?: {
-    /**
-     * Boş bırakılırsa “Yaka İpleri” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_library?: {
-    /**
-     * Boş bırakılırsa “Kütüphane Ürünlerimiz” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
   };
   category_retail?: {
-    /**
-     * Boş bırakılırsa “Perakende Ürünlerimiz” kullanılır.
-     */
     label?: string | null;
-    /**
-     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-     */
     lead?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Çözüm kategorilerini, kategori sayfası başlıklarını ve kısa açıklamalarını buradan yönetebilirsiniz.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solution-category-content".
+ */
+export interface SolutionCategoryContent {
+  id: number;
+  /**
+   * Yeni kategori için “Kategori ekle”ye basın. Anahtarı kısa ve sabit yazın (depo, saglik gibi). Çözüm kaydındaki “Sektör etiketi” ile kategori başlığı aynı olmalıdır.
+   */
+  categories?:
+    | {
+        /**
+         * URL için sabit anahtar. Örnek: depo, lojistik, soguk-zincir.
+         */
+        key: string;
+        /**
+         * Menüde, filtrede ve kategori sayfasında görünür. Yeni kategorilerde mutlaka doldurun.
+         */
+        label?: string | null;
+        /**
+         * Kategori sayfasının başlığı altında görünen kısa metin.
+         */
+        lead?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Kurumsal sayfadaki metinleri, kutuları ve sertifikaları buradan düzenleyebilirsiniz. Boş alanlarda mevcut site metni korunur.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "corporate-content".
+ */
+export interface CorporateContent {
+  id: number;
+  /**
+   * En iyi sonuç için 21:9 oranında yatay görsel kullanın.
+   */
+  heroImage?: (number | null) | Media;
+  heroEyebrow?: string | null;
+  heroTitle?: string | null;
+  heroLead?: string | null;
+  introParagraphs?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  stats?:
+    | {
+        metric: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  vision?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    body?: string | null;
+  };
+  mission?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  reasons?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  policy?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    body?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  certificateEyebrow?: string | null;
+  certificateTitle?: string | null;
+  certificateLead?: string | null;
+  /**
+   * Yeni sertifika ekleyebilir, sürükleyerek sırasını değiştirebilir veya yayından kaldırabilirsiniz.
+   */
+  certificates?:
+    | {
+        /**
+         * JPG, PNG veya WebP belge görseli yükleyin.
+         */
+        image?: (number | null) | Media;
+        /**
+         * Eski sertifikanın mevcut dosyası. Yeni görsel yüklenirse onun yerine geçer.
+         */
+        existingImage?: string | null;
+        standard: string;
+        title?: string | null;
+        number?: string | null;
+        validUntil?: string | null;
+        enabled?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  trademark?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    body?: string | null;
+  };
+  distributorship?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    body?: string | null;
+    image?: (number | null) | Media;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1451,6 +1561,14 @@ export interface NavigationSelect<T extends boolean = true> {
  * via the `definition` "catalog-content_select".
  */
 export interface CatalogContentSelect<T extends boolean = true> {
+  categories?:
+    | T
+    | {
+        category?: T;
+        label?: T;
+        lead?: T;
+        id?: T;
+      };
   category_label?:
     | T
     | {
@@ -1504,6 +1622,124 @@ export interface CatalogContentSelect<T extends boolean = true> {
     | {
         label?: T;
         lead?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "solution-category-content_select".
+ */
+export interface SolutionCategoryContentSelect<T extends boolean = true> {
+  categories?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        lead?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "corporate-content_select".
+ */
+export interface CorporateContentSelect<T extends boolean = true> {
+  heroImage?: T;
+  heroEyebrow?: T;
+  heroTitle?: T;
+  heroLead?: T;
+  introParagraphs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  stats?:
+    | T
+    | {
+        metric?: T;
+        label?: T;
+        id?: T;
+      };
+  vision?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        body?: T;
+      };
+  mission?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  reasons?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  policy?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        body?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  certificateEyebrow?: T;
+  certificateTitle?: T;
+  certificateLead?: T;
+  certificates?:
+    | T
+    | {
+        image?: T;
+        existingImage?: T;
+        standard?: T;
+        title?: T;
+        number?: T;
+        validUntil?: T;
+        enabled?: T;
+        id?: T;
+      };
+  trademark?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        body?: T;
+      };
+  distributorship?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        body?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;

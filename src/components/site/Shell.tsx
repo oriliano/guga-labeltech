@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { getCatalogContent, getNavigation, getSiteSettings } from '@/lib/data'
+import { getCatalogContent, getNavigation, getSiteSettings, getSolutionCategoryContent } from '@/lib/data'
 import { CATEGORIES, categoryCopy, categoryPath } from '@/lib/categories'
 import { t, type Locale } from '@/lib/i18n'
 import { sectionPath } from '@/lib/routes'
-import { SOLUTION_CATEGORIES, solutionCategoryPath } from '@/lib/solutionCategories'
+import { solutionCategoryEntries, solutionCategoryPath } from '@/lib/solutionCategories'
 
 import { Analytics } from './Analytics'
 import { Footer } from './Footer'
@@ -15,7 +15,11 @@ import { OrganizationJsonLd } from './StructuredData'
 import { WhatsAppButton } from './WhatsAppButton'
 
 /** Falls back to a generated menu when the Navigation global has not been filled in. */
-const defaultNav = (locale: Locale, catalog?: object | null): NavItem[] => [
+const defaultNav = (
+  locale: Locale,
+  catalog?: object | null,
+  solutionContent?: object | null,
+): NavItem[] => [
   {
     label: t('nav.products', locale),
     href: sectionPath('products', locale),
@@ -28,9 +32,10 @@ const defaultNav = (locale: Locale, catalog?: object | null): NavItem[] => [
   {
     label: t('nav.solutions', locale),
     href: sectionPath('solutions', locale),
-    children: SOLUTION_CATEGORIES[locale].map((label) => ({
-      label,
-      href: solutionCategoryPath(locale, label),
+    children: solutionCategoryEntries(solutionContent, locale).map((category) => ({
+      label: category.label,
+      href: solutionCategoryPath(locale, category.label),
+      description: category.lead,
     })),
   },
   { label: t('nav.references', locale), href: sectionPath('references', locale) },
@@ -48,10 +53,11 @@ export const Shell = async ({
   alternateHref: string
   children: ReactNode
 }) => {
-  const [settings, navigation, catalog] = await Promise.all([
+  const [settings, navigation, catalog, solutionContent] = await Promise.all([
     getSiteSettings(locale),
     getNavigation(locale),
     getCatalogContent(locale),
+    getSolutionCategoryContent(locale),
   ])
 
   const legacyProjectPath = sectionPath('export', locale)
@@ -64,7 +70,7 @@ export const Shell = async ({
         href: normalizeHref(item.href),
         children: item.children?.map((child) => ({ label: child.label, href: normalizeHref(child.href) })),
       }))
-    : defaultNav(locale, catalog)
+    : defaultNav(locale, catalog, solutionContent)
 
   // Eski/panelden kaydedilmiş menüde kategori çocukları bulunmasa bile
   // çözümler ürünlerle aynı hover menüsünü kullanır. Referanslar ve projeler
@@ -83,9 +89,10 @@ export const Shell = async ({
     if (item.href === sectionPath('solutions', locale)) {
       return {
         ...item,
-        children: SOLUTION_CATEGORIES[locale].map((label) => ({
-          label,
-          href: solutionCategoryPath(locale, label),
+        children: solutionCategoryEntries(solutionContent, locale).map((category) => ({
+          label: category.label,
+          href: solutionCategoryPath(locale, category.label),
+          description: category.lead,
         })),
       }
     }
@@ -112,7 +119,10 @@ export const Shell = async ({
           href: normalizeHref(link.href),
         })),
       }))
-    : [{ title: t('nav.solutions', locale), links: defaultNav(locale, catalog).map(({ label, href }) => ({ label, href })) }]
+    : [{
+        title: t('nav.solutions', locale),
+        links: defaultNav(locale, catalog, solutionContent).map(({ label, href }) => ({ label, href })),
+      }]
 
   if (!footerColumns.some((column) => column.links?.some((link) => link.href === sectionPath('references', locale)))) {
     const lastIndex = footerColumns.length - 1

@@ -100,7 +100,7 @@ export const ListingPage = ({
   /** Görsel başına oran kararı; verilmezse `imageFit` geçerli. */
   imageFitOf?: (item: any) => 'cover' | 'contain'
   visualOf?: (item: any) => ReactNode
-  cardVariant?: 'default' | 'product'
+  cardVariant?: 'default' | 'product' | 'compact'
   filters?: {
     label: string
     items: { label: string; href: string; active: boolean }[]
@@ -185,7 +185,7 @@ export const GroupedCatalog = ({
     allLabel: string
   }
   countLabel?: (count: number) => string
-  cardVariant?: 'default' | 'product'
+  cardVariant?: 'default' | 'product' | 'compact'
 }) => (
   <Section>
     <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />

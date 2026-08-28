@@ -118,11 +118,15 @@ export const categoryCopy = (
   category: ProductCategory,
   locale: Locale,
 ) => {
+  const arrayEntry = (
+    (content as { categories?: { category?: string | null; label?: string | null; lead?: string | null }[] } | null)
+      ?.categories ?? []
+  ).find((item) => item.category === category.value)
   const entry = (content as Record<string, unknown> | null | undefined)?.[categoryContentField(category)] as
     | { label?: string | null; lead?: string | null }
     | undefined
   return {
-    label: entry?.label?.trim() || category.label[locale],
-    lead: entry?.lead?.trim() || category.lead[locale],
+    label: arrayEntry?.label?.trim() || entry?.label?.trim() || category.label[locale],
+    lead: arrayEntry?.lead?.trim() || entry?.lead?.trim() || category.lead[locale],
   }
 }

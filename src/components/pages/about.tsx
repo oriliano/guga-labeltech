@@ -4,6 +4,7 @@ import { Section, SectionHeading, StatTile } from '@/components/site/ui'
 import { CERTIFICATES, CERTIFIER, formatDate } from '@/lib/certificates'
 import { type Locale } from '@/lib/i18n'
 import { ABOUT_IMAGE, DISTRIBUTORSHIP_CERTIFICATE } from '@/lib/imagery'
+import { imageUrl } from '@/lib/media'
 
 /**
  * Kurumsal sayfa. Bölümler ve metinler firmanın eski sitesindeki kurumsal
@@ -111,11 +112,72 @@ const POLICY = {
   ],
 }
 
-export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any }) => (
+const filled = (value: unknown, fallback: string) =>
+  typeof value === 'string' && value.trim() ? value.trim() : fallback
+
+export const AboutPage = ({
+  locale,
+  settings,
+  content,
+}: {
+  locale: Locale
+  settings: any
+  content?: any
+}) => {
+  const introParagraphs = content?.introParagraphs?.length
+    ? content.introParagraphs.map((item: any) => item.text).filter(Boolean)
+    : [
+        locale === 'tr'
+          ? 'GUGA LABELTECH, RFID ve IoT teknolojileri alanında faaliyet gösteren bir teknoloji firmasıdır. Etiket, kart ve donanım üretiminde çözümler sunarak işletmelerin üretim, izleme ve yönetim süreçlerini dijitalleştirir.'
+          : 'GUGA LABELTECH works in RFID and IoT technologies. We manufacture labels, cards and hardware, and digitalise the production, tracking and management processes of the businesses we work with.',
+        locale === 'tr'
+          ? 'Her sektöre özel ürün ve hizmetlerle uçtan uca çözüm sunarken kalite, hız ve sürdürülebilirliği esas alırız. Yerli Ar-Ge gücümüz sayesinde teknolojik bağımsızlığı destekler, satış sonrası teknik desteği önceliğimiz sayarız.'
+          : 'We deliver end-to-end solutions per sector, with quality, speed and sustainability as the basis. Our in-house R&D supports technological independence, and after-sales technical support is a priority rather than an afterthought.',
+        locale === 'tr'
+          ? 'GUGALABELTECH® markası Türk Patent ve Marka Kurumu tarafından tescillenmiştir. Çevreye duyarlı üretim, ulusal ve uluslararası kalite standartlarına uygun çalışma ve etik iş anlayışı firmanın çalışma biçimini belirler.'
+          : 'GUGALABELTECH® is registered with the Turkish Patent and Trademark Office. Environmentally aware production, compliance with national and international quality standards and an ethical approach shape how the company works.',
+      ]
+  const stats = content?.stats?.length
+    ? content.stats
+    : [
+        { metric: 'RFID', label: locale === 'tr' ? 'Etiket ve donanım üretimi' : 'Tag and hardware production' },
+        { metric: 'IoT', label: locale === 'tr' ? 'Sensör ve veri toplama' : 'Sensors and data capture' },
+        { metric: 'RTLS', label: locale === 'tr' ? 'Gerçek zamanlı konumlama' : 'Real-time location' },
+        { metric: 'ERP', label: locale === 'tr' ? 'WMS ve ERP entegrasyonu' : 'WMS and ERP integration' },
+      ]
+  const missionItems = content?.mission?.items?.length
+    ? content.mission.items.map((item: any) => item.text).filter(Boolean)
+    : MISSION[locale]
+  const reasons = content?.reasons?.items?.length ? content.reasons.items : REASONS[locale]
+  const policyItems = content?.policy?.items?.length
+    ? content.policy.items.map((item: any) => item.text).filter(Boolean)
+    : POLICY[locale]
+  const certificates = content?.certificates?.length
+    ? content.certificates
+        .filter((certificate: any) => certificate.enabled !== false)
+        .map((certificate: any) => {
+          const fallback = CERTIFICATES.find((item) => item.number === certificate.number)
+          return {
+            standard: certificate.standard,
+            title: filled(certificate.title, fallback?.title[locale] ?? certificate.standard),
+            number: certificate.number ?? '',
+            validUntil: certificate.validUntil ?? fallback?.validUntil,
+            image: imageUrl(certificate.image, certificate.existingImage ?? fallback?.image),
+          }
+        })
+        .filter((certificate: any) => certificate.image)
+    : CERTIFICATES.map((certificate) => ({
+        ...certificate,
+        title: certificate.title[locale],
+      }))
+  const heroImage = imageUrl(content?.heroImage, ABOUT_IMAGE) as string
+  const distributorshipImage = imageUrl(content?.distributorship?.image, DISTRIBUTORSHIP_CERTIFICATE) as string
+
+  return (
   <>
     <Section>
       <Image
-        src={ABOUT_IMAGE}
+        src={heroImage}
         alt=""
         width={1400}
         height={620}
@@ -123,34 +185,19 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
         className="mb-10 aspect-[21/9] w-full rounded-xl object-cover"
       />
       <SectionHeading
-        eyebrow={locale === 'tr' ? 'Kurumsal tanıtım' : 'Company profile'}
-        title={locale === 'tr' ? 'Hakkımızda' : 'About us'}
+        eyebrow={filled(content?.heroEyebrow, locale === 'tr' ? 'Kurumsal tanıtım' : 'Company profile')}
+        title={filled(content?.heroTitle, locale === 'tr' ? 'Hakkımızda' : 'About us')}
         as="h1"
-        lead={settings?.tagline ?? undefined}
+        lead={filled(content?.heroLead, settings?.tagline ?? '') || undefined}
       />
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
         <div className="prose-guga max-w-none">
-          <p>
-            {locale === 'tr'
-              ? 'GUGA LABELTECH, RFID ve IoT teknolojileri alanında faaliyet gösteren bir teknoloji firmasıdır. Etiket, kart ve donanım üretiminde çözümler sunarak işletmelerin üretim, izleme ve yönetim süreçlerini dijitalleştirir.'
-              : 'GUGA LABELTECH works in RFID and IoT technologies. We manufacture labels, cards and hardware, and digitalise the production, tracking and management processes of the businesses we work with.'}
-          </p>
-          <p>
-            {locale === 'tr'
-              ? 'Her sektöre özel ürün ve hizmetlerle uçtan uca çözüm sunarken kalite, hız ve sürdürülebilirliği esas alırız. Yerli Ar-Ge gücümüz sayesinde teknolojik bağımsızlığı destekler, satış sonrası teknik desteği önceliğimiz sayarız.'
-              : 'We deliver end-to-end solutions per sector, with quality, speed and sustainability as the basis. Our in-house R&D supports technological independence, and after-sales technical support is a priority rather than an afterthought.'}
-          </p>
-          <p>
-            {locale === 'tr'
-              ? 'GUGALABELTECH® markası Türk Patent ve Marka Kurumu tarafından tescillenmiştir. Çevreye duyarlı üretim, ulusal ve uluslararası kalite standartlarına uygun çalışma ve etik iş anlayışı firmanın çalışma biçimini belirler.'
-              : 'GUGALABELTECH® is registered with the Turkish Patent and Trademark Office. Environmentally aware production, compliance with national and international quality standards and an ethical approach shape how the company works.'}
-          </p>
+          {introParagraphs.map((paragraph: string, index: number) => <p key={index}>{paragraph}</p>)}
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
-          <StatTile metric="RFID" label={locale === 'tr' ? 'Etiket ve donanım üretimi' : 'Tag and hardware production'} />
-          <StatTile metric="IoT" label={locale === 'tr' ? 'Sensör ve veri toplama' : 'Sensors and data capture'} />
-          <StatTile metric="RTLS" label={locale === 'tr' ? 'Gerçek zamanlı konumlama' : 'Real-time location'} />
-          <StatTile metric="ERP" label={locale === 'tr' ? 'WMS ve ERP entegrasyonu' : 'WMS and ERP integration'} />
+          {stats.map((stat: any, index: number) => (
+            <StatTile key={`${stat.metric}-${index}`} metric={stat.metric} label={stat.label} />
+          ))}
         </div>
       </div>
     </Section>
@@ -158,24 +205,25 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
     <Section tone="tint">
       <div className="grid gap-12 lg:grid-cols-2">
         <div>
-          <p className="eyebrow">{locale === 'tr' ? 'Vizyonumuz' : 'Our vision'}</p>
+          <p className="eyebrow">{filled(content?.vision?.eyebrow, locale === 'tr' ? 'Vizyonumuz' : 'Our vision')}</p>
           <h2 className="mt-3 text-h2 font-semibold">
-            {locale === 'tr'
-              ? 'Yerli üretim gücüyle küresel ölçekte rekabet'
-              : 'Competing globally on Turkish-made production'}
+            {filled(
+              content?.vision?.title,
+              locale === 'tr' ? 'Yerli üretim gücüyle küresel ölçekte rekabet' : 'Competing globally on Turkish-made production',
+            )}
           </h2>
           <span aria-hidden className="rule-gold mt-5" />
-          <p className="mt-5 leading-relaxed text-muted">{VISION[locale]}</p>
+          <p className="mt-5 leading-relaxed text-muted">{filled(content?.vision?.body, VISION[locale])}</p>
         </div>
 
         <div>
-          <p className="eyebrow">{locale === 'tr' ? 'Misyonumuz' : 'Our mission'}</p>
+          <p className="eyebrow">{filled(content?.mission?.eyebrow, locale === 'tr' ? 'Misyonumuz' : 'Our mission')}</p>
           <h2 className="mt-3 text-h2 font-semibold">
-            {locale === 'tr' ? 'Veriye dayalı görünürlük ve kontrol' : 'Visibility and control, built on data'}
+            {filled(content?.mission?.title, locale === 'tr' ? 'Veriye dayalı görünürlük ve kontrol' : 'Visibility and control, built on data')}
           </h2>
           <span aria-hidden className="rule-gold mt-5" />
           <ul className="mt-5 space-y-3 text-sm leading-relaxed text-muted">
-            {MISSION[locale].map((item) => (
+            {missionItems.map((item: string) => (
               <li key={item} className="flex gap-3">
                 <span aria-hidden className="mt-1 text-signal-400">
                   ▸
@@ -190,11 +238,11 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
 
     <Section>
       <SectionHeading
-        eyebrow={locale === 'tr' ? 'Fark' : 'Difference'}
-        title={locale === 'tr' ? 'Neden GUGA LABELTECH?' : 'Why GUGA LABELTECH?'}
+        eyebrow={filled(content?.reasons?.eyebrow, locale === 'tr' ? 'Fark' : 'Difference')}
+        title={filled(content?.reasons?.title, locale === 'tr' ? 'Neden GUGA LABELTECH?' : 'Why GUGA LABELTECH?')}
       />
       <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {REASONS[locale].map((item) => (
+        {reasons.map((item: any) => (
           <div key={item.title} className="card-surface p-7">
             <h3 className="text-h3 font-semibold">{item.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted">{item.body}</p>
@@ -206,19 +254,22 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
     <Section tone="tint">
       <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
-          <p className="eyebrow">{locale === 'tr' ? 'Politika' : 'Policy'}</p>
+          <p className="eyebrow">{filled(content?.policy?.eyebrow, locale === 'tr' ? 'Politika' : 'Policy')}</p>
           <h2 className="mt-3 text-h2 font-semibold">
-            {locale === 'tr' ? 'Kalite ve yönetim sistemi politikamız' : 'Quality and management system policy'}
+            {filled(content?.policy?.title, locale === 'tr' ? 'Kalite ve yönetim sistemi politikamız' : 'Quality and management system policy')}
           </h2>
           <span aria-hidden className="rule-gold mt-5" />
           <p className="mt-5 text-sm leading-relaxed text-muted">
-            {locale === 'tr'
-              ? 'GUGA Bilişim Teknoloji Ltd. Şti. olarak bilişim ve Endüstri 4.0 teknolojileri alanında çalışırken güncel teknolojileri kullanmayı, yeniliğe açık kalmayı ve kesintisiz, güvenilir çözümler sunmayı temel ilke sayıyoruz. ISO 9001:2015 Kalite Yönetim Sistemi standartlarını bir amaç değil, sürdürülebilir başarıya ulaşmada bir araç olarak görüyoruz.'
-              : 'At GUGA Bilişim Teknoloji Ltd. Şti. we treat current technology, openness to change and uninterrupted, dependable solutions as basic principles in information technology and Industry 4.0. We regard ISO 9001:2015 quality management standards as a means to sustainable results rather than an end in themselves.'}
+            {filled(
+              content?.policy?.body,
+              locale === 'tr'
+                ? 'GUGA Bilişim Teknoloji Ltd. Şti. olarak bilişim ve Endüstri 4.0 teknolojileri alanında çalışırken güncel teknolojileri kullanmayı, yeniliğe açık kalmayı ve kesintisiz, güvenilir çözümler sunmayı temel ilke sayıyoruz. ISO 9001:2015 Kalite Yönetim Sistemi standartlarını bir amaç değil, sürdürülebilir başarıya ulaşmada bir araç olarak görüyoruz.'
+                : 'At GUGA Bilişim Teknoloji Ltd. Şti. we treat current technology, openness to change and uninterrupted, dependable solutions as basic principles in information technology and Industry 4.0. We regard ISO 9001:2015 quality management standards as a means to sustainable results rather than an end in themselves.',
+            )}
           </p>
         </div>
         <ul className="grid gap-4 sm:grid-cols-2">
-          {POLICY[locale].map((item) => (
+          {policyItems.map((item: string) => (
             <li key={item} className="card-surface flex gap-3 p-5 text-sm leading-relaxed text-muted">
               <span aria-hidden className="mt-1 text-signal-400">
                 ▸
@@ -232,46 +283,47 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
 
     <Section>
       <SectionHeading
-        eyebrow={locale === 'tr' ? 'Belgeler' : 'Certification'}
-        title={locale === 'tr' ? 'Sertifikalarımız' : 'Our certificates'}
-        lead={
+        eyebrow={filled(content?.certificateEyebrow, locale === 'tr' ? 'Belgeler' : 'Certification')}
+        title={filled(content?.certificateTitle, locale === 'tr' ? 'Sertifikalarımız' : 'Our certificates')}
+        lead={filled(
+          content?.certificateLead,
           locale === 'tr'
             ? `${CERTIFIER.name} tarafından düzenlendi, ${CERTIFIER.accreditation} akreditasyonu ile. Geçerlilik durumu belgelendirme kuruluşunun sitesinden doğrulanabilir.`
-            : `Issued by ${CERTIFIER.name} under accreditation ${CERTIFIER.accreditation}. Validity can be verified on the certification body's website.`
-        }
+            : `Issued by ${CERTIFIER.name} under accreditation ${CERTIFIER.accreditation}. Validity can be verified on the certification body's website.`,
+        )}
       />
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {CERTIFICATES.map((certificate) => (
+      <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {certificates.map((certificate: any) => (
           <a
-            key={certificate.number}
+            key={`${certificate.number}-${certificate.standard}`}
             href={certificate.image}
             target="_blank"
             rel="noopener noreferrer"
             className="card-surface lift group flex flex-col overflow-hidden hover:border-signal-500/40 hover:lift-hover"
           >
-            <div className="bg-ink-950/60 p-4">
+            <div className="flex aspect-[3/4] items-center justify-center bg-[var(--page-bg)] p-2">
               <Image
                 src={certificate.image}
-                alt={`${certificate.standard} — ${certificate.title[locale]}`}
+                alt={`${certificate.standard} — ${certificate.title}`}
                 width={1100}
                 height={1556}
-                className="w-full rounded-md border border-[var(--card-border)]"
+                className="h-full w-full rounded-md border border-[var(--card-border)] object-contain"
               />
             </div>
-            <div className="flex flex-1 flex-col p-6">
+            <div className="flex flex-1 flex-col p-4 text-center">
               <p className="eyebrow">{certificate.standard}</p>
-              <h3 className="mt-2 text-base font-semibold leading-snug">{certificate.title[locale]}</h3>
-              <dl className="mt-4 space-y-1 text-xs text-muted">
-                <div className="flex gap-2">
+              <h3 className="mt-2 text-sm font-semibold leading-snug">{certificate.title}</h3>
+              <dl className="mt-3 space-y-1 text-[11px] text-muted">
+                {certificate.number ? <div className="flex justify-center gap-1.5">
                   <dt>{locale === 'tr' ? 'Belge no' : 'Certificate no'}</dt>
                   <dd className="font-medium">{certificate.number}</dd>
-                </div>
-                <div className="flex gap-2">
+                </div> : null}
+                {certificate.validUntil ? <div className="flex justify-center gap-1.5">
                   <dt>{locale === 'tr' ? 'Geçerlilik' : 'Valid until'}</dt>
                   <dd className="font-medium">{formatDate(certificate.validUntil, locale)}</dd>
-                </div>
+                </div> : null}
               </dl>
-              <span className="mt-4 text-xs font-medium text-signal-400">
+              <span className="mt-3 text-[11px] font-medium text-signal-400">
                 {locale === 'tr' ? 'Belgeyi büyüt' : 'Open the certificate'} →
               </span>
             </div>
@@ -283,32 +335,38 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
     <Section tone="tint">
       <div className="grid gap-10 md:grid-cols-2">
         <div className="card-surface p-7">
-          <p className="eyebrow">{locale === 'tr' ? 'Tescilli marka' : 'Registered trademark'}</p>
-          <h3 className="mt-3 text-h3 font-semibold">GUGALABELTECH®</h3>
+          <p className="eyebrow">{filled(content?.trademark?.eyebrow, locale === 'tr' ? 'Tescilli marka' : 'Registered trademark')}</p>
+          <h3 className="mt-3 text-h3 font-semibold">{filled(content?.trademark?.title, 'GUGALABELTECH®')}</h3>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            {locale === 'tr'
-              ? 'GUGALABELTECH®, GUGA Bilişim Teknoloji’nin Türk Patent ve Marka Kurumu tarafından tescillenmiş markasıdır. RFID etiket, otomatik tanıma sistemleri, IoT cihazları ve RTLS yazılımları bu marka altında geliştirilir.'
-              : 'GUGALABELTECH® is a trademark of GUGA Bilişim Teknoloji, registered with the Turkish Patent and Trademark Office. RFID labels, automatic identification systems, IoT devices and RTLS software are developed under it.'}
+            {filled(
+              content?.trademark?.body,
+              locale === 'tr'
+                ? 'GUGALABELTECH®, GUGA Bilişim Teknoloji’nin Türk Patent ve Marka Kurumu tarafından tescillenmiş markasıdır. RFID etiket, otomatik tanıma sistemleri, IoT cihazları ve RTLS yazılımları bu marka altında geliştirilir.'
+                : 'GUGALABELTECH® is a trademark of GUGA Bilişim Teknoloji, registered with the Turkish Patent and Trademark Office. RFID labels, automatic identification systems, IoT devices and RTLS software are developed under it.',
+            )}
           </p>
         </div>
         <div className="card-surface overflow-hidden">
           <div className="p-7">
-            <p className="eyebrow">{locale === 'tr' ? 'Distribütörlük' : 'Distributorship'}</p>
-            <h3 className="mt-3 text-h3 font-semibold">TENHANYUN</h3>
+            <p className="eyebrow">{filled(content?.distributorship?.eyebrow, locale === 'tr' ? 'Distribütörlük' : 'Distributorship')}</p>
+            <h3 className="mt-3 text-h3 font-semibold">{filled(content?.distributorship?.title, 'TENHANYUN')}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              {locale === 'tr'
-                ? 'Guangzhou Tenhanyun Technology Co. Ltd. tarafından Türkiye yetkili distribütörü olarak atandık. Yetki UHF pasif RFID sabit okuyucu, entegre okuyucu, el terminali ve endüstriyel donanımı kapsıyor; satış, pazarlama ve satış sonrası desteği içeriyor. Belge 16 Ocak 2026 tarihinden itibaren süresiz geçerli.'
-                : 'Guangzhou Tenhanyun Technology Co. Ltd. appointed us as its authorised distributor in Turkey. The appointment covers UHF passive RFID fixed and integrated readers, handheld terminals and industrial-grade hardware, including sales, marketing and after-sales support. The certificate is effective 16 January 2026 for an unlimited period.'}
+              {filled(
+                content?.distributorship?.body,
+                locale === 'tr'
+                  ? 'Guangzhou Tenhanyun Technology Co. Ltd. tarafından Türkiye yetkili distribütörü olarak atandık. Yetki UHF pasif RFID sabit okuyucu, entegre okuyucu, el terminali ve endüstriyel donanımı kapsıyor; satış, pazarlama ve satış sonrası desteği içeriyor. Belge 16 Ocak 2026 tarihinden itibaren süresiz geçerli.'
+                  : 'Guangzhou Tenhanyun Technology Co. Ltd. appointed us as its authorised distributor in Turkey. The appointment covers UHF passive RFID fixed and integrated readers, handheld terminals and industrial-grade hardware, including sales, marketing and after-sales support. The certificate is effective 16 January 2026 for an unlimited period.',
+              )}
             </p>
           </div>
           <a
-            href={DISTRIBUTORSHIP_CERTIFICATE}
+            href={distributorshipImage}
             target="_blank"
             rel="noopener noreferrer"
             className="group block border-t border-[var(--card-border)] bg-ink-950/60 p-5"
           >
             <Image
-              src={DISTRIBUTORSHIP_CERTIFICATE}
+              src={distributorshipImage}
               alt={locale === 'tr' ? 'TENHANYUN distribütörlük belgesi' : 'TENHANYUN distributorship certificate'}
               width={1200}
               height={849}
@@ -322,4 +380,5 @@ export const AboutPage = ({ locale, settings }: { locale: Locale; settings: any 
       </div>
     </Section>
   </>
-)
+  )
+}

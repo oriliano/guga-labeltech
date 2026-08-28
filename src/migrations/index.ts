@@ -1,5 +1,7 @@
 import type { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
 
+import * as kategoriKurumsalSertifikalar from './20260828_072201_kategori_kurumsal_sertifikalar'
+
 /**
  * Üretimde çalıştırılacak şema göçleri.
  *
@@ -13,8 +15,12 @@ import type { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
  * Şema değiştiren bir iş yaptıktan sonra:
  *   node .tmp-db/goc-uret.mjs "kisa-ad"
  * komutu göç dosyasını üretir; dosyayı bu listeye ekleyip commit'lemek yeterli.
- * Liste boş olması bir sorun değil: veritabanı şu an kodla birebir aynı, bu
- * dosya bundan sonrasını kayıt altına almak için duruyor.
+ *
+ * Not: İlk göç dosyası yazılırken veritabanında zaten 94 tablo vardı (şema o
+ * güne kadar dev modunda push edilmişti). Bu yüzden `payload migrate:create`
+ * önce eski şemayı anlatan bir "baseline" göçü üretildi, SQL'i silinip yalnızca
+ * aradaki fark burada bırakıldı. Aşağıdaki göç, canlıda var olan tablolara
+ * dokunmaz; sadece kategori/çözüm/kurumsal içerik tablolarını ekler.
  */
 export type Migration = {
   name: string
@@ -22,4 +28,10 @@ export type Migration = {
   down: (args: MigrateDownArgs) => Promise<void>
 }
 
-export const migrations: Migration[] = []
+export const migrations: Migration[] = [
+  {
+    name: '20260828_072201_kategori_kurumsal_sertifikalar',
+    up: kategoriKurumsalSertifikalar.up,
+    down: kategoriKurumsalSertifikalar.down,
+  },
+]

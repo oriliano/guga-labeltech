@@ -91,7 +91,7 @@ export const Card = ({
   image?: string
   imageFit?: 'cover' | 'contain'
   visual?: ReactNode
-  variant?: 'default' | 'product'
+  variant?: 'default' | 'product' | 'compact'
 }) => (
   <Link
     href={href}
@@ -111,13 +111,13 @@ export const Card = ({
     ) : null}
     <div
       className={`flex flex-1 flex-col p-7 ${
-        variant === 'product' ? 'items-center justify-center text-center' : ''
+        variant !== 'default' ? 'items-center justify-center text-center' : ''
       }`}
     >
       {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
       <h3
         className={`${eyebrow ? 'mt-2' : ''} font-semibold transition-colors group-hover:text-signal-500 ${
-          variant === 'product' ? 'text-[14px] leading-[1.3]' : 'text-h3'
+          variant !== 'default' ? 'text-[14px] leading-[1.3]' : 'text-h3'
         }`}
       >
         {title}
