@@ -31,7 +31,7 @@ const Figure = ({
       width={image.width ?? 1600}
       height={image.height ?? 900}
       priority={priority}
-      className={`w-full rounded-xl ${fit === 'contain' ? 'aspect-[4/3] bg-ink-900 object-contain p-4' : 'h-full object-cover'}`}
+      className={`w-full rounded-xl ${fit === 'contain' ? 'aspect-[4/3] bg-[var(--page-bg)] object-contain p-4' : 'h-full object-cover'}`}
     />
   )
 }
@@ -66,7 +66,7 @@ export const HomePage = ({
  */
 const frameClass = (fit: 'cover' | 'contain') =>
   fit === 'contain'
-    ? 'aspect-[16/9] w-full rounded-xl bg-ink-900 object-contain p-4'
+    ? 'aspect-[16/9] w-full rounded-xl bg-[var(--page-bg)] object-contain p-4'
     : 'aspect-[16/9] w-full rounded-xl object-cover'
 
 /* ------------------------------------------------------------ listings ---- */
@@ -307,7 +307,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
             width={900}
             height={700}
             priority
-            className="aspect-[4/3] w-full rounded-xl border border-[var(--card-border)] bg-ink-900 object-contain p-4"
+            className="aspect-[4/3] w-full rounded-xl border border-[var(--card-border)] bg-[var(--page-bg)] object-contain p-4"
           />
         ) : (
           <ProductGlyph category={product.category} className="aspect-[16/9] w-full rounded-xl" />
