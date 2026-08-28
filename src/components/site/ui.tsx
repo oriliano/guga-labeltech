@@ -112,7 +112,9 @@ export const Card = ({
       <h3 className={`${eyebrow ? 'mt-2' : ''} text-h3 font-semibold transition-colors group-hover:text-signal-500`}>
         {title}
       </h3>
-      {body ? <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{body}</p> : null}
+      {/* Kart görsellerinin altında tekrar eden uzun özetler yerine başlık
+          odakta tutulur. Görselsiz kartlarda metin açıklaması korunur. */}
+      {body && !image ? <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{body}</p> : null}
       {footer ? (
         <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-signal-400">
           {footer}

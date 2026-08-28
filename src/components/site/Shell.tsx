@@ -24,9 +24,13 @@ const defaultNav = (locale: Locale): NavItem[] => [
       description: category.lead[locale],
     })),
   },
-  { label: t('nav.solutions', locale), href: sectionPath('solutions', locale) },
-  { label: t('nav.references', locale), href: sectionPath('references', locale) },
-  { label: t('nav.projects', locale), href: sectionPath('projects', locale) },
+  ...(['solutions', 'references', 'projects'] as const).map((section) => ({
+    label: t(`nav.${section}`, locale),
+    href: sectionPath(section, locale),
+    // İçerik kategorileri CMS'ten çoğaldıkça buraya eklenebilir; bölüm bağlantısı
+    // yine de açılır menüde sabit bir keşif noktası olarak görünür.
+    children: [{ label: t(`nav.${section}`, locale), href: sectionPath(section, locale) }],
+  })),
   { label: t('nav.insights', locale), href: sectionPath('insights', locale) },
   { label: t('nav.about', locale), href: sectionPath('about', locale) },
 ]
@@ -53,6 +57,17 @@ export const Shell = async ({
         children: item.children?.map((child) => ({ label: child.label, href: normalizeHref(child.href) })),
       }))
     : defaultNav(locale)
+
+  // Eski/panelden kaydedilmiş menülerde children bulunmasa da yeni katalog
+  // bölümleri ürünler ile aynı hover davranışını korusun.
+  headerItems = headerItems.map((item) => {
+    const section = (['solutions', 'references', 'projects'] as const).find(
+      (key) => item.href === sectionPath(key, locale),
+    )
+    return section && !item.children?.length
+      ? { ...item, children: [{ label: item.label, href: item.href }] }
+      : item
+  })
 
   if (!headerItems.some((item) => item.href === sectionPath('references', locale))) {
     const insertAt = Math.min(2, headerItems.length)

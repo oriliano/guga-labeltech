@@ -5,9 +5,9 @@
  * eylem ve vurgu icin; genis alanlarda yesil calisiyor.
  */
 @theme {
-  --color-ink-950: #021a10;
-  --color-ink-900: #053624;
-  --color-ink-800: #0a4a31;
+  --color-ink-950: #004b23;
+  --color-ink-900: #1b4d3e;
+  --color-ink-800: #14543a;
   --color-ink-700: #12603f;
   --color-ink-600: #237e56;
   --color-ink-400: #6d9584;
@@ -15,12 +15,12 @@
   --color-ink-100: #e5efe9;
   --color-ink-50: #f4f8f6;
 
-  --color-signal-600: #8a6a17;
-  --color-signal-500: #c9a227;
-  --color-signal-400: #e3c96a;
+  --color-signal-600: #a9851d;
+  --color-signal-500: #d4af37;
+  --color-signal-400: #ffd700;
   --color-signal-100: #f7f0dc;
 
-  --color-amber-cta: #c9a227;
+  --color-amber-cta: #d4af37;
 
   --font-sans: var(--font-sans-loaded), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: var(--font-display-loaded), Georgia, 'Times New Roman', serif;
@@ -51,9 +51,9 @@
    */
   :root {
     color-scheme: dark;
-    --page-bg: #04231a;
+    --page-bg: #004b23;
     --page-fg: #e9f1ec;
-    --card-bg: #0a3325;
+    --card-bg: #1b4d3e;
     --card-border: rgba(227, 201, 106, 0.16);
     --muted-fg: #a9c4b7;
     --heading-fg: var(--color-signal-400);
