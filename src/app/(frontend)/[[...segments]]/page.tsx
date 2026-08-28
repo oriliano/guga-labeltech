@@ -18,18 +18,18 @@ import { Shell } from '@/components/site/Shell'
 import { ArticleJsonLd, BreadcrumbJsonLd, ProductJsonLd } from '@/components/site/StructuredData'
 import {
   findBySlug,
-  getCatalogContent,
   getCorporateContent,
   getSiteSettings,
   getSolutionCategoryContent,
   listPosts,
+  listProductCategories,
   listProjects,
   listProducts,
   listReferences,
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
-import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryCopy, categoryPath } from '@/lib/categories'
+import { CATEGORY_SEGMENT, categoryBySlug, categoryOfProduct, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { imageFitOf, imageUrl } from '@/lib/media'
 import {
@@ -159,7 +159,7 @@ export const generateMetadata = async ({ params }: { params: Promise<Params> }):
   }
 
   if (section === 'products' && slug === CATEGORY_SEGMENT[locale] && extra[0]) {
-    const category = categoryBySlug(locale, extra[0])
+    const category = categoryBySlug(await listProductCategories(), locale, extra[0])
     if (category) {
       return {
         title: category.label[locale],
@@ -207,7 +207,8 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
   // A category page has its own localized segments, so the language switch has to
   // be built from the category rather than from the section alone.
   const otherLocale: Locale = locale === 'tr' ? 'en' : 'tr'
-  const categoryOnPage = isProductCategory ? categoryBySlug(locale, extra[0]) : undefined
+  const productCategories = isProductCategory || section === 'products' ? await listProductCategories() : []
+  const categoryOnPage = isProductCategory ? categoryBySlug(productCategories, locale, extra[0]) : undefined
   const alternateHref = legal
     ? legalPath(legal, otherLocale)
     : categoryOnPage
@@ -449,14 +450,14 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
 
     switch (section) {
       case 'products': {
-        const catalog = await getCatalogContent(locale)
-        const copyFor = (category: (typeof CATEGORIES)[number]) => categoryCopy(catalog, category, locale)
+        const categories = productCategories
+        const glyphKey = (item: any) => categoryOfProduct(categories, item)?.value ?? undefined
 
         if (slug === CATEGORY_SEGMENT[locale] && extra[0]) {
-          const category = categoryBySlug(locale, extra[0])
+          const category = categoryBySlug(categories, locale, extra[0])
           if (!category) notFound()
-          const copy = copyFor(category)
-          const products = await listProducts({ locale, where: { category: { equals: category.value } } })
+          const copy = { label: category.label[locale], lead: category.lead[locale] }
+          const products = await listProducts({ locale, where: { category: { equals: category.id } } })
           return (
             <>
               <BreadcrumbJsonLd locale={locale} section="products" title={copy.label} />
@@ -471,14 +472,14 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 bodyOf={(item) => item.excerpt ?? undefined}
                 imageOf={(item) => imageUrl(item.images?.[0], productPhoto(item.slug))}
                 imageFitOf={(item) => imageFitOf(item.images?.[0], 'contain')}
-                visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
+                visualOf={(item) => <ProductGlyph category={glyphKey(item)} className="h-full w-full" />}
                 cardVariant="product"
                 filters={{
                   label: t('label.category', locale),
-                  items: CATEGORIES.map((entry) => ({
-                    label: copyFor(entry).label,
+                  items: categories.map((entry) => ({
+                    label: entry.label[locale],
                     href: categoryPath(entry, locale),
-                    active: entry.value === category.value,
+                    active: entry.id === category.id,
                   })),
                   allHref: sectionPath('products', locale),
                   allLabel: t('cta.allProducts', locale),
@@ -506,11 +507,13 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         // Grupta ilk üç ürün gösteriliyor; sıra panelden `order` alanıyla
         // belirleniyor, gerisi kategori sayfasında.
         const PREVIEW = 3
-        const groups = CATEGORIES.map((category) => {
-          const copy = copyFor(category)
-          const inCategory = products.filter((item: any) => item.category === category.value)
+        const groups = categories.map((category) => {
+          const copy = { label: category.label[locale], lead: category.lead[locale] }
+          const inCategory = products.filter(
+            (item: any) => categoryOfProduct(categories, item)?.id === category.id,
+          )
           return {
-            key: category.value,
+            key: String(category.id),
             label: copy.label,
             lead: copy.lead,
             href: categoryPath(category, locale),
@@ -532,7 +535,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               // gorsel yalnizca fotograf yoksa devreye giriyor.
               image: imageUrl(item.images?.[0], productPhoto(item.slug)),
               imageFit: imageFitOf(item.images?.[0], 'contain'),
-              visual: <ProductGlyph category={item.category} className="h-full w-full" />,
+              visual: <ProductGlyph category={glyphKey(item)} className="h-full w-full" />,
             })),
           }
         }).filter((group) => group.total)
@@ -553,8 +556,8 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               countLabel={(count) => (locale === 'tr' ? `${count} ürün` : `${count} products`)}
               filters={{
                 label: t('label.category', locale),
-                items: CATEGORIES.map((entry) => ({
-                  label: copyFor(entry).label,
+                items: categories.map((entry) => ({
+                  label: entry.label[locale],
                   href: categoryPath(entry, locale),
                   active: false,
                 })),

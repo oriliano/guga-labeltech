@@ -3,8 +3,15 @@ import type { MetadataRoute } from 'next'
 // Queries the database, so it must not be prerendered at build time.
 export const dynamic = 'force-dynamic'
 
-import { listPosts, listProducts, listProjects, listReferences, listSolutions } from '@/lib/data'
-import { CATEGORIES, categoryPath } from '@/lib/categories'
+import {
+  listPosts,
+  listProductCategories,
+  listProducts,
+  listProjects,
+  listReferences,
+  listSolutions,
+} from '@/lib/data'
+import { categoryPath } from '@/lib/categories'
 import { LOCALES, type Locale } from '@/lib/i18n'
 import { LEGAL_SLUGS, absoluteUrl, legalPath, sectionPath, type Legal, type Section } from '@/lib/routes'
 
@@ -18,11 +25,12 @@ const entry = (path: string, priority: number, lastModified?: string): MetadataR
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const entries: MetadataRoute.Sitemap = []
+  const categories = await listProductCategories()
 
   for (const locale of LOCALES as readonly Locale[]) {
     entries.push(entry(locale === 'tr' ? '/' : '/en', 1))
     for (const section of STATIC_SECTIONS) entries.push(entry(sectionPath(section, locale), 0.8))
-    for (const category of CATEGORIES) entries.push(entry(categoryPath(category, locale), 0.75))
+    for (const category of categories) entries.push(entry(categoryPath(category, locale), 0.75))
     for (const page of Object.keys(LEGAL_SLUGS) as Legal[]) entries.push(entry(legalPath(page, locale), 0.3))
 
     const [products, solutions, references, projects, posts] = await Promise.all([

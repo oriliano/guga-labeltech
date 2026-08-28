@@ -13,7 +13,7 @@ import 'dotenv/config'
 import { getPayload } from 'payload'
 
 import config from '../payload.config'
-import { CATEGORIES, categoryPath } from '../lib/categories'
+import { FALLBACK_CATEGORIES, categoryPath } from '../lib/categories'
 import { sectionPath } from '../lib/routes'
 import type { Locale } from '../lib/i18n'
 
@@ -42,7 +42,7 @@ const navigation = (locale: Locale) => ({
     {
       label: NAV_LABELS.products[locale],
       href: sectionPath('products', locale),
-      children: CATEGORIES.map((category) => ({
+      children: FALLBACK_CATEGORIES.map((category) => ({
         label: category.label[locale],
         href: categoryPath(category, locale),
       })),
@@ -58,7 +58,7 @@ const navigation = (locale: Locale) => ({
       title: FOOTER_TITLES.catalog[locale],
       links: [
         { label: NAV_LABELS.products[locale], href: sectionPath('products', locale) },
-        ...CATEGORIES.slice(0, 4).map((category) => ({
+        ...FALLBACK_CATEGORIES.slice(0, 4).map((category) => ({
           label: category.label[locale],
           href: categoryPath(category, locale),
         })),

@@ -21,9 +21,9 @@ import 'dotenv/config'
 import { getPayload } from 'payload'
 
 import config from '../payload.config'
-import { PRODUCT_CATEGORIES } from '../collections/Products'
+import { PRODUCT_CATEGORY_KEYS } from '../collections/Products'
 
-type Category = (typeof PRODUCT_CATEGORIES)[number]['value']
+type Category = (typeof PRODUCT_CATEGORY_KEYS)[number]
 type Spec = { label: string; value: string }
 type Side = { title: string; excerpt: string; body: string[]; specs: Spec[]; highlights: string[] }
 type Entry = { slug: string; model?: string; category: Category; featured?: boolean; tr: Side; en: Side }
@@ -2048,12 +2048,24 @@ const main = async () => {
     }
   }
 
+  // Kategori artik ayri bir koleksiyon; urun kaydi anahtari degil kategori
+  // kaydinin kimligini tutuyor. Anahtardan kimlige esleme bir kez cikariliyor.
+  const categoryDocs = await payload.find({ collection: 'product-categories', limit: 0, depth: 0 })
+  const categoryIdByKey = new Map<string, number | string>(
+    categoryDocs.docs.map((doc: any) => [doc.key as string, doc.id]),
+  )
+  const categoryId = (key: Category) => {
+    const id = categoryIdByKey.get(key)
+    if (!id) throw new Error(`Kategori bulunamadi: ${key}. Once urun kategorilerini olusturun.`)
+    return id
+  }
+
   let order = 10
   for (const entry of entries) {
     const side = (data: Side) => ({
       title: data.title,
       model: entry.model,
-      category: entry.category,
+      category: categoryId(entry.category),
       excerpt: data.excerpt,
       body: richText(data.body),
       specs: data.specs.map((spec) => ({ label: spec.label, value: spec.value })),

@@ -15,12 +15,12 @@ import { Leads } from './collections/Leads'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
 import { Projects } from './collections/Projects'
+import { ProductCategories } from './collections/ProductCategories'
 import { Products } from './collections/Products'
 import { References } from './collections/References'
 import { Solutions } from './collections/Solutions'
 import { Users } from './collections/Users'
 import { Navigation } from './globals/Navigation'
-import { CatalogContent } from './globals/CatalogContent'
 import { CorporateContent } from './globals/CorporateContent'
 import { SolutionCategoryContent } from './globals/SolutionCategoryContent'
 import { migrations } from './migrations'
@@ -77,8 +77,8 @@ export default buildConfig({
       beforeDashboard: ['@/components/admin/Dashboard#Dashboard'],
     },
   },
-  collections: [Products, Solutions, References, Projects, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
-  globals: [SiteSettings, Navigation, CatalogContent, SolutionCategoryContent, CorporateContent],
+  collections: [ProductCategories, Products, Solutions, References, Projects, Posts, Media, Documents, Leads, LeadFiles, Events, Users],
+  globals: [SiteSettings, Navigation, SolutionCategoryContent, CorporateContent],
   i18n: {
     supportedLanguages: { tr, en },
     fallbackLanguage: 'tr',

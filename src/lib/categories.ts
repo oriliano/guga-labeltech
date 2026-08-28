@@ -3,18 +3,28 @@ import { SECTION_SLUGS } from './routes'
 
 /**
  * Product categories as their own pages, the way the legacy site listed them in
- * its menu. `value` matches the select stored on the product record; the slugs
- * are localized so the URL reads naturally in both languages.
+ * its menu. Kategoriler artık `product-categories` koleksiyonunda duruyor;
+ * buradaki tipler koleksiyondan okunan kaydın iki dilli hâlini temsil ediyor.
+ * `value` ürün kaydındaki kategori anahtarı, slug'lar dile göre ayrı olduğu için
+ * adres her iki dilde de doğal okunuyor.
  */
 export type ProductCategory = {
+  /** Koleksiyon kaydının kimliği; ürün sorgusunda ilişki eşleşmesi için. */
+  id: number | string
+  /** Sabit anahtar; ürün kaydında ve eski verilerde bu kullanılıyor. */
   value: string
   slug: Record<Locale, string>
   label: Record<Locale, string>
   lead: Record<Locale, string>
 }
 
-export const CATEGORIES: ProductCategory[] = [
+/**
+ * Koleksiyon boşken (temiz kurulum, yerel geliştirme) kullanılan liste. Canlıda
+ * bu dokuz kategori göç sırasında koleksiyona taşındı, oradan yönetiliyor.
+ */
+export const FALLBACK_CATEGORIES: ProductCategory[] = [
   {
+    id: 'label',
     value: 'label',
     slug: { tr: 'rfid-etiket', en: 'rfid-labels' },
     label: { tr: 'RFID Etiket', en: 'RFID Labels' },
@@ -24,6 +34,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'industrial-tag',
     value: 'industrial-tag',
     slug: { tr: 'rfid-endustriyel-tag', en: 'industrial-tags' },
     label: { tr: 'RFID Endüstriyel Tag', en: 'Industrial RFID Tags' },
@@ -33,6 +44,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'hardware',
     value: 'hardware',
     slug: { tr: 'rfid-donanim', en: 'rfid-hardware' },
     label: { tr: 'RFID Donanım', en: 'RFID Hardware' },
@@ -42,6 +54,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'industrial-label',
     value: 'industrial-label',
     slug: { tr: 'endustriyel-etiketler', en: 'industrial-labels' },
     label: { tr: 'Endüstriyel Etiketler', en: 'Industrial Labels' },
@@ -51,6 +64,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'card',
     value: 'card',
     slug: { tr: 'kart-urunleri', en: 'cards' },
     label: { tr: 'Kart Ürünlerimiz', en: 'Cards' },
@@ -60,6 +74,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'ribbon',
     value: 'ribbon',
     slug: { tr: 'ribon', en: 'ribbons' },
     label: { tr: 'Ribon', en: 'Ribbons' },
@@ -69,6 +84,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'lanyard',
     value: 'lanyard',
     slug: { tr: 'yaka-ipleri', en: 'lanyards' },
     label: { tr: 'Yaka İpleri', en: 'Lanyards' },
@@ -78,6 +94,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'library',
     value: 'library',
     slug: { tr: 'kutuphane-urunleri', en: 'library-products' },
     label: { tr: 'Kütüphane Ürünlerimiz', en: 'Library Products' },
@@ -87,6 +104,7 @@ export const CATEGORIES: ProductCategory[] = [
     },
   },
   {
+    id: 'retail',
     value: 'retail',
     slug: { tr: 'perakende-urunleri', en: 'retail-products' },
     label: { tr: 'Perakende Ürünlerimiz', en: 'Retail Products' },
@@ -100,33 +118,31 @@ export const CATEGORIES: ProductCategory[] = [
 /** URL segment that separates a category page from a product page. */
 export const CATEGORY_SEGMENT: Record<Locale, string> = { tr: 'kategori', en: 'category' }
 
-export const categoryBySlug = (locale: Locale, slug: string) =>
-  CATEGORIES.find((category) => category.slug[locale] === slug)
-
-export const categoryByValue = (value?: string | null) =>
-  value ? CATEGORIES.find((category) => category.value === value) : undefined
+export const categoryBySlug = (categories: ProductCategory[], locale: Locale, slug: string) =>
+  categories.find((category) => category.slug[locale] === slug)
 
 export const categoryPath = (category: ProductCategory, locale: Locale) =>
   `${localePrefix(locale)}/${SECTION_SLUGS.products[locale]}/${CATEGORY_SEGMENT[locale]}/${category.slug[locale]}`
 
-/** Payload alan adları tire kabul etmediği için kategori anahtarını güvenli ada çevirir. */
-export const categoryContentField = (category: ProductCategory) =>
-  `category_${category.value.replace(/-/g, '_')}`
-
-export const categoryCopy = (
-  content: object | null | undefined,
-  category: ProductCategory,
-  locale: Locale,
-) => {
-  const arrayEntry = (
-    (content as { categories?: { category?: string | null; label?: string | null; lead?: string | null }[] } | null)
-      ?.categories ?? []
-  ).find((item) => item.category === category.value)
-  const entry = (content as Record<string, unknown> | null | undefined)?.[categoryContentField(category)] as
-    | { label?: string | null; lead?: string | null }
-    | undefined
-  return {
-    label: arrayEntry?.label?.trim() || entry?.label?.trim() || category.label[locale],
-    lead: arrayEntry?.lead?.trim() || entry?.lead?.trim() || category.lead[locale],
+/**
+ * Ürün kaydındaki kategori, ilişki alanı olduğu için `depth` 1 ile tam kayıt,
+ * `depth` 0 ile yalnızca kimlik dönüyor. İki durumu da aynı kategoriye eşliyor.
+ */
+export const categoryOfProduct = (
+  categories: ProductCategory[],
+  product: { category?: unknown },
+): ProductCategory | undefined => {
+  const value = product.category
+  if (value && typeof value === 'object') {
+    const record = value as { id?: number | string; key?: string }
+    return categories.find(
+      (category) => category.id === record.id || (record.key ? category.value === record.key : false),
+    )
   }
+  if (typeof value === 'number' || typeof value === 'string') {
+    return categories.find(
+      (category) => String(category.id) === String(value) || category.value === value,
+    )
+  }
+  return undefined
 }

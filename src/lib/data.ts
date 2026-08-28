@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
+import { FALLBACK_CATEGORIES, type ProductCategory } from './categories'
 import type { Locale } from './i18n'
 
 export const payloadClient = async () => getPayload({ config: configPromise })
@@ -103,9 +104,41 @@ export const getNavigation = async (locale: Locale) => {
   return payload.findGlobal({ slug: 'navigation', locale, depth: 0 })
 }
 
-export const getCatalogContent = async (locale: Locale) => {
+/**
+ * Ürün kategorileri iki dilde birden okunuyor (`locale: 'all'`): dil değiştirme
+ * bağlantısı ve alternatif adresler için diğer dilin slug'ı da gerekiyor.
+ * Koleksiyon boşsa koddaki yedek liste dönüyor, böylece temiz bir kurulumda
+ * menü ve kategori sayfaları yine çalışıyor.
+ */
+export const listProductCategories = async (): Promise<ProductCategory[]> => {
   const payload = await payloadClient()
-  return payload.findGlobal({ slug: 'catalog-content', locale, depth: 0 })
+  const { docs } = await payload.find({
+    collection: 'product-categories',
+    locale: 'all',
+    limit: 0,
+    sort: 'order',
+    depth: 0,
+  })
+
+  const pick = (value: unknown, fallback = ''): Record<Locale, string> => {
+    const record = (value ?? {}) as Partial<Record<Locale, string>>
+    const tr = record.tr?.trim() || record.en?.trim() || fallback
+    const en = record.en?.trim() || tr
+    return { tr, en }
+  }
+
+  const mapped = docs.map((doc: any) => {
+    const label = pick(doc.title, doc.key ?? '')
+    return {
+      id: doc.id,
+      value: doc.key ?? String(doc.id),
+      label,
+      slug: pick(doc.slug, doc.key ?? ''),
+      lead: pick(doc.lead),
+    }
+  })
+
+  return mapped.length ? mapped : FALLBACK_CATEGORIES
 }
 
 export const getSolutionCategoryContent = async (locale: Locale) => {

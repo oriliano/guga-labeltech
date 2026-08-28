@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'product-categories': ProductCategory;
     products: Product;
     solutions: Solution;
     references: Reference;
@@ -85,6 +86,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     solutions: SolutionsSelect<false> | SolutionsSelect<true>;
     references: ReferencesSelect<false> | ReferencesSelect<true>;
@@ -108,14 +110,12 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
-    'catalog-content': CatalogContent;
     'solution-category-content': SolutionCategoryContent;
     'corporate-content': CorporateContent;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
-    'catalog-content': CatalogContentSelect<false> | CatalogContentSelect<true>;
     'solution-category-content': SolutionCategoryContentSelect<false> | SolutionCategoryContentSelect<true>;
     'corporate-content': CorporateContentSelect<false> | CorporateContentSelect<true>;
   };
@@ -148,6 +148,37 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Ürün kategorileri ve kategori sayfalarının metinleri. Yeni kategori eklediğinizde menüde, filtre şeridinde ve ürün formundaki kategori listesinde kendiliğinden görünür.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  /**
+   * Menüde, filtrede ve kategori sayfasının başlığında görünür.
+   */
+  title: string;
+  /**
+   * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+   */
+  lead?: string | null;
+  /**
+   * Kod tarafındaki sabit anahtar (rfid-etiket gibi). Boş bırakılırsa kategori adından üretilir. Bir kez verilir, sonradan değiştirmeyin.
+   */
+  key: string;
+  /**
+   * Kategori sayfasının adresi, her dil için ayrı. Boş bırakılırsa kategori adından üretilir. Yayındaki bir adresi değiştirmek bağlantıları kırar.
+   */
+  slug: string;
+  /**
+   * Küçük sayı önce gelir. Menüdeki ve listedeki sırayı belirler.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
@@ -158,8 +189,10 @@ export interface Product {
    * Örn. GugaTY850. Ürün listelerinde ve tekliflerde kullanılır.
    */
   model?: string | null;
-  category:
-    'hardware' | 'label' | 'industrial-tag' | 'industrial-label' | 'card' | 'ribbon' | 'lanyard' | 'library' | 'retail';
+  /**
+   * Kategori listesi “Ürün Kategorileri” bölümünden yönetiliyor. Listede olmayan bir kategori gerekiyorsa buradaki alanın yanındaki artı düğmesiyle yenisini ekleyebilirsiniz.
+   */
+  category: number | ProductCategory;
   /**
    * Listelerde ve arama sonuçlarında görünür. 1-2 cümle.
    */
@@ -687,6 +720,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'product-categories';
+        value: number | ProductCategory;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -771,6 +808,19 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  title?: T;
+  lead?: T;
+  key?: T;
+  slug?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1250,79 +1300,6 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
- * Ürün kategorilerini listeye ekleyip kategori sayfasındaki başlık ve açıklamayı buradan yönetebilirsiniz.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "catalog-content".
- */
-export interface CatalogContent {
-  id: number;
-  /**
-   * “Kategori ekle” ile düzenlemek istediğiniz ürün kategorisini seçin. Aynı kategoriyi iki kez eklemeyin.
-   */
-  categories?:
-    | {
-        category:
-          | 'label'
-          | 'industrial-tag'
-          | 'hardware'
-          | 'industrial-label'
-          | 'card'
-          | 'ribbon'
-          | 'lanyard'
-          | 'library'
-          | 'retail';
-        /**
-         * Boş bırakılırsa kategorinin mevcut adı kullanılır.
-         */
-        label?: string | null;
-        /**
-         * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
-         */
-        lead?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  category_label?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_industrial_tag?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_hardware?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_industrial_label?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_card?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_ribbon?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_lanyard?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_library?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  category_retail?: {
-    label?: string | null;
-    lead?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * Çözüm kategorilerini, kategori sayfası başlıklarını ve kısa açıklamalarını buradan yönetebilirsiniz.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1551,77 +1528,6 @@ export interface NavigationSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "catalog-content_select".
- */
-export interface CatalogContentSelect<T extends boolean = true> {
-  categories?:
-    | T
-    | {
-        category?: T;
-        label?: T;
-        lead?: T;
-        id?: T;
-      };
-  category_label?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_industrial_tag?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_hardware?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_industrial_label?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_card?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_ribbon?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_lanyard?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_library?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
-      };
-  category_retail?:
-    | T
-    | {
-        label?: T;
-        lead?: T;
       };
   updatedAt?: T;
   createdAt?: T;

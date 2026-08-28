@@ -4,16 +4,20 @@ import { authenticated, publishedOrAuthenticated } from '../access'
 import { slugField } from '../fields/slug'
 import { seoFields } from '../fields/seo'
 
-export const PRODUCT_CATEGORIES = [
-  { label: 'RFID Donanım', value: 'hardware' },
-  { label: 'RFID Etiket', value: 'label' },
-  { label: 'Endüstriyel Tag', value: 'industrial-tag' },
-  { label: 'Endüstriyel Etiket', value: 'industrial-label' },
-  { label: 'Kart', value: 'card' },
-  { label: 'Ribon', value: 'ribbon' },
-  { label: 'Yaka İpi', value: 'lanyard' },
-  { label: 'Kütüphane & Arşiv', value: 'library' },
-  { label: 'Perakende', value: 'retail' },
+/**
+ * Kategori listesi artık `product-categories` koleksiyonunda; buradaki anahtarlar
+ * yalnızca seed betiklerinin hangi kategoriye yazacağını bilmesi için duruyor.
+ */
+export const PRODUCT_CATEGORY_KEYS = [
+  'hardware',
+  'label',
+  'industrial-tag',
+  'industrial-label',
+  'card',
+  'ribbon',
+  'lanyard',
+  'library',
+  'retail',
 ] as const
 
 export const Products: CollectionConfig = {
@@ -54,10 +58,14 @@ export const Products: CollectionConfig = {
             },
             {
               name: 'category',
-              type: 'select',
+              type: 'relationship',
+              relationTo: 'product-categories',
               required: true,
               label: 'Kategori',
-              options: [...PRODUCT_CATEGORIES],
+              admin: {
+                description:
+                  'Kategori listesi “Ürün Kategorileri” bölümünden yönetiliyor. Listede olmayan bir kategori gerekiyorsa buradaki alanın yanındaki artı düğmesiyle yenisini ekleyebilirsiniz.',
+              },
             },
             {
               name: 'excerpt',

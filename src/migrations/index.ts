@@ -1,6 +1,7 @@
 import type { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
 
 import * as kategoriKurumsalSertifikalar from './20260828_072201_kategori_kurumsal_sertifikalar'
+import * as urunKategorileriKoleksiyonu from './20260828_100953_urun_kategorileri_koleksiyonu'
 
 /**
  * Üretimde çalıştırılacak şema göçleri.
@@ -33,5 +34,10 @@ export const migrations: Migration[] = [
     name: '20260828_072201_kategori_kurumsal_sertifikalar',
     up: kategoriKurumsalSertifikalar.up,
     down: kategoriKurumsalSertifikalar.down,
+  },
+  {
+    name: '20260828_100953_urun_kategorileri_koleksiyonu',
+    up: urunKategorileriKoleksiyonu.up,
+    down: urunKategorileriKoleksiyonu.down,
   },
 ]
