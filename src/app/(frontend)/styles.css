@@ -5,9 +5,9 @@
  * eylem ve vurgu icin; genis alanlarda yesil calisiyor.
  */
 @theme {
-  --color-ink-950: #004b23;
-  --color-ink-900: #1b4d3e;
-  --color-ink-800: #14543a;
+  --color-ink-950: #021a10;
+  --color-ink-900: #053624;
+  --color-ink-800: #0a4a31;
   --color-ink-700: #12603f;
   --color-ink-600: #237e56;
   --color-ink-400: #6d9584;
@@ -59,7 +59,7 @@
    */
   :root {
     color-scheme: dark;
-    --page-bg: #004b23;
+    --page-bg: #04231a;
     --page-fg: #d4af37;
     --card-bg: #0a3325;
     --card-border: rgba(227, 201, 106, 0.16);
