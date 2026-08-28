@@ -18,6 +18,7 @@ import { Shell } from '@/components/site/Shell'
 import { ArticleJsonLd, BreadcrumbJsonLd, ProductJsonLd } from '@/components/site/StructuredData'
 import {
   findBySlug,
+  getCatalogContent,
   getSiteSettings,
   listPosts,
   listProjects,
@@ -26,7 +27,7 @@ import {
   listSolutions,
 } from '@/lib/data'
 import { DEFAULT_LOCALE, isLocale, t, type Locale } from '@/lib/i18n'
-import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryPath } from '@/lib/categories'
+import { CATEGORIES, CATEGORY_SEGMENT, categoryBySlug, categoryCopy, categoryPath } from '@/lib/categories'
 import { postImage, productPhoto, solutionImage } from '@/lib/imagery'
 import { imageFitOf, imageUrl } from '@/lib/media'
 import {
@@ -422,17 +423,21 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
 
     switch (section) {
       case 'products': {
+        const catalog = await getCatalogContent(locale)
+        const copyFor = (category: (typeof CATEGORIES)[number]) => categoryCopy(catalog, category, locale)
+
         if (slug === CATEGORY_SEGMENT[locale] && extra[0]) {
           const category = categoryBySlug(locale, extra[0])
           if (!category) notFound()
+          const copy = copyFor(category)
           const products = await listProducts({ locale, where: { category: { equals: category.value } } })
           return (
             <>
-              <BreadcrumbJsonLd locale={locale} section="products" title={category.label[locale]} />
+              <BreadcrumbJsonLd locale={locale} section="products" title={copy.label} />
               <ListingPage
                 eyebrow={t('nav.products', locale)}
-                title={category.label[locale]}
-                lead={category.lead[locale]}
+                title={copy.label}
+                lead={copy.lead}
                 items={products}
                 emptyText={t('empty.products', locale)}
                 hrefFor={(item) => sectionPath('products', locale, item.slug)}
@@ -444,7 +449,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 filters={{
                   label: t('label.category', locale),
                   items: CATEGORIES.map((entry) => ({
-                    label: entry.label[locale],
+                    label: copyFor(entry).label,
                     href: categoryPath(entry, locale),
                     active: entry.value === category.value,
                   })),
@@ -475,19 +480,20 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
         // belirleniyor, gerisi kategori sayfasında.
         const PREVIEW = 3
         const groups = CATEGORIES.map((category) => {
+          const copy = copyFor(category)
           const inCategory = products.filter((item: any) => item.category === category.value)
           return {
             key: category.value,
-            label: category.label[locale],
-            lead: category.lead[locale],
+            label: copy.label,
+            lead: copy.lead,
             href: categoryPath(category, locale),
             total: inCategory.length,
             // Etiket oldugu gibi kullaniliyor; Turkce kucultme "RFID"yi "rfıd"
             // yapip marka adini bozuyordu.
             moreLabel:
               locale === 'tr'
-                ? `Tüm ${category.label[locale]} (${inCategory.length})`
-                : `All ${category.label[locale]} (${inCategory.length})`,
+                ? `Tüm ${copy.label} (${inCategory.length})`
+                : `All ${copy.label} (${inCategory.length})`,
             items: inCategory.slice(0, PREVIEW).map((item: any) => ({
               id: item.id,
               title: item.title,
@@ -520,7 +526,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
               filters={{
                 label: t('label.category', locale),
                 items: CATEGORIES.map((entry) => ({
-                  label: entry.label[locale],
+                  label: copyFor(entry).label,
                   href: categoryPath(entry, locale),
                   active: false,
                 })),

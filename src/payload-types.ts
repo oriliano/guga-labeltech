@@ -108,10 +108,12 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
+    'catalog-content': CatalogContent;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
+    'catalog-content': CatalogContentSelect<false> | CatalogContentSelect<true>;
   };
   locale: 'tr' | 'en';
   widgets: {
@@ -1233,6 +1235,107 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
+ * Ürün kategori sayfalarının başlık ve açıklamalarını buradan değiştirebilirsiniz.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "catalog-content".
+ */
+export interface CatalogContent {
+  id: number;
+  category_label?: {
+    /**
+     * Boş bırakılırsa “RFID Etiket” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_industrial_tag?: {
+    /**
+     * Boş bırakılırsa “RFID Endüstriyel Tag” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_hardware?: {
+    /**
+     * Boş bırakılırsa “RFID Donanım” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_industrial_label?: {
+    /**
+     * Boş bırakılırsa “Endüstriyel Etiketler” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_card?: {
+    /**
+     * Boş bırakılırsa “Kart Ürünlerimiz” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_ribbon?: {
+    /**
+     * Boş bırakılırsa “Ribon” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_lanyard?: {
+    /**
+     * Boş bırakılırsa “Yaka İpleri” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_library?: {
+    /**
+     * Boş bırakılırsa “Kütüphane Ürünlerimiz” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  category_retail?: {
+    /**
+     * Boş bırakılırsa “Perakende Ürünlerimiz” kullanılır.
+     */
+    label?: string | null;
+    /**
+     * Kategori sayfasında başlığın altındaki kısa tanıtım metni.
+     */
+    lead?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
@@ -1327,6 +1430,69 @@ export interface NavigationSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "catalog-content_select".
+ */
+export interface CatalogContentSelect<T extends boolean = true> {
+  category_label?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_industrial_tag?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_hardware?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_industrial_label?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_card?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_ribbon?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_lanyard?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_library?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
+      };
+  category_retail?:
+    | T
+    | {
+        label?: T;
+        lead?: T;
       };
   updatedAt?: T;
   createdAt?: T;

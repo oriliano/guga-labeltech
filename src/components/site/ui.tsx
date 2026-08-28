@@ -97,7 +97,7 @@ export const Card = ({
   >
     {!image && visual ? <div className="aspect-[16/9] overflow-hidden">{visual}</div> : null}
     {image ? (
-      <div className="relative aspect-[16/9] overflow-hidden bg-[var(--page-bg)]">
+      <div className="relative aspect-[16/9] overflow-hidden border-b border-signal-500/35 bg-[var(--page-bg)]">
         <Image
           src={image}
           alt=""

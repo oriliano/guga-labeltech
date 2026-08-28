@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import { getNavigation, getSiteSettings } from '@/lib/data'
-import { CATEGORIES, categoryPath } from '@/lib/categories'
+import { getCatalogContent, getNavigation, getSiteSettings } from '@/lib/data'
+import { CATEGORIES, categoryCopy, categoryPath } from '@/lib/categories'
 import { t, type Locale } from '@/lib/i18n'
 import { sectionPath } from '@/lib/routes'
 import { SOLUTION_CATEGORIES, solutionCategoryPath } from '@/lib/solutionCategories'
@@ -15,12 +15,12 @@ import { OrganizationJsonLd } from './StructuredData'
 import { WhatsAppButton } from './WhatsAppButton'
 
 /** Falls back to a generated menu when the Navigation global has not been filled in. */
-const defaultNav = (locale: Locale): NavItem[] => [
+const defaultNav = (locale: Locale, catalog?: object | null): NavItem[] => [
   {
     label: t('nav.products', locale),
     href: sectionPath('products', locale),
     children: CATEGORIES.map((category) => ({
-      label: category.label[locale],
+      label: categoryCopy(catalog, category, locale).label,
       href: categoryPath(category, locale),
       description: category.lead[locale],
     })),
@@ -48,7 +48,11 @@ export const Shell = async ({
   alternateHref: string
   children: ReactNode
 }) => {
-  const [settings, navigation] = await Promise.all([getSiteSettings(locale), getNavigation(locale)])
+  const [settings, navigation, catalog] = await Promise.all([
+    getSiteSettings(locale),
+    getNavigation(locale),
+    getCatalogContent(locale),
+  ])
 
   const legacyProjectPath = sectionPath('export', locale)
   const projectPath = sectionPath('projects', locale)
@@ -60,12 +64,22 @@ export const Shell = async ({
         href: normalizeHref(item.href),
         children: item.children?.map((child) => ({ label: child.label, href: normalizeHref(child.href) })),
       }))
-    : defaultNav(locale)
+    : defaultNav(locale, catalog)
 
   // Eski/panelden kaydedilmiş menüde kategori çocukları bulunmasa bile
   // çözümler ürünlerle aynı hover menüsünü kullanır. Referanslar ve projeler
   // kategori menüsü taşımaz.
   headerItems = headerItems.map((item) => {
+    if (item.href === sectionPath('products', locale)) {
+      return {
+        ...item,
+        children: CATEGORIES.map((category) => ({
+          label: categoryCopy(catalog, category, locale).label,
+          href: categoryPath(category, locale),
+          description: categoryCopy(catalog, category, locale).lead,
+        })),
+      }
+    }
     if (item.href === sectionPath('solutions', locale)) {
       return {
         ...item,
@@ -98,7 +112,7 @@ export const Shell = async ({
           href: normalizeHref(link.href),
         })),
       }))
-    : [{ title: t('nav.solutions', locale), links: defaultNav(locale).map(({ label, href }) => ({ label, href })) }]
+    : [{ title: t('nav.solutions', locale), links: defaultNav(locale, catalog).map(({ label, href }) => ({ label, href })) }]
 
   if (!footerColumns.some((column) => column.links?.some((link) => link.href === sectionPath('references', locale)))) {
     const lastIndex = footerColumns.length - 1

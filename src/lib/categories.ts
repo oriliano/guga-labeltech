@@ -108,3 +108,21 @@ export const categoryByValue = (value?: string | null) =>
 
 export const categoryPath = (category: ProductCategory, locale: Locale) =>
   `${localePrefix(locale)}/${SECTION_SLUGS.products[locale]}/${CATEGORY_SEGMENT[locale]}/${category.slug[locale]}`
+
+/** Payload alan adları tire kabul etmediği için kategori anahtarını güvenli ada çevirir. */
+export const categoryContentField = (category: ProductCategory) =>
+  `category_${category.value.replace(/-/g, '_')}`
+
+export const categoryCopy = (
+  content: object | null | undefined,
+  category: ProductCategory,
+  locale: Locale,
+) => {
+  const entry = (content as Record<string, unknown> | null | undefined)?.[categoryContentField(category)] as
+    | { label?: string | null; lead?: string | null }
+    | undefined
+  return {
+    label: entry?.label?.trim() || category.label[locale],
+    lead: entry?.lead?.trim() || category.lead[locale],
+  }
+}
