@@ -58,12 +58,12 @@ export const Header = ({
                 {item.children?.length ? (
                   <div className="invisible absolute left-1/2 top-full z-50 w-[42rem] -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                     <div className="overflow-hidden rounded-2xl border border-signal-500/20 bg-ink-900 shadow-[0_28px_60px_-28px_rgba(2,26,16,0.85)]">
-                      <ul className="grid grid-cols-2 gap-1 p-3">
+                      <ul className="grid grid-cols-2 gap-2 p-3">
                         {item.children.map((child) => (
                           <li key={child.href}>
                             <Link
                               href={child.href}
-                              className="group/item block rounded-xl px-4 py-3 transition hover:bg-ink-800"
+                              className="group/item block rounded-xl border border-signal-500/20 bg-ink-950/15 px-4 py-3 transition hover:border-signal-400/60 hover:bg-ink-800"
                             >
                               <span className="block text-sm font-medium text-ink-100 group-hover/item:text-signal-400">
                                 {child.label}
