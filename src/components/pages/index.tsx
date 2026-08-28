@@ -312,7 +312,7 @@ export const ProductDetail = ({ locale, product }: { locale: Locale; product: an
         ) : (
           <ProductGlyph category={product.category} className="aspect-[16/9] w-full rounded-xl" />
         )}
-        <RichText data={product.body} />
+        {/* Ürün görselinin altında otomatik açıklama bloğu gösterilmez. İçerik panelde saklanır. */}
       </div>
     </div>
 
@@ -594,7 +594,7 @@ export const PostDetail = ({ locale, post }: { locale: Locale; post: any }) => {
           className={`mb-8 ${frameClass(imageFitOf(post.coverImage, 'cover'))}`}
         />
       ) : null}
-      <h1 className="text-h1 font-semibold">{post.title}</h1>
+      <h1 className="text-3xl font-semibold sm:text-4xl">{post.title}</h1>
       {post.publishedAt ? (
         <p className="mt-3 text-sm text-muted">
           <time dateTime={post.publishedAt}>

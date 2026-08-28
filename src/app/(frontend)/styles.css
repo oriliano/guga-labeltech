@@ -11,9 +11,9 @@
   --color-ink-700: #12603f;
   --color-ink-600: #237e56;
   --color-ink-400: #6d9584;
-  --color-ink-200: #c6dbd0;
-  --color-ink-100: #e5efe9;
-  --color-ink-50: #f4f8f6;
+  --color-ink-200: #d4af37;
+  --color-ink-100: #d4af37;
+  --color-ink-50: #d4af37;
 
   --color-signal-600: #a9851d;
   --color-signal-500: #d4af37;
@@ -52,10 +52,10 @@
   :root {
     color-scheme: dark;
     --page-bg: #004b23;
-    --page-fg: #e9f1ec;
+    --page-fg: #d4af37;
     --card-bg: #1b4d3e;
     --card-border: rgba(227, 201, 106, 0.16);
-    --muted-fg: #a9c4b7;
+    --muted-fg: #d4af37;
     --heading-fg: var(--color-signal-400);
   }
 
