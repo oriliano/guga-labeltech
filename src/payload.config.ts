@@ -102,10 +102,33 @@ export default buildConfig({
     },
     // Gelistirmede sema config'ten dogrudan esitleniyor. Uretimde Payload bunu
     // yapmiyor (NODE_ENV production ise pushDevSchema atlaniyor), o yuzden orada
-    // bekleyen gocler acilista uygulaniyor.
+    // bekleyen gocler asagidaki onInit icinde uygulaniyor.
     push: true,
-    prodMigrations: migrations,
   }),
+  /**
+   * Uretimde bekleyen gocler burada uygulaniyor; adapter'in `prodMigrations`
+   * secenegi kullanilmiyor.
+   *
+   * Sebep: `payload_migrations` tablosunda `batch = -1` olan "dev" satiri
+   * varken Payload gocleri calistirmadan once terminalden onay istiyor
+   * (`@payloadcms/drizzle/dist/migrate.js:31`). Railway'de o soruyu kimse
+   * cevaplayamadigi icin konteyner acilista takiliyor ve healthcheck dusuyor.
+   * Satir yalnizca "sema bir zamanlar dev modunda push edildi" isareti; sema ya
+   * da icerik verisi tasimiyor. Gocler devreye girdigi icin siliniyor, ardindan
+   * goc calistiriliyor. Ikisi de tekrar calistirmaya karsi guvenli.
+   */
+  onInit: async (payload) => {
+    if (process.env.NODE_ENV !== 'production') return
+    const db = payload.db as unknown as {
+      pool: { query: (text: string) => Promise<unknown> }
+      migrate: (args: { migrations: typeof migrations }) => Promise<void>
+    }
+    // Tablo ilk kurulumda henuz yok olabilir, o yuzden varlik kontrolu ile.
+    await db.pool.query(
+      "DO $$ BEGIN IF to_regclass('public.payload_migrations') IS NOT NULL THEN DELETE FROM payload_migrations WHERE batch = -1; END IF; END $$;",
+    )
+    await db.migrate({ migrations })
+  },
   cors: [serverURL],
   csrf: [serverURL],
   sharp,
