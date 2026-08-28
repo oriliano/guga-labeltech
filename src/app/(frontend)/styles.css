@@ -5,7 +5,7 @@
  * eylem ve vurgu icin; genis alanlarda yesil calisiyor.
  */
 @theme {
-  --color-ink-950: #021a10;
+  --color-ink-950: #04231b;
   --color-ink-900: #053624;
   --color-ink-800: #0a4a31;
   --color-ink-700: #12603f;
@@ -59,9 +59,9 @@
    */
   :root {
     color-scheme: dark;
-    --page-bg: #04231a;
+    --page-bg: #04231b;
     --page-fg: #d4af37;
-    --card-bg: #0a3325;
+    --card-bg: #04231b;
     --card-border: rgba(227, 201, 106, 0.16);
     --muted-fg: #d4af37;
     --heading-fg: var(--color-signal-400);
