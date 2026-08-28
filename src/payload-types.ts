@@ -190,6 +190,9 @@ export interface Product {
       }[]
     | null;
   datasheets?: (number | Document)[] | null;
+  /**
+   * Ürün kartı fotoğrafı kırpmadan gösteriyor. Beyaz ya da sade zeminde, 1200×1200 civarı kare bir fotoğraf en iyi sonucu veriyor.
+   */
   images?: (number | Media)[] | null;
   relatedSolutions?: (number | Solution)[] | null;
   /**
@@ -243,6 +246,8 @@ export interface Document {
   focalY?: number | null;
 }
 /**
+ * Kartlar ve detay sayfaları görseli 16:9 çerçevede gösterir. Oranı 1.3 ile 2.1 arasındaki yatay görsel çerçeveyi doldurur (önerilen ölçü 1600×900). Kare, dikey ya da çok geniş görsel kırpılmaz, tamamı çerçeveye sığdırılır ve kenarlarda boşluk kalır. Ürün fotoğrafı hiçbir zaman kırpılmaz; sade zeminde 1200×1200 civarı kare fotoğraf en iyi sonucu verir. Yüklenen dosya olduğu gibi saklanır, panelde kırpma aracı yok.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -299,10 +304,13 @@ export interface Solution {
   id: number;
   title: string;
   /**
-   * Örn. Depo, Perakende, Sağlık. Kartlarda rozet olarak görünür.
+   * Örn. Depo, Perakende, Sağlık. Kartta rozet olarak görünür, ayrıca liste sayfasında grup başlığı ve filtre düğmesi olur. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.
    */
   sector?: string | null;
   excerpt: string;
+  /**
+   * Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.
+   */
   heroImage?: (number | null) | Media;
   problem?: {
     root: {
@@ -381,7 +389,7 @@ export interface Reference {
    */
   client?: string | null;
   /**
-   * Liste sayfasındaki kategori ve filtre adı.
+   * Liste sayfasındaki grup başlığı ve filtre düğmesi. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.
    */
   sector: string;
   country?: string | null;
@@ -395,6 +403,9 @@ export interface Reference {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.
+   */
   image?: (number | null) | Media;
   relatedSolution?: (number | null) | Solution;
   /**
@@ -434,7 +445,7 @@ export interface Project {
    */
   client?: string | null;
   /**
-   * Liste sayfasındaki kategori ve filtre adı.
+   * Liste sayfasındaki grup başlığı ve filtre düğmesi. Tek bir sektör yazın; birden fazla sektör yazarsanız yalnızca ilki başlık olarak kullanılır.
    */
   sector: string;
   country?: string | null;
@@ -448,6 +459,9 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.
+   */
   image?: (number | null) | Media;
   relatedSolution?: (number | null) | Solution;
   relatedProducts?: (number | Product)[] | null;
@@ -487,6 +501,9 @@ export interface Post {
    * Liste kartlarında ve arama sonuçlarında görünür.
    */
   excerpt: string;
+  /**
+   * Kart ve sayfa başlığında 16:9 çerçeve kullanılıyor. En iyi sonuç için 1600×900 civarı yatay bir görsel yükleyin; kare ya da dikey görsel kırpılmadan çerçeveye sığdırılır.
+   */
   coverImage?: (number | null) | Media;
   body?: {
     root: {
