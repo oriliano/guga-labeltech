@@ -81,6 +81,7 @@ export const Card = ({
   image,
   imageFit = 'cover',
   visual,
+  variant = 'default',
 }: {
   href: string
   eyebrow?: string
@@ -90,6 +91,7 @@ export const Card = ({
   image?: string
   imageFit?: 'cover' | 'contain'
   visual?: ReactNode
+  variant?: 'default' | 'product'
 }) => (
   <Link
     href={href}
@@ -107,9 +109,17 @@ export const Card = ({
         />
       </div>
     ) : null}
-    <div className="flex flex-1 flex-col p-7">
+    <div
+      className={`flex flex-1 flex-col p-7 ${
+        variant === 'product' ? 'items-center justify-center text-center' : ''
+      }`}
+    >
       {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
-      <h3 className={`${eyebrow ? 'mt-2' : ''} text-h3 font-semibold transition-colors group-hover:text-signal-500`}>
+      <h3
+        className={`${eyebrow ? 'mt-2' : ''} font-semibold transition-colors group-hover:text-signal-500 ${
+          variant === 'product' ? 'text-[14px] leading-[1.3]' : 'text-h3'
+        }`}
+      >
         {title}
       </h3>
       {/* Kart görsellerinin altında tekrar eden uzun özetler yerine başlık

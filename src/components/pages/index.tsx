@@ -85,6 +85,7 @@ export const ListingPage = ({
   imageFitOf,
   visualOf,
   filters,
+  cardVariant,
 }: {
   eyebrow?: string
   title: string
@@ -99,6 +100,7 @@ export const ListingPage = ({
   /** Görsel başına oran kararı; verilmezse `imageFit` geçerli. */
   imageFitOf?: (item: any) => 'cover' | 'contain'
   visualOf?: (item: any) => ReactNode
+  cardVariant?: 'default' | 'product'
   filters?: {
     label: string
     items: { label: string; href: string; active: boolean }[]
@@ -143,6 +145,7 @@ export const ListingPage = ({
             image={imageOf?.(item)}
             imageFit={imageFitOf?.(item) ?? imageFit}
             visual={visualOf?.(item)}
+            variant={cardVariant}
           />
           </Reveal>
         ))}
@@ -161,6 +164,7 @@ export const GroupedCatalog = ({
   groups,
   filters,
   countLabel = (count) => String(count),
+  cardVariant,
 }: {
   eyebrow?: string
   title: string
@@ -181,6 +185,7 @@ export const GroupedCatalog = ({
     allLabel: string
   }
   countLabel?: (count: number) => string
+  cardVariant?: 'default' | 'product'
 }) => (
   <Section>
     <SectionHeading eyebrow={eyebrow} title={title} lead={lead} as="h1" />
@@ -231,6 +236,7 @@ export const GroupedCatalog = ({
                   image={item.image}
                   imageFit={item.imageFit}
                   visual={item.visual}
+                  variant={cardVariant}
                 />
               </Reveal>
             ))}
@@ -453,6 +459,7 @@ export const SolutionDetail = ({ locale, solution }: { locale: Locale; solution:
                 body={product.excerpt}
                 image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
                 visual={<ProductGlyph category={product.category} className="h-full w-full" />}
+                variant="product"
               />
             ) : null,
           )}
@@ -565,6 +572,7 @@ export const CaseStudyDetail = ({
                   image={mediaOf(product.images?.[0])?.url ?? productPhoto(product.slug)}
                   imageFit="contain"
                   visual={<ProductGlyph category={product.category} className="h-full w-full" />}
+                  variant="product"
                 />
               ) : null,
             )}

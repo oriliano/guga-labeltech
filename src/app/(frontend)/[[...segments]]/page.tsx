@@ -446,6 +446,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                 imageOf={(item) => imageUrl(item.images?.[0], productPhoto(item.slug))}
                 imageFitOf={(item) => imageFitOf(item.images?.[0], 'contain')}
                 visualOf={(item) => <ProductGlyph category={item.category} className="h-full w-full" />}
+                cardVariant="product"
                 filters={{
                   label: t('label.category', locale),
                   items: CATEGORIES.map((entry) => ({
@@ -522,6 +523,7 @@ const Page = async ({ params }: { params: Promise<Params> }) => {
                   : 'RFID tags, industrial tags, readers, cards, ribbons and lanyards.'
               }
               groups={groups}
+              cardVariant="product"
               countLabel={(count) => (locale === 'tr' ? `${count} ürün` : `${count} products`)}
               filters={{
                 label: t('label.category', locale),
